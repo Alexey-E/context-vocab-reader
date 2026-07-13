@@ -1,0 +1,108 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.pnp.cjs
+.pnp.loader.mjs
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+build/
+dist/
+.next/cache/
+
+# Production / deployment
+.vercel/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Keep example env files
+!.env.example
+!.env.*.example
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+.vitest/
+vitest.workspace.ts.timestamp-*
+
+# Supabase local development
+.supabase/
+supabase/.branches/
+supabase/.temp/
+supabase/.cache/
+
+# Keep Supabase project files and migrations
+!supabase/config.toml
+!supabase/migrations/
+!supabase/migrations/**
+!supabase/seed.sql
+
+# Local database dumps / generated backups
+*.dump
+*.sql.gz
+*.backup
+
+# Logs
+logs/
+*.log
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# macOS folders that can appear on external drives / archives
+__MACOSX/
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# VS Code local history / extensions
+.history/
+.ionide/
+
+# JetBrains fallback, just in case
+.idea/
+
+# Vim / swap files
+*.swp
+*.swo
+*.swn
+
+# Optional local-only notes and temp files
+.local/
+tmp/
+temp/
+
+# Generated reports
+reports/
