@@ -4,23 +4,67 @@
 
 Supabase PostgreSQL stores only persistent application data. Temporary sentence and paragraph translations are not stored as permanent records.
 
+Authentication data is managed by Supabase Auth and is intentionally separated from application profile data.
+
 Initial entities:
 
 ```text
 auth.users
-  └─ profiles
+  ├─ auth.identities
+  ├─ auth.sessions
+  └─ public.profiles
 
-profiles
-  ├─ documents
-  └─ vocabulary_cards
+public.profiles
+  ├─ public.documents
+  └─ public.vocabulary_cards
 
-vocabulary_cards
-  └─ review_events
+public.vocabulary_cards
+  └─ public.review_events
 ```
+
+## Authentication data ownership
+
+Supabase Auth is the source of truth for authentication-related data.
+
+It manages:
+
+- user email identities
+- password credentials and password hashes
+- OAuth identities
+- access tokens
+- refresh tokens
+- active sessions
+- email confirmation state
+- password reset flows
+
+These values must not be duplicated in `public.profiles`.
+
+In particular, the application must not add the following columns to `profiles`:
+
+```text
+email
+password
+password_hash
+password_salt
+auth_token
+access_token
+refresh_token
+```
+
+The reasons are:
+
+- email would have two competing sources of truth
+- password hashes are security credentials managed internally by Supabase Auth
+- access tokens expire frequently
+- refresh tokens rotate
+- one user may have multiple active sessions
+- OAuth-only users may not have a password credential
+
+Application code should retrieve the authenticated user's email and session through the Supabase Auth API rather than through the `profiles` table.
 
 ## `profiles`
 
-Stores application-level profile information that should not be read directly from `auth.users` throughout the codebase.
+Stores application-level profile information and user preferences that do not belong to the authentication system.
 
 Suggested fields:
 
@@ -35,6 +79,14 @@ Suggested fields:
 | `updated_at` | `timestamptz` | Last update time |
 
 The profile row can be created after registration through a database trigger or an idempotent application operation.
+
+The relationship is one-to-one:
+
+```text
+auth.users.id = public.profiles.id
+```
+
+Deleting an auth user should delete the related profile through `on delete cascade`.
 
 ## `documents`
 
@@ -161,6 +213,8 @@ Policies are required for:
 - `delete`
 
 Insert and update policies must use `with check` so that a user cannot assign a row to another user.
+
+RLS on public tables does not replace Supabase Auth session validation. The authenticated user identity is resolved from the validated JWT by Supabase.
 
 ## Validation and constraints
 
