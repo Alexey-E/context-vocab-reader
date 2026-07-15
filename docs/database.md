@@ -4,37 +4,86 @@
 
 Supabase PostgreSQL stores only persistent application data. Temporary sentence and paragraph translations are not stored as permanent records.
 
+Authentication data is managed by Supabase Auth and is intentionally separated from application profile data.
+
 Initial entities:
 
 ```text
 auth.users
-  └─ profiles
+  ├─ auth.identities
+  ├─ auth.sessions
+  └─ public.profiles
 
-profiles
-  ├─ documents
-  └─ vocabulary_cards
-
-vocabulary_cards
-  └─ review_events
+public.profiles
+  ├─ public.documents
+  └─ public.vocabulary_cards
 ```
+
+## Authentication data ownership
+
+Supabase Auth is the source of truth for authentication-related data.
+
+It manages:
+
+- user email identities
+- password credentials and password hashes
+- OAuth identities
+- access tokens
+- refresh tokens
+- active sessions
+- email confirmation state
+- password reset flows
+
+These values must not be duplicated in `public.profiles`.
+
+In particular, the application must not add the following columns to `profiles`:
+
+```text
+email
+password
+password_hash
+password_salt
+auth_token
+access_token
+refresh_token
+```
+
+The reasons are:
+
+- email would have two competing sources of truth
+- password hashes are security credentials managed internally by Supabase Auth
+- access tokens expire frequently
+- refresh tokens rotate
+- one user may have multiple active sessions
+- OAuth-only users may not have a password credential
+
+Application code should retrieve the authenticated user's email and session through the Supabase Auth API rather than through the `profiles` table.
 
 ## `profiles`
 
-Stores application-level profile information that should not be read directly from `auth.users` throughout the codebase.
+Stores application-level profile information and user preferences that do not belong to the authentication system.
 
 Suggested fields:
 
 | Field | Type | Notes |
 |---|---|---|
 | `id` | `uuid` | Primary key; references `auth.users(id)` |
-| `display_name` | `text` | Optional user-facing name |
+| `display_name` | `varchar(30)` | Optional user-facing name |
 | `avatar_url` | `text` | Optional OAuth avatar URL |
-| `native_language` | `text` | Default target language preference |
-| `learning_language` | `text` | Default source language preference |
+| `native_language` | `varchar(10)` | Default target language preference |
+| `learning_language` | `varchar(10)` | Default source language preference |
 | `created_at` | `timestamptz` | Creation time |
 | `updated_at` | `timestamptz` | Last update time |
 
 The profile row can be created after registration through a database trigger or an idempotent application operation.
+
+The relationship is one-to-one:
+
+```text
+auth.users.id = public.profiles.id
+```
+
+Deleting an auth user should delete the related profile through `on delete cascade`.
 
 ## `documents`
 
@@ -48,8 +97,8 @@ Suggested fields:
 | `user_id` | `uuid` | References `auth.users(id)` |
 | `title` | `text` | Required |
 | `content` | `text` | Original document text |
-| `source_language` | `text` | Language of the source text |
-| `target_language` | `text` | Translation language |
+| `source_language` | `varchar(10)` | Language of the source text |
+| `target_language` | `varchar(10)` | Translation language |
 | `reading_position` | `integer` | Optional lightweight progress value |
 | `created_at` | `timestamptz` | Creation time |
 | `updated_at` | `timestamptz` | Last update time |
@@ -70,15 +119,13 @@ Suggested fields:
 |---|---|---|
 | `id` | `uuid` | Primary key |
 | `user_id` | `uuid` | References `auth.users(id)` |
-| `document_id` | `uuid` | Nullable reference to `documents(id)` |
-| `word` | `text` | Original surface form |
-| `normalized_word` | `text` | Normalized lookup value |
-| `translation` | `text` | User-visible translation |
+| `word` | `text` | Normalized lookup value |
+| `source_language` | `varchar(10)` | Language of the saved word |
+| `target_language` | `varchar(10)` | Language of the translations |
+| `translation` | `text[]` | One or more user-visible meanings |
 | `usage_context` | `text` | Optional sentence or fragment showing usage |
 | `image_url` | `text` | Optional external HTTP(S) URL |
 | `note` | `text` | Optional user note |
-| `status` | `text` | `new`, `learning`, or `known` |
-| `next_review_at` | `timestamptz` | Optional next review time |
 | `created_at` | `timestamptz` | Creation time |
 | `updated_at` | `timestamptz` | Last update time |
 
@@ -87,46 +134,31 @@ Suggested fields:
 Recommended indexes:
 
 - `vocabulary_cards(user_id, created_at desc)`
-- `vocabulary_cards(user_id, normalized_word)`
-- `vocabulary_cards(user_id, status, next_review_at)`
+- unique `vocabulary_cards(user_id, source_language, target_language, word)`
 
 ### Duplicate strategy
 
-The MVP should not enforce uniqueness only on `user_id + normalized_word`, because one word can have multiple meanings.
+The MVP should keep a single vocabulary card for each `user_id + source_language + target_language + word` combination. `word` contains the normalized lookup value. Multiple meanings within the same language pair are stored as separate values in the `translation` array rather than as separate cards.
+
+The language pair is part of the card identity. Identical normalized words in different source languages remain separate cards, and the same source word can have separate cards for different translation languages.
 
 Initial behavior:
 
-- query and display existing cards for the normalized word
-- warn the user before saving a possible duplicate
-- allow saving when the meaning or context is different
+- accept meanings as a comma-separated value in the UI
+- trim, validate, and convert the entered meanings into a `text[]` value before saving
+- copy the document's normalized source and target language identifiers when saving from the reader
+- query for an existing card with the same normalized word and language pair
+- create a new card when none exists
+- otherwise merge new meanings into the existing card without duplicating identical array values
 
-A stricter constraint can be introduced later after observing real usage.
-
-## `review_events`
-
-Stores an append-only history of vocabulary reviews.
-
-Suggested fields:
-
-| Field | Type | Notes |
-|---|---|---|
-| `id` | `uuid` | Primary key |
-| `user_id` | `uuid` | References `auth.users(id)` |
-| `card_id` | `uuid` | References `vocabulary_cards(id)` |
-| `result` | `text` | Initial values: `again`, `good`, `known` |
-| `created_at` | `timestamptz` | Review time |
-
-Recommended index:
-
-- `review_events(card_id, created_at desc)`
+The database should enforce uniqueness on `user_id + source_language + target_language + word`. Meaning comparison and array merging remain application-level responsibilities in the MVP.
 
 ## Deletion behavior
 
 Recommended foreign-key behavior:
 
 - deleting an auth user deletes their profile and owned records
-- deleting a document does not delete vocabulary cards; `document_id` becomes `null`
-- deleting a vocabulary card deletes its review events
+- deleting a document does not affect vocabulary cards because they do not reference documents
 
 This preserves learned vocabulary when the original document is removed.
 
@@ -137,7 +169,6 @@ RLS must be enabled on:
 - `profiles`
 - `documents`
 - `vocabulary_cards`
-- `review_events`
 
 ### Policy principle
 
@@ -162,17 +193,17 @@ Policies are required for:
 
 Insert and update policies must use `with check` so that a user cannot assign a row to another user.
 
+RLS on public tables does not replace Supabase Auth session validation. The authenticated user identity is resolved from the validated JWT by Supabase.
+
 ## Validation and constraints
 
 Recommended constraints:
 
 - non-empty document title
 - non-empty document content
-- non-empty vocabulary word
-- non-empty normalized word
-- non-empty translation
-- allowed vocabulary status values
-- allowed review result values
+- non-empty normalized `word`
+- non-empty normalized `source_language` and `target_language`
+- `translation` contains at least one non-empty value
 - `image_url` is null or begins with `http://` or `https://`
 
 Application validation is still required even when the database has constraints.
@@ -190,7 +221,6 @@ Suggested initial migrations:
 ```text
 0001_initial_schema.sql
 0002_row_level_security.sql
-0003_review_events.sql
 ```
 
 Exact timestamp-based filenames will be generated by Supabase CLI.

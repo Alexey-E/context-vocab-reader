@@ -66,19 +66,19 @@ A card may include `usage_context`: a sentence or fragment showing how the word 
 
 This field is supporting context, not the source of truth for the translation.
 
-## 5. Duplicate words are not blocked globally
+## 5. Vocabulary card uniqueness includes the language pair
 
 ### Decision
 
-The MVP may warn about similar existing cards but should not enforce a unique constraint based only on normalized word.
+The MVP keeps one card for each user, normalized word, source language, and target language combination. Multiple meanings within that combination are stored in the card's translation array.
 
 ### Why
 
-The same surface form can have multiple meanings and translations in different contexts.
+The same normalized spelling can represent unrelated words in different source languages. A user may also translate the same source word into different target languages. Including both languages prevents those cards and their meanings from being merged.
 
-### Possible later refinement
+### Consequence
 
-A uniqueness rule based on user, normalized word, source language, target language, and translation may be introduced after observing real usage.
+Card lookup, duplicate detection, reader highlighting, and translation merging must always include the source and target language identifiers.
 
 ## 6. Images are external URLs only
 
