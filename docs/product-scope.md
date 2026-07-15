@@ -67,6 +67,8 @@ The following data is temporary and is not stored as permanent user content:
 A vocabulary card can contain:
 
 - normalized word
+- source language
+- target language
 - one or more translations
 - optional usage context
 - optional note
@@ -81,6 +83,7 @@ Usage context is not the source of truth for the translation. It is a sentence o
 - payments
 - teams and shared workspaces
 - shared documents
+- public vocabulary cards, likes, and recommendations
 - browser extension
 - native mobile application
 - offline mode

@@ -68,10 +68,10 @@ Suggested fields:
 | Field | Type | Notes |
 |---|---|---|
 | `id` | `uuid` | Primary key; references `auth.users(id)` |
-| `display_name` | `text` | Optional user-facing name |
+| `display_name` | `varchar(30)` | Optional user-facing name |
 | `avatar_url` | `text` | Optional OAuth avatar URL |
-| `native_language` | `text` | Default target language preference |
-| `learning_language` | `text` | Default source language preference |
+| `native_language` | `varchar(10)` | Default target language preference |
+| `learning_language` | `varchar(10)` | Default source language preference |
 | `created_at` | `timestamptz` | Creation time |
 | `updated_at` | `timestamptz` | Last update time |
 
@@ -97,8 +97,8 @@ Suggested fields:
 | `user_id` | `uuid` | References `auth.users(id)` |
 | `title` | `text` | Required |
 | `content` | `text` | Original document text |
-| `source_language` | `text` | Language of the source text |
-| `target_language` | `text` | Translation language |
+| `source_language` | `varchar(10)` | Language of the source text |
+| `target_language` | `varchar(10)` | Translation language |
 | `reading_position` | `integer` | Optional lightweight progress value |
 | `created_at` | `timestamptz` | Creation time |
 | `updated_at` | `timestamptz` | Last update time |
@@ -120,6 +120,8 @@ Suggested fields:
 | `id` | `uuid` | Primary key |
 | `user_id` | `uuid` | References `auth.users(id)` |
 | `word` | `text` | Normalized lookup value |
+| `source_language` | `varchar(10)` | Language of the saved word |
+| `target_language` | `varchar(10)` | Language of the translations |
 | `translation` | `text[]` | One or more user-visible meanings |
 | `usage_context` | `text` | Optional sentence or fragment showing usage |
 | `image_url` | `text` | Optional external HTTP(S) URL |
@@ -132,21 +134,24 @@ Suggested fields:
 Recommended indexes:
 
 - `vocabulary_cards(user_id, created_at desc)`
-- unique `vocabulary_cards(user_id, word)`
+- unique `vocabulary_cards(user_id, source_language, target_language, word)`
 
 ### Duplicate strategy
 
-The MVP should keep a single vocabulary card for each `user_id + word` pair. `word` contains the normalized lookup value. Multiple meanings of the same word are stored as separate values in the `translation` array rather than as separate cards.
+The MVP should keep a single vocabulary card for each `user_id + source_language + target_language + word` combination. `word` contains the normalized lookup value. Multiple meanings within the same language pair are stored as separate values in the `translation` array rather than as separate cards.
+
+The language pair is part of the card identity. Identical normalized words in different source languages remain separate cards, and the same source word can have separate cards for different translation languages.
 
 Initial behavior:
 
 - accept meanings as a comma-separated value in the UI
 - trim, validate, and convert the entered meanings into a `text[]` value before saving
-- query for an existing card with the same normalized word
+- copy the document's normalized source and target language identifiers when saving from the reader
+- query for an existing card with the same normalized word and language pair
 - create a new card when none exists
 - otherwise merge new meanings into the existing card without duplicating identical array values
 
-The database should enforce uniqueness on `user_id + word`. Meaning comparison and array merging remain application-level responsibilities in the MVP.
+The database should enforce uniqueness on `user_id + source_language + target_language + word`. Meaning comparison and array merging remain application-level responsibilities in the MVP.
 
 ## Deletion behavior
 
@@ -197,6 +202,7 @@ Recommended constraints:
 - non-empty document title
 - non-empty document content
 - non-empty normalized `word`
+- non-empty normalized `source_language` and `target_language`
 - `translation` contains at least one non-empty value
 - `image_url` is null or begins with `http://` or `https://`
 

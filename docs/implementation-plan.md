@@ -134,11 +134,12 @@ A sentence can be translated on demand, and an immediate repeated request can re
 
 - [ ] Allow the user to select or activate a word.
 - [ ] Request or enter a word translation.
+- [ ] Store the document's normalized source and target languages on the card.
 - [ ] Capture optional `usage_context`.
 - [ ] Support an optional note.
 - [ ] Validate an optional external image URL.
 - [ ] Preview the image and handle broken URLs.
-- [ ] Show the existing card when the normalized word is already saved.
+- [ ] Show the existing card when the normalized word and language pair are already saved.
 - [ ] Store multiple meanings in the card's `translation` array without duplicate values.
 - [ ] Save or update the card under the authenticated user.
 
@@ -148,8 +149,8 @@ A card persists after refresh and remains inaccessible to other users.
 
 ## Stage 10 — Saved words in the reader
 
-- [ ] Load vocabulary cards relevant to the reader.
-- [ ] Build a normalized lookup structure.
+- [ ] Load vocabulary cards matching the document's source and target languages.
+- [ ] Build a lookup structure keyed by language pair and normalized word.
 - [ ] Highlight tokens with saved cards.
 - [ ] Add hover, keyboard focus, click, and mobile tap interactions.
 - [ ] Show the matching card in a popover.
@@ -163,6 +164,7 @@ Saved words are visible and accessible in the reader across mouse, keyboard, and
 
 - [ ] List vocabulary cards.
 - [ ] Add search.
+- [ ] Display and filter cards by language pair.
 - [ ] Edit and delete cards.
 - [ ] Show image fallbacks.
 

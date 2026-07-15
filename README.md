@@ -20,6 +20,7 @@ Sentence translations are treated as temporary reading assistance. Vocabulary ca
 - Hover popover for saved words
 - Vocabulary cards with:
   - word
+  - source and target languages
   - one or more translations
   - usage context
   - optional note
@@ -43,6 +44,8 @@ To improve responsiveness and reduce unnecessary translation API calls, the app 
 Only words explicitly saved by the user become persistent learning data.
 
 This keeps the database focused on the actual learning workflow instead of storing every temporary translation result.
+
+Each card stores its source and target languages. This keeps identically spelled words in different languages separate and allows the same source word to be translated into different languages.
 
 ### Usage context is stored for saved words
 
@@ -119,6 +122,8 @@ Stores words explicitly saved by the user.
 Each card can include:
 
 - normalized word
+- source language
+- target language
 - one or more translations
 - usage context
 - note
@@ -347,6 +352,7 @@ The MVP intentionally does not include:
 - image upload/storage
 - payments
 - teams or shared workspaces
+- public vocabulary cards, likes, and recommendations
 - long-term sentence translation storage
 - vocabulary review scheduling and history
 - spaced repetition algorithms
@@ -360,6 +366,7 @@ These can be considered future improvements.
 ## Future improvements
 
 - Spaced repetition scheduling, review history, and statistics
+- Public vocabulary card sharing with likes and recommendations
 - Import from EPUB/PDF/TXT
 - Browser extension for saving words from any page
 - Optional Supabase Storage support for images
