@@ -20,12 +20,11 @@ Sentence translations are treated as temporary reading assistance. Vocabulary ca
 - Hover popover for saved words
 - Vocabulary cards with:
   - word
-  - translation
+  - one or more translations
   - usage context
   - optional note
   - optional external image URL
 - Vocabulary dashboard
-- Basic review flow
 - Light and dark theme design
 - Row Level Security for user-owned data
 
@@ -98,14 +97,11 @@ Planned MVP entities:
 
 ```txt
 auth.users
-  ↓
+  └─ profiles
+
 profiles
-  ↓
-documents
-  ↓
-vocabulary_cards
-  ↓
-review_events
+  ├─ documents
+  └─ vocabulary_cards
 ```
 
 ### `profiles`
@@ -122,18 +118,11 @@ Stores words explicitly saved by the user.
 
 Each card can include:
 
-- word
 - normalized word
-- translation
+- one or more translations
 - usage context
 - note
 - external image URL
-- review status
-- next review date
-
-### `review_events`
-
-Stores review history for vocabulary cards.
 
 ## Supabase and security
 
@@ -359,7 +348,8 @@ The MVP intentionally does not include:
 - payments
 - teams or shared workspaces
 - long-term sentence translation storage
-- full spaced repetition algorithm
+- vocabulary review scheduling and history
+- spaced repetition algorithms
 - offline mode
 - browser extension
 - mobile app
@@ -369,8 +359,7 @@ These can be considered future improvements.
 
 ## Future improvements
 
-- Spaced repetition scheduling
-- Better review statistics
+- Spaced repetition scheduling, review history, and statistics
 - Import from EPUB/PDF/TXT
 - Browser extension for saving words from any page
 - Optional Supabase Storage support for images

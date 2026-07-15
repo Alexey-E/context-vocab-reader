@@ -15,12 +15,12 @@ Sign in
 → translate a sentence or paragraph
 → select a word
 → save a vocabulary card
-→ review saved vocabulary
+→ open and manage saved vocabulary
 ```
 
 ## MVP goals
 
-The MVP must prove the complete learning flow from reading to vocabulary retention.
+The MVP must prove the complete learning flow from reading to building a personal vocabulary from context.
 
 ### Included in MVP
 
@@ -38,7 +38,6 @@ The MVP must prove the complete learning flow from reading to vocabulary retenti
 - Optional external image URL
 - Highlighting of words already saved to vocabulary
 - Vocabulary dashboard
-- Basic review states
 - Light and dark themes
 - Supabase Row Level Security
 - Mock and Google translation providers
@@ -52,8 +51,6 @@ The following data is stored persistently:
 - user profile settings
 - documents created by the user
 - vocabulary cards explicitly saved by the user
-- review events
-- review state and next review date
 
 ## Temporary data
 
@@ -69,14 +66,11 @@ The following data is temporary and is not stored as permanent user content:
 
 A vocabulary card can contain:
 
-- original word
 - normalized word
-- translation
+- one or more translations
 - optional usage context
 - optional note
 - optional external image URL
-- review status
-- next review date
 
 Usage context is not the source of truth for the translation. It is a sentence or fragment that helps the user remember how the word appeared in real reading.
 
@@ -91,7 +85,8 @@ Usage context is not the source of truth for the translation. It is a sentence o
 - native mobile application
 - offline mode
 - long-term sentence translation history
-- full spaced-repetition algorithm such as SM-2
+- vocabulary review scheduling, review states, and review history
+- spaced-repetition algorithms such as SM-2
 - advanced analytics
 - admin panel
 - collaborative vocabulary lists

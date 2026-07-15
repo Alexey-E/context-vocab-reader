@@ -48,7 +48,7 @@ Every pull request has automated quality checks and a preview deployment.
 
 - [ ] Initialize Supabase local development.
 - [ ] Create the initial schema migration.
-- [ ] Create `profiles`, `documents`, `vocabulary_cards`, and `review_events`.
+- [ ] Create `profiles`, `documents`, and `vocabulary_cards`.
 - [ ] Add constraints and indexes.
 - [ ] Enable Row Level Security.
 - [ ] Add ownership policies for all user-owned tables.
@@ -138,8 +138,9 @@ A sentence can be translated on demand, and an immediate repeated request can re
 - [ ] Support an optional note.
 - [ ] Validate an optional external image URL.
 - [ ] Preview the image and handle broken URLs.
-- [ ] Show similar existing cards without blocking valid multiple meanings.
-- [ ] Save the card under the authenticated user.
+- [ ] Show the existing card when the normalized word is already saved.
+- [ ] Store multiple meanings in the card's `translation` array without duplicate values.
+- [ ] Save or update the card under the authenticated user.
 
 ### Exit criteria
 
@@ -151,7 +152,7 @@ A card persists after refresh and remains inaccessible to other users.
 - [ ] Build a normalized lookup structure.
 - [ ] Highlight tokens with saved cards.
 - [ ] Add hover, keyboard focus, click, and mobile tap interactions.
-- [ ] Show one or more matching cards in a popover.
+- [ ] Show the matching card in a popover.
 - [ ] Update reader state after saving without a full reload.
 
 ### Exit criteria
@@ -162,29 +163,14 @@ Saved words are visible and accessible in the reader across mouse, keyboard, and
 
 - [ ] List vocabulary cards.
 - [ ] Add search.
-- [ ] Add status filtering.
 - [ ] Edit and delete cards.
 - [ ] Show image fallbacks.
-- [ ] Link back to the related document when it still exists.
-- [ ] Support `new`, `learning`, and `known` statuses.
 
 ### Exit criteria
 
 Vocabulary cards can be managed independently of the reader.
 
-## Stage 12 — Minimal review flow
-
-- [ ] Show cards due for review.
-- [ ] Support `Again`, `Good`, and `Known` outcomes.
-- [ ] Create immutable review events.
-- [ ] Update card status and `next_review_at`.
-- [ ] Implement and test a deliberately simple scheduling policy.
-
-### Exit criteria
-
-A user can complete a review session and the result changes future due dates.
-
-## Stage 13 — Production behavior and accessibility
+## Stage 12 — Production behavior and accessibility
 
 - [ ] Add route-level error and not-found states.
 - [ ] Handle expired authentication.
@@ -198,9 +184,9 @@ A user can complete a review session and the result changes future due dates.
 
 Expected failures do not break the demo and all primary flows are keyboard accessible.
 
-## Stage 14 — Testing
+## Stage 13 — Testing
 
-- [ ] Unit-test text processing, URL validation, cache keys, and review scheduling.
+- [ ] Unit-test text processing, URL validation, cache keys, and vocabulary normalization.
 - [ ] Integration-test document and vocabulary operations.
 - [ ] Verify authorization boundaries.
 - [ ] Add an end-to-end happy path: login, create document, translate sentence, save word, open vocabulary.
@@ -210,7 +196,7 @@ Expected failures do not break the demo and all primary flows are keyboard acces
 
 The core user journey and the most important security boundaries are covered by automated tests.
 
-## Stage 15 — Stable database delivery
+## Stage 14 — Stable database delivery
 
 - [ ] Keep migrations versioned and validated in CI.
 - [ ] Add a manual GitHub Actions workflow for remote migration deployment.
@@ -221,7 +207,7 @@ The core user journey and the most important security boundaries are covered by 
 
 Application deployment is automatic and database deployment is explicit, repeatable, and auditable.
 
-## Stage 16 — Portfolio packaging
+## Stage 15 — Portfolio packaging
 
 - [ ] Add live demo and Figma links.
 - [ ] Add screenshots or short product media.
@@ -248,9 +234,10 @@ A reviewer can understand the product, architecture, trade-offs, security model,
 9. Vocabulary-card creation
 10. Saved-word reader states
 11. Vocabulary dashboard
-12. Review flow
-13. End-to-end tests and production polish
-14. Portfolio documentation
+12. Production behavior and accessibility
+13. End-to-end tests
+14. Stable database delivery
+15. Portfolio documentation
 
 ## Working rule
 
