@@ -36,7 +36,7 @@ The team can explain what the MVP includes, where data lives, where secrets live
 - [x] Import the repository into Vercel.
 - [x] Configure development, preview, and production environment variables.
 - [x] Add GitHub Actions checks for lint, typecheck, tests, and build.
-- [ ] Verify preview deployments for pull requests.
+- [x] Verify preview deployments for pull requests.
 - [x] Verify production deployment from `main`.
 - [ ] Add branch protection after CI is stable.
 
