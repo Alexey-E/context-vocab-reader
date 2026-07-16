@@ -65,15 +65,15 @@ Stores application-level profile information and user preferences that do not be
 
 Suggested fields:
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | `uuid` | Primary key; references `auth.users(id)` |
-| `display_name` | `varchar(30)` | Optional user-facing name |
-| `avatar_url` | `text` | Optional OAuth avatar URL |
-| `native_language` | `varchar(10)` | Default target language preference |
-| `learning_language` | `varchar(10)` | Default source language preference |
-| `created_at` | `timestamptz` | Creation time |
-| `updated_at` | `timestamptz` | Last update time |
+| Field               | Type          | Notes                                    |
+| ------------------- | ------------- | ---------------------------------------- |
+| `id`                | `uuid`        | Primary key; references `auth.users(id)` |
+| `display_name`      | `varchar(30)` | Optional user-facing name                |
+| `avatar_url`        | `text`        | Optional OAuth avatar URL                |
+| `native_language`   | `varchar(10)` | Default target language preference       |
+| `learning_language` | `varchar(10)` | Default source language preference       |
+| `created_at`        | `timestamptz` | Creation time                            |
+| `updated_at`        | `timestamptz` | Last update time                         |
 
 The profile row can be created after registration through a database trigger or an idempotent application operation.
 
@@ -91,17 +91,17 @@ Stores source texts created by the user.
 
 Suggested fields:
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | `uuid` | Primary key |
-| `user_id` | `uuid` | References `auth.users(id)` |
-| `title` | `text` | Required |
-| `content` | `text` | Original document text |
-| `source_language` | `varchar(10)` | Language of the source text |
-| `target_language` | `varchar(10)` | Translation language |
-| `reading_position` | `integer` | Optional lightweight progress value |
-| `created_at` | `timestamptz` | Creation time |
-| `updated_at` | `timestamptz` | Last update time |
+| Field              | Type          | Notes                               |
+| ------------------ | ------------- | ----------------------------------- |
+| `id`               | `uuid`        | Primary key                         |
+| `user_id`          | `uuid`        | References `auth.users(id)`         |
+| `title`            | `text`        | Required                            |
+| `content`          | `text`        | Original document text              |
+| `source_language`  | `varchar(10)` | Language of the source text         |
+| `target_language`  | `varchar(10)` | Translation language                |
+| `reading_position` | `integer`     | Optional lightweight progress value |
+| `created_at`       | `timestamptz` | Creation time                       |
+| `updated_at`       | `timestamptz` | Last update time                    |
 
 Paragraphs and sentences are derived from `content` and are not separate database rows in the MVP.
 
@@ -115,19 +115,19 @@ Stores words explicitly saved by a user.
 
 Suggested fields:
 
-| Field | Type | Notes |
-|---|---|---|
-| `id` | `uuid` | Primary key |
-| `user_id` | `uuid` | References `auth.users(id)` |
-| `word` | `text` | Normalized lookup value |
-| `source_language` | `varchar(10)` | Language of the saved word |
-| `target_language` | `varchar(10)` | Language of the translations |
-| `translation` | `text[]` | One or more user-visible meanings |
-| `usage_context` | `text` | Optional sentence or fragment showing usage |
-| `image_url` | `text` | Optional external HTTP(S) URL |
-| `note` | `text` | Optional user note |
-| `created_at` | `timestamptz` | Creation time |
-| `updated_at` | `timestamptz` | Last update time |
+| Field             | Type          | Notes                                       |
+| ----------------- | ------------- | ------------------------------------------- |
+| `id`              | `uuid`        | Primary key                                 |
+| `user_id`         | `uuid`        | References `auth.users(id)`                 |
+| `word`            | `text`        | Normalized lookup value                     |
+| `source_language` | `varchar(10)` | Language of the saved word                  |
+| `target_language` | `varchar(10)` | Language of the translations                |
+| `translation`     | `text[]`      | One or more user-visible meanings           |
+| `usage_context`   | `text`        | Optional sentence or fragment showing usage |
+| `image_url`       | `text`        | Optional external HTTP(S) URL               |
+| `note`            | `text`        | Optional user note                          |
+| `created_at`      | `timestamptz` | Creation time                               |
+| `updated_at`      | `timestamptz` | Last update time                            |
 
 `usage_context` is supporting learning context. It is not the source of truth for the translation.
 
