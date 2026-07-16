@@ -18,14 +18,14 @@ The team can explain what the MVP includes, where data lives, where secrets live
 
 ## Stage 1 — Project foundation
 
-- [ ] Initialize Next.js with the App Router and TypeScript.
-- [ ] Use pnpm and commit the lockfile.
-- [ ] Add ESLint and formatting configuration.
-- [ ] Add `typecheck`, `test`, and `build` scripts.
-- [ ] Add `.gitignore` for macOS, VS Code, Next.js, Supabase, Vercel, and test artifacts.
-- [ ] Add `.env.example` without real secrets.
+- [x] Initialize Next.js with the App Router and TypeScript.
+- [x] Use pnpm and commit the lockfile.
+- [x] Add ESLint and formatting configuration.
+- [x] Add `typecheck`, `test`, and `build` scripts.
+- [x] Add `.gitignore` for macOS, VS Code, Next.js, Supabase, Vercel, and test artifacts.
+- [x] Add `.env.example` without real secrets.
 - [ ] Create the initial `src/` feature-oriented structure.
-- [ ] Verify local development and production build.
+- [x] Verify local development and production build.
 
 ### Exit criteria
 
