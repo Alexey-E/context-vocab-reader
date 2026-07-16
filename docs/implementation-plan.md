@@ -24,7 +24,7 @@ The team can explain what the MVP includes, where data lives, where secrets live
 - [x] Add `typecheck`, `test`, and `build` scripts.
 - [x] Add `.gitignore` for macOS, VS Code, Next.js, Supabase, Vercel, and test artifacts.
 - [x] Add `.env.example` without real secrets.
-- [ ] Create the initial `src/` feature-oriented structure.
+- [x] Create the initial `src/` feature-oriented structure.
 - [x] Verify local development and production build.
 
 ### Exit criteria
