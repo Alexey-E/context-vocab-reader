@@ -33,11 +33,11 @@ The team can explain what the MVP includes, where data lives, where secrets live
 
 ## Stage 2 — CI and Vercel deployment
 
-- [ ] Import the repository into Vercel.
-- [ ] Configure development, preview, and production environment variables.
-- [ ] Add GitHub Actions checks for lint, typecheck, tests, and build.
+- [x] Import the repository into Vercel.
+- [x] Configure development, preview, and production environment variables.
+- [x] Add GitHub Actions checks for lint, typecheck, tests, and build.
 - [ ] Verify preview deployments for pull requests.
-- [ ] Verify production deployment from `main`.
+- [x] Verify production deployment from `main`.
 - [ ] Add branch protection after CI is stable.
 
 ### Exit criteria
