@@ -154,6 +154,18 @@ The public deployment can use `TRANSLATION_PROVIDER=mock` until external API quo
 
 A public portfolio URL should not expose an uncontrolled paid API endpoint.
 
+## 13. Curated samples are separate from private documents
+
+### Decision
+
+Public demo texts are stored in a dedicated read-only `sample_documents` table. The `anon` and `authenticated` roles may read them, but neither role may create, update, or delete them. User documents and vocabulary cards remain private.
+
+Demo visitors may choose a target language and request safe translations without creating an Auth user. An explicit Google or email/password sign-in is required before any document or vocabulary data is persisted.
+
+### Why
+
+A separate table makes the public API surface explicit and prevents public visibility rules from complicating private document policies. Requiring sign-in for persistence avoids temporary-account lifecycle and abuse concerns while keeping the read-and-translate demo frictionless.
+
 ## Review policy
 
 A trade-off should be revisited when one of the following becomes true:

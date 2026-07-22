@@ -29,6 +29,7 @@ The browser is responsible for:
 - rendering the interface
 - managing temporary UI state
 - displaying documents and translations
+- reading curated public sample documents without a session
 - selecting sentences and words
 - initiating authenticated actions
 
@@ -99,16 +100,23 @@ The following values must never be exposed to the client:
 - `GOOGLE_TRANSLATE_API_KEY`
 - any future privileged database credentials
 
-## Authentication flow
+## Public demo and authentication flow
 
 ```text
-User opens protected page
-→ server checks Supabase session
-→ unauthenticated user is redirected to /login
-→ user authenticates through Google or email/password
-→ Supabase redirects to /auth/callback
-→ session is established
-→ user is redirected to the application
+Visitor opens the public demo
+→ application reads a curated sample through the anon role
+→ visitor chooses a target language
+→ visitor translates sentences, paragraphs, or words with the safe demo provider
+→ an action that requires persistence prompts the visitor to sign in
+```
+
+The explicit sign-in flow remains available:
+
+```text
+User chooses Google or email/password authentication
+→ Supabase redirects through /auth/callback when required
+→ a durable authenticated session is established
+→ user accesses private documents and vocabulary
 ```
 
 Google OAuth redirect URLs must be configured for both localhost and Vercel deployments.
@@ -116,9 +124,9 @@ Google OAuth redirect URLs must be configured for both localhost and Vercel depl
 ## Translation flow
 
 ```text
-User selects text
+User selects text in a private or curated sample document
 → client sends text and language pair to server
-→ server validates input and session
+→ server validates input and the applicable demo or authenticated access mode
 → server creates a normalized cache key
 → server checks short-lived cache
 → cache hit: return cached translation
@@ -168,7 +176,7 @@ A distributed cache should be introduced only if real usage proves it necessary.
 
 ## Text processing
 
-Documents store the original text in `documents.content`.
+Private documents store the original text in `documents.content`. Curated public samples store it in `sample_documents.content`.
 
 Paragraphs, sentences, and word tokens are derived at runtime. They are not separate database entities in the MVP.
 
@@ -184,6 +192,8 @@ These functions should preserve punctuation and spacing required for correct ren
 ## Security principles
 
 - RLS is enabled for every user-owned table.
+- Public sample documents are read-only to `anon` and `authenticated` roles.
+- Public samples are stored separately from private user documents.
 - A user ID submitted by the browser is never trusted.
 - Mutations derive the user ID from the authenticated server session.
 - Service role access is reserved for narrowly defined server-only operations.

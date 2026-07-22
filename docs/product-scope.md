@@ -4,19 +4,18 @@
 
 Context Vocab Reader is a language-learning reader that helps users understand texts and build a personal vocabulary from real reading context.
 
-The application allows a user to add a text, read it in the browser, translate sentences or paragraphs on demand, and save useful words as vocabulary cards.
+The application allows a visitor to open a curated sample text without signing in. A user can also add a private text, read it in the browser, translate sentences or paragraphs on demand, and save useful words as private vocabulary cards.
 
 ## Primary user flow
 
 ```text
-Sign in
-→ create a document
+Open a public sample without signing in
 → open the reader
-→ translate a sentence or paragraph
-→ select a word
-→ save a vocabulary card
-→ open and manage saved vocabulary
+→ choose a target language
+→ translate a sentence, paragraph, or word
 ```
+
+Registered users can sign in explicitly, create private documents, save vocabulary cards, and return to their persistent vocabulary on another device.
 
 ## MVP goals
 
@@ -26,6 +25,7 @@ The MVP must prove the complete learning flow from reading to building a persona
 
 - Google OAuth through Supabase Auth
 - Email/password authentication fallback
+- Curated public sample documents in three or four source languages
 - User-owned documents
 - Document creation by pasting text
 - Documents dashboard
@@ -49,6 +49,7 @@ The MVP must prove the complete learning flow from reading to building a persona
 The following data is stored persistently:
 
 - user profile settings
+- curated public sample documents
 - documents created by the user
 - vocabulary cards explicitly saved by the user
 
@@ -82,7 +83,7 @@ Usage context is not the source of truth for the translation. It is a sentence o
 - image uploads or Supabase Storage
 - payments
 - teams and shared workspaces
-- shared documents
+- user-published or user-shared documents
 - public vocabulary cards, likes, and recommendations
 - browser extension
 - native mobile application
@@ -96,7 +97,14 @@ Usage context is not the source of truth for the translation. It is a sentence o
 
 ## Success criteria
 
-The MVP is complete when a new user can:
+The MVP is complete when a visitor can:
+
+1. Open a curated sample without signing in.
+2. Choose a target language.
+3. Translate a sentence, paragraph, or word with the safe demo provider.
+4. Be asked to sign in before saving persistent data.
+
+The authenticated flow is complete when a new user can:
 
 1. Sign in.
 2. Create a text document.
