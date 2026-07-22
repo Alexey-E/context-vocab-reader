@@ -46,18 +46,18 @@ Every pull request has automated quality checks and a preview deployment.
 
 ## Stage 3 — Supabase foundation
 
-- [ ] Initialize Supabase local development.
-- [ ] Create the initial schema migration.
-- [ ] Create `profiles`, `documents`, and `vocabulary_cards`.
-- [ ] Create the read-only `sample_documents` table.
-- [ ] Add constraints and indexes.
-- [ ] Enable Row Level Security.
-- [ ] Add ownership policies for all user-owned tables.
-- [ ] Grant public read-only access to sample documents for `anon` and `authenticated`.
-- [ ] Add development seed data.
-- [ ] Add curated sample texts in three or four source languages.
-- [ ] Test anonymous sample reads and denied sample mutations.
-- [ ] Verify schema recreation with `supabase db reset`.
+- [x] Initialize Supabase local development.
+- [x] Create the initial schema migration.
+- [x] Create `profiles`, `documents`, and `vocabulary_cards`.
+- [x] Create the read-only `sample_documents` table.
+- [x] Add constraints and indexes.
+- [x] Enable Row Level Security.
+- [x] Add ownership policies for all user-owned tables.
+- [x] Grant public read-only access to sample documents for `anon` and `authenticated`.
+- [x] Add development seed data.
+- [x] Add curated sample texts in three or four source languages.
+- [x] Test anonymous sample reads and denied sample mutations.
+- [x] Verify schema recreation with `supabase db reset`.
 - [ ] Link the remote project and apply migrations manually.
 
 ### Exit criteria
