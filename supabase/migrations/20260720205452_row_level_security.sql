@@ -6,19 +6,19 @@ revoke all on table public.profiles from anon;
 revoke all on table public.documents from anon;
 revoke all on table public.vocabulary_cards from anon;
 
-grant usage on schema public to authenticated;
+grant usage on schema public to authenticated, service_role;
 
 grant select, insert, update, delete
   on table public.profiles
-  to authenticated;
+  to authenticated, service_role;
 
 grant select, insert, update, delete
   on table public.documents
-  to authenticated;
+  to authenticated, service_role;
 
 grant select, insert, update, delete
   on table public.vocabulary_cards
-  to authenticated;
+  to authenticated, service_role;
 
 create policy profiles_own_rows
 on public.profiles

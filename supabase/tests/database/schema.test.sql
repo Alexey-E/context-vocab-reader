@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(16);
+select plan(18);
 
 insert into auth.users (id, email)
 values (
@@ -36,6 +36,39 @@ select is(
   ),
   3::bigint,
   'the application tables exist'
+);
+
+-- Verifies that server-only clients can reach the public schema through the Data API.
+select ok(
+  has_schema_privilege('service_role', 'public', 'usage'),
+  'the service role can use the public schema'
+);
+
+-- Verifies that server-only clients can manage all private application tables.
+select ok(
+  (
+    select bool_and(
+      has_table_privilege(
+        'service_role',
+        format('public.%I', table_name),
+        privilege_name
+      )
+    )
+    from (
+      values
+        ('profiles'),
+        ('documents'),
+        ('vocabulary_cards')
+    ) as application_tables(table_name)
+    cross join (
+      values
+        ('select'),
+        ('insert'),
+        ('update'),
+        ('delete')
+    ) as required_privileges(privilege_name)
+  ),
+  'the service role can manage private application tables'
 );
 
 -- Verifies that documents have an index for user-scoped chronological queries.
