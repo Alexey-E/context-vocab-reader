@@ -14,6 +14,8 @@ Sentence translations are treated as temporary reading assistance. Vocabulary ca
 
 - Google authentication with Supabase Auth
 - Email/password authentication fallback
+- Read-only public sample texts in multiple languages
+- Anonymous Supabase sessions when a demo visitor first saves data
 - User-owned documents
 - Reader view with sentence-level translation
 - Highlighting for words that already have saved vocabulary cards
@@ -105,6 +107,9 @@ auth.users
 profiles
   ├─ documents
   └─ vocabulary_cards
+
+sample_documents
+  └─ curated public demo texts
 ```
 
 ### `profiles`
@@ -114,6 +119,10 @@ Stores user-facing profile settings and language preferences.
 ### `documents`
 
 Stores texts added by the user for reading.
+
+### `sample_documents`
+
+Stores curated read-only texts that visitors can open without signing in.
 
 ### `vocabulary_cards`
 
@@ -137,6 +146,8 @@ All user-owned tables should have Row Level Security enabled.
 
 Expected RLS behavior:
 
+- anonymous and authenticated visitors can read curated sample documents
+- clients cannot create, update, or delete curated sample documents
 - users can read only their own documents
 - users can create only their own documents
 - users can update only their own documents
@@ -373,7 +384,6 @@ These can be considered future improvements.
 - Translation history
 - Shared reading lists
 - Better language detection
-- Admin-free public demo mode
 
 ## Repository goal
 

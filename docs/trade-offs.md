@@ -154,6 +154,18 @@ The public deployment can use `TRANSLATION_PROVIDER=mock` until external API quo
 
 A public portfolio URL should not expose an uncontrolled paid API endpoint.
 
+## 13. Curated samples are separate from private documents
+
+### Decision
+
+Public demo texts are stored in a dedicated read-only `sample_documents` table. The `anon` and `authenticated` roles may read them, but neither role may create, update, or delete them. User documents and vocabulary cards remain private.
+
+When a demo visitor first needs to persist data, the application creates an anonymous Supabase Auth session. The visitor then receives a unique `auth.uid()` and uses the existing authenticated ownership policies.
+
+### Why
+
+A separate table makes the public API surface explicit and prevents public visibility rules from complicating private document policies. Anonymous Auth preserves the real vocabulary workflow without sharing data between visitors or exposing privileged credentials.
+
 ## Review policy
 
 A trade-off should be revisited when one of the following becomes true:

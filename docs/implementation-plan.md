@@ -49,21 +49,26 @@ Every pull request has automated quality checks and a preview deployment.
 - [ ] Initialize Supabase local development.
 - [ ] Create the initial schema migration.
 - [ ] Create `profiles`, `documents`, and `vocabulary_cards`.
+- [ ] Create the read-only `sample_documents` table.
 - [ ] Add constraints and indexes.
 - [ ] Enable Row Level Security.
 - [ ] Add ownership policies for all user-owned tables.
+- [ ] Grant public read-only access to sample documents for `anon` and `authenticated`.
 - [ ] Add development seed data.
+- [ ] Add curated sample texts in three or four source languages.
+- [ ] Test anonymous sample reads and denied sample mutations.
 - [ ] Verify schema recreation with `supabase db reset`.
 - [ ] Link the remote project and apply migrations manually.
 
 ### Exit criteria
 
-The database can be recreated from versioned migrations and one user cannot access another user's data.
+The database can be recreated from versioned migrations, public samples are read-only, and one user cannot access another user's data.
 
 ## Stage 4 — Authentication
 
 - [ ] Configure Supabase clients for browser and server usage.
 - [ ] Implement email/password registration and login.
+- [ ] Implement anonymous sign-in when a demo visitor first needs persistence.
 - [ ] Configure Google OAuth.
 - [ ] Implement the OAuth callback route.
 - [ ] Protect application routes.
@@ -73,10 +78,12 @@ The database can be recreated from versioned migrations and one user cannot acce
 
 ### Exit criteria
 
-A user can register, sign in, refresh the application, access protected routes, and sign out locally and on Vercel.
+A visitor can start an isolated anonymous session, and a user can register, sign in, refresh the application, access protected routes, and sign out locally and on Vercel.
 
 ## Stage 5 — Documents vertical slice
 
+- [ ] List curated sample documents without requiring a session.
+- [ ] Open a sample document in read-only mode.
 - [ ] Create the documents dashboard.
 - [ ] Create a document form with title, content, source language, and target language.
 - [ ] Store documents under the authenticated user.
@@ -87,7 +94,7 @@ A user can register, sign in, refresh the application, access protected routes, 
 
 ### Exit criteria
 
-A signed-in user can create, list, open, refresh, and delete a private document.
+A visitor can open a curated sample, while a signed-in user can create, list, open, refresh, and delete a private document.
 
 ## Stage 6 — Reader without translation
 
@@ -191,6 +198,8 @@ Expected failures do not break the demo and all primary flows are keyboard acces
 - [ ] Unit-test text processing, URL validation, cache keys, and vocabulary normalization.
 - [ ] Integration-test document and vocabulary operations.
 - [ ] Verify authorization boundaries.
+- [ ] Integration-test public sample reads and denied public mutations.
+- [ ] Test that anonymous demo accounts cannot access each other's vocabulary.
 - [ ] Add an end-to-end happy path: login, create document, translate sentence, save word, open vocabulary.
 - [ ] Add end-to-end error cases for broken images and failed translation.
 
