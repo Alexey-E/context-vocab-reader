@@ -15,7 +15,7 @@ Sentence translations are treated as temporary reading assistance. Vocabulary ca
 - Google authentication with Supabase Auth
 - Email/password authentication fallback
 - Read-only public sample texts in multiple languages
-- Anonymous Supabase sessions when a demo visitor first saves data
+- Guest translation demo without sign-in
 - User-owned documents
 - Reader view with sentence-level translation
 - Highlighting for words that already have saved vocabulary cards

@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(15);
+select plan(16);
 
 insert into auth.users (id, email)
 values (
@@ -172,6 +172,28 @@ select throws_ok(
   23514,
   null,
   'a null translation is rejected'
+);
+
+-- Verifies that a translation cannot contain only whitespace.
+select throws_ok(
+  $$
+    insert into public.vocabulary_cards (
+      user_id,
+      word,
+      source_language,
+      target_language,
+      translation
+    ) values (
+      current_setting('test.user_id')::uuid,
+      'context',
+      'en',
+      'es',
+      array['   ']::text[]
+    )
+  $$,
+  23514,
+  null,
+  'a whitespace-only translation is rejected'
 );
 
 -- Verifies that vocabulary card image URLs use HTTP or HTTPS.

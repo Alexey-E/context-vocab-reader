@@ -47,6 +47,24 @@ create table public.documents (
     check (reading_position >= 0)
 );
 
+create function public.text_array_values_are_not_blank(input_values text[])
+returns boolean
+language sql
+immutable
+strict
+parallel safe
+set search_path = ''
+as $$
+  select coalesce(
+    pg_catalog.bool_and(
+      value is not null
+      and pg_catalog.btrim(value) <> ''
+    ),
+    false
+  )
+  from pg_catalog.unnest(input_values) as elements(value);
+$$;
+
 create table public.vocabulary_cards (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users (id) on delete cascade,
@@ -72,8 +90,7 @@ create table public.vocabulary_cards (
   constraint vocabulary_cards_translation_not_empty
   check (
     cardinality(translation) > 0
-    and array_position(translation, null) is null
-    and array_position(translation, '') is null
+    and public.text_array_values_are_not_blank(translation)
   ),
 
   constraint vocabulary_cards_image_url_is_http

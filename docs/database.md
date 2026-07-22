@@ -231,9 +231,9 @@ RLS on public tables does not replace Supabase Auth session validation. The auth
 
 Public sample access does not make `documents` or `vocabulary_cards` public. Their ownership policies remain unchanged.
 
-### Anonymous demo persistence
+### Guest access boundary
 
-The unauthenticated `anon` role can read samples but cannot persist user data. When a visitor first saves a card or performs another persistent action, the application creates an anonymous Supabase Auth session. That visitor then uses the `authenticated` database role with a unique `auth.uid()`, so the existing ownership policies protect their documents and vocabulary cards.
+The unauthenticated `anon` role can read samples but cannot persist user data. Reading samples and requesting safe demo translations do not create an Auth user. Saving a document or vocabulary card requires an explicit Google or email/password sign-in, after which the existing authenticated ownership policies protect the user's data.
 
 ## Validation and constraints
 

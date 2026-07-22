@@ -55,7 +55,6 @@ Supabase is responsible for:
 - Google OAuth
 - email/password authentication
 - session management
-- anonymous user sessions for persisted demo actions
 - PostgreSQL persistence
 - Row Level Security
 - user data isolation
@@ -106,11 +105,9 @@ The following values must never be exposed to the client:
 ```text
 Visitor opens the public demo
 → application reads a curated sample through the anon role
-→ visitor reads and uses the safe demo translation provider
-→ visitor performs the first action that requires persistence
-→ application calls Supabase anonymous sign-in
-→ an authenticated session with a unique auth.uid() is established
-→ documents and vocabulary cards are isolated by RLS
+→ visitor chooses a target language
+→ visitor translates sentences, paragraphs, or words with the safe demo provider
+→ an action that requires persistence prompts the visitor to sign in
 ```
 
 The explicit sign-in flow remains available:

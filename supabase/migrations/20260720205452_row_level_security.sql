@@ -44,3 +44,11 @@ with check ((select auth.uid()) = user_id);
 revoke execute
 on function public.set_updated_at()
 from public;
+
+revoke execute
+on function public.text_array_values_are_not_blank(text[])
+from public;
+
+grant execute
+on function public.text_array_values_are_not_blank(text[])
+to authenticated, service_role;

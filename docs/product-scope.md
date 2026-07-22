@@ -11,14 +11,11 @@ The application allows a visitor to open a curated sample text without signing i
 ```text
 Open a public sample without signing in
 → open the reader
-→ translate a sentence or paragraph
-→ select a word
-→ create an anonymous Supabase session when persistence is first needed
-→ save a vocabulary card
-→ open and manage saved vocabulary
+→ choose a target language
+→ translate a sentence, paragraph, or word
 ```
 
-Registered users can also sign in explicitly, create private documents, and return to their persistent vocabulary on another device.
+Registered users can sign in explicitly, create private documents, save vocabulary cards, and return to their persistent vocabulary on another device.
 
 ## MVP goals
 
@@ -28,7 +25,6 @@ The MVP must prove the complete learning flow from reading to building a persona
 
 - Google OAuth through Supabase Auth
 - Email/password authentication fallback
-- Anonymous Supabase authentication for a low-friction demo
 - Curated public sample documents in three or four source languages
 - User-owned documents
 - Document creation by pasting text
@@ -104,9 +100,9 @@ Usage context is not the source of truth for the translation. It is a sentence o
 The MVP is complete when a visitor can:
 
 1. Open a curated sample without signing in.
-2. Read it and request a safe demo translation.
-3. Start an anonymous session when saving their first vocabulary card.
-4. Access only the vocabulary created by that anonymous account.
+2. Choose a target language.
+3. Translate a sentence, paragraph, or word with the safe demo provider.
+4. Be asked to sign in before saving persistent data.
 
 The authenticated flow is complete when a new user can:
 

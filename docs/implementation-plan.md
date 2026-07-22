@@ -68,7 +68,6 @@ The database can be recreated from versioned migrations, public samples are read
 
 - [ ] Configure Supabase clients for browser and server usage.
 - [ ] Implement email/password registration and login.
-- [ ] Implement anonymous sign-in when a demo visitor first needs persistence.
 - [ ] Configure Google OAuth.
 - [ ] Implement the OAuth callback route.
 - [ ] Protect application routes.
@@ -78,7 +77,7 @@ The database can be recreated from versioned migrations, public samples are read
 
 ### Exit criteria
 
-A visitor can start an isolated anonymous session, and a user can register, sign in, refresh the application, access protected routes, and sign out locally and on Vercel.
+A visitor can use the read-and-translate demo without a session, and a user can register, sign in, refresh the application, access protected routes, and sign out locally and on Vercel.
 
 ## Stage 5 — Documents vertical slice
 
