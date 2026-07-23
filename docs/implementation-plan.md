@@ -58,7 +58,7 @@ Every pull request has automated quality checks and a preview deployment.
 - [x] Add curated sample texts in three or four source languages.
 - [x] Test anonymous sample reads and denied sample mutations.
 - [x] Verify schema recreation with `supabase db reset`.
-- [ ] Link the remote project and apply migrations manually.
+- [x] Link the remote project and apply migrations manually.
 
 ### Exit criteria
 
