@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(18);
+select plan(19);
 
 insert into auth.users (id, email)
 values (
@@ -13,18 +13,23 @@ values (
   'schema-test@example.test'
 );
 
-insert into public.profiles (
-  id,
-  display_name,
-  native_language,
-  learning_language
-)
-values (
-  current_setting('test.user_id')::uuid,
-  'Schema Test User',
-  'es',
-  'en'
+-- Verifies that creating an Auth user automatically creates an application profile.
+select is(
+  (
+    select count(*)
+    from public.profiles
+    where id = current_setting('test.user_id')::uuid
+  ),
+  1::bigint,
+  'an auth user receives a profile automatically'
 );
+
+update public.profiles
+set
+  display_name = 'Schema Test User',
+  native_language = 'es',
+  learning_language = 'en'
+where id = current_setting('test.user_id')::uuid;
 
 -- Verifies that all expected application tables were created.
 select is(

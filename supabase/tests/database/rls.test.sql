@@ -24,10 +24,14 @@ values
     'rls-user-b@example.test'
   );
 
-insert into public.profiles (id, display_name)
-values
-  (current_setting('test.user_a_id')::uuid, 'RLS User A'),
-  (current_setting('test.user_b_id')::uuid, 'RLS User B');
+update public.profiles as profiles
+set display_name = users.display_name
+from (
+  values
+    (current_setting('test.user_a_id')::uuid, 'RLS User A'),
+    (current_setting('test.user_b_id')::uuid, 'RLS User B')
+) as users(id, display_name)
+where profiles.id = users.id;
 
 insert into public.documents (
   id,

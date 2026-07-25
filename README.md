@@ -164,12 +164,11 @@ Create a `.env.local` file based on `.env.example`.
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
 
 GOOGLE_TRANSLATE_API_KEY=
 TRANSLATION_PROVIDER=mock
 
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://127.0.0.1:3000
 ```
 
 ### Translation provider
@@ -187,6 +186,16 @@ TRANSLATION_PROVIDER=google
 ```
 
 ## Local development
+
+All local services use the explicit IPv4 loopback address. Do not mix `localhost` and
+`127.0.0.1` in local environment variables or OAuth settings.
+
+| Service               | URL                      |
+| --------------------- | ------------------------ |
+| Next.js               | `http://127.0.0.1:3000`  |
+| Supabase API and Auth | `http://127.0.0.1:54321` |
+| Supabase Studio       | `http://127.0.0.1:54323` |
+| Local email inbox     | `http://127.0.0.1:54324` |
 
 Install dependencies:
 
@@ -272,16 +281,39 @@ The MVP supports:
 For Google login:
 
 1. Create a Google OAuth Client ID in Google Cloud Console.
-2. Add the Supabase callback URL to Google OAuth settings.
+2. Add the local and hosted Supabase callback URLs to Google OAuth settings.
 3. Enable Google provider in Supabase Auth.
 4. Add local and production redirect URLs in Supabase.
 5. Add Vercel production URL after deployment.
 
-Example redirect URLs:
+The application uses only the publishable Supabase key. A service-role key is
+not required for the current authentication or user-owned data flows.
+
+For local Google OAuth, create the ignored root `.env` file from
+`.env.supabase.example` so `supabase/config.toml` can read the provider secret:
+
+```bash
+cp .env.supabase.example .env
+```
+
+Google Authorized JavaScript origin for local development:
 
 ```txt
-http://localhost:3000/**
-https://your-app.vercel.app/**
+http://127.0.0.1:3000
+```
+
+Google Authorized redirect URIs:
+
+```txt
+http://127.0.0.1:54321/auth/v1/callback
+https://rfgjodbxixzjmrgydwap.supabase.co/auth/v1/callback
+```
+
+Supabase Auth redirect URLs:
+
+```txt
+http://127.0.0.1:3000/**
+https://context-vocab-reader.vercel.app/**
 ```
 
 ## Deployment

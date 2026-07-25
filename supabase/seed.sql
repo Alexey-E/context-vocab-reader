@@ -33,7 +33,11 @@ values
     'ru',
     'en'
   )
-on conflict (id) do nothing;
+on conflict (id) do update
+set
+  display_name = excluded.display_name,
+  native_language = excluded.native_language,
+  learning_language = excluded.learning_language;
 
 insert into public.documents (
   id,
