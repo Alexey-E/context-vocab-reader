@@ -227,6 +227,34 @@ Run tests:
 pnpm test
 ```
 
+Install Chromium once and run end-to-end tests:
+
+```bash
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
+Open Playwright's interactive UI when developing tests:
+
+```bash
+pnpm test:e2e:ui
+```
+
+### Manual authentication checks
+
+The complete authentication flow depends on a live Supabase project and OAuth
+provider, so verify these scenarios manually in both the local and deployed
+applications:
+
+1. Sign in with Google and confirm that `/account` opens.
+2. Sign in with email and password and confirm that `/account` opens.
+3. Refresh `/account` and confirm that the authenticated session remains active.
+4. Sign out and confirm that the browser opens `/login`.
+5. Press the browser Back button and confirm that private account content is not
+   restored.
+6. Open `/account` directly after signing out and confirm that it redirects to
+   `/login`.
+
 Build the app:
 
 ```bash
@@ -347,6 +375,7 @@ Planned GitHub Actions checks:
 - typecheck
 - unit tests
 - production build
+- Playwright end-to-end tests in desktop and mobile Chromium
 
 CI is used to validate code quality before merging.
 

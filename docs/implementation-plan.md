@@ -66,14 +66,14 @@ The database can be recreated from versioned migrations, public samples are read
 
 ## Stage 4 — Authentication
 
-- [ ] Configure Supabase clients for browser and server usage.
-- [ ] Implement email/password registration and login.
-- [ ] Configure Google OAuth.
-- [ ] Implement the OAuth callback route.
-- [ ] Protect application routes.
-- [ ] Add logout.
-- [ ] Create or synchronize the user profile.
-- [ ] Handle loading, invalid credentials, cancelled OAuth, and expired sessions.
+- [x] Configure Supabase clients for browser and server usage.
+- [x] Implement email/password registration and login.
+- [x] Configure Google OAuth.
+- [x] Implement the OAuth callback route.
+- [x] Protect application routes.
+- [x] Add logout.
+- [x] Create or synchronize the user profile.
+- [x] Handle loading, invalid credentials, cancelled OAuth, and expired sessions.
 
 ### Exit criteria
 
