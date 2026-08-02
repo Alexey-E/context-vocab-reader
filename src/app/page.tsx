@@ -10,7 +10,10 @@ export default function Home() {
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link href='https://github.com/Alexey-E/context-vocab-reader' className="hidden rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 sm:inline-flex">
+            <Link
+              href="https://github.com/Alexey-E/context-vocab-reader"
+              className="hidden rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 sm:inline-flex"
+            >
               Portfolio MVP
             </Link>
             <Link
