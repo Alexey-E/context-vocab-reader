@@ -318,10 +318,18 @@ The application uses only the publishable Supabase key. A service-role key is
 not required for the current authentication or user-owned data flows.
 
 For local Google OAuth, create the ignored root `.env` file from
-`.env.supabase.example` so `supabase/config.toml` can read the provider secret:
+`.env.supabase.example` so `supabase/config.toml` can read the provider
+credentials:
 
 ```bash
 cp .env.supabase.example .env
+```
+
+Set both variables to the credentials from the same Google OAuth Web client:
+
+```env
+SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=
+SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET=
 ```
 
 Google Authorized JavaScript origin for local development:

@@ -336,7 +336,8 @@ email_optional = false
 
 [auth.external.google]
 enabled = true
-client_id = "114089555490-edh0biqubh46mdsvph9p1d65s2irno30.apps.googleusercontent.com"
+# Load the project-specific OAuth client from the ignored root .env file.
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
 # DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET)"
 skip_nonce_check = false
