@@ -1,28 +1,15 @@
 import type { Instrumentation } from "next";
 
+import { logServerError } from "@/lib/log-server-error";
+
 export const onRequestError: Instrumentation.onRequestError = (
   error,
   request,
   context,
 ) => {
   const pathname = request.path.split("?", 1)[0];
-  const details =
-    error instanceof Error
-      ? {
-          digest:
-            "digest" in error && typeof error.digest === "string"
-              ? error.digest
-              : undefined,
-          message: error.message,
-          name: error.name,
-          stack: error.stack,
-        }
-      : {
-          message: String(error),
-        };
 
-  console.error("Unhandled server request error", {
-    error: details,
+  logServerError("next.request_failed", error, {
     request: {
       method: request.method,
       pathname,
