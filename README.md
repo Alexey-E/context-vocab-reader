@@ -2,6 +2,8 @@
 
 A language learning reader that helps users translate text on demand and save vocabulary cards from real reading context.
 
+[Live demo](https://context-vocab-reader.vercel.app/)
+
 The project is built as a production-style MVP using **Next.js**, **TypeScript**, **Supabase**, and **Vercel**. The main goal is not to build another generic translator, but to demonstrate a clean full-stack architecture around authentication, user-owned data, translation flow, vocabulary cards, and cost-aware API usage.
 
 ## Product idea
@@ -164,12 +166,11 @@ Create a `.env.local` file based on `.env.example`.
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
 
 GOOGLE_TRANSLATE_API_KEY=
 TRANSLATION_PROVIDER=mock
 
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://127.0.0.1:3000
 ```
 
 ### Translation provider
@@ -187,6 +188,16 @@ TRANSLATION_PROVIDER=google
 ```
 
 ## Local development
+
+All local services use the explicit IPv4 loopback address. Do not mix `localhost` and
+`127.0.0.1` in local environment variables or OAuth settings.
+
+| Service               | URL                      |
+| --------------------- | ------------------------ |
+| Next.js               | `http://127.0.0.1:3000`  |
+| Supabase API and Auth | `http://127.0.0.1:54321` |
+| Supabase Studio       | `http://127.0.0.1:54323` |
+| Local email inbox     | `http://127.0.0.1:54324` |
 
 Install dependencies:
 
@@ -217,6 +228,34 @@ Run tests:
 ```bash
 pnpm test
 ```
+
+Install Chromium once and run end-to-end tests:
+
+```bash
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
+Open Playwright's interactive UI when developing tests:
+
+```bash
+pnpm test:e2e:ui
+```
+
+### Manual authentication checks
+
+The complete authentication flow depends on a live Supabase project and OAuth
+provider, so verify these scenarios manually in both the local and deployed
+applications:
+
+1. Sign in with Google and confirm that `/account` opens.
+2. Sign in with email and password and confirm that `/account` opens.
+3. Refresh `/account` and confirm that the authenticated session remains active.
+4. Sign out and confirm that the browser opens `/login`.
+5. Press the browser Back button and confirm that private account content is not
+   restored.
+6. Open `/account` directly after signing out and confirm that it redirects to
+   `/login`.
 
 Build the app:
 
@@ -272,16 +311,55 @@ The MVP supports:
 For Google login:
 
 1. Create a Google OAuth Client ID in Google Cloud Console.
-2. Add the Supabase callback URL to Google OAuth settings.
+2. Add the local and hosted Supabase callback URLs to Google OAuth settings.
 3. Enable Google provider in Supabase Auth.
-4. Add local and production redirect URLs in Supabase.
-5. Add Vercel production URL after deployment.
+4. Set the production Site URL and add local, production, and Vercel preview
+   redirect URLs in Supabase.
+5. Verify Google login on both production and a pull request preview.
 
-Example redirect URLs:
+The application uses only the publishable Supabase key. A service-role key is
+not required for the current authentication or user-owned data flows.
+
+For local Google OAuth, create the ignored root `.env` file from
+`.env.supabase.example` so `supabase/config.toml` can read the provider
+credentials:
+
+```bash
+cp .env.supabase.example .env
+```
+
+Set both variables to the credentials from the same Google OAuth Web client:
+
+```env
+SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=
+SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET=
+```
+
+Google Authorized JavaScript origin for local development:
 
 ```txt
-http://localhost:3000/**
-https://your-app.vercel.app/**
+http://127.0.0.1:3000
+```
+
+Google Authorized redirect URIs:
+
+```txt
+http://127.0.0.1:54321/auth/v1/callback
+https://rfgjodbxixzjmrgydwap.supabase.co/auth/v1/callback
+```
+
+Supabase Auth redirect URLs:
+
+```txt
+http://127.0.0.1:3000/**
+https://context-vocab-reader.vercel.app/**
+https://*-aleksei4.vercel.app/**
+```
+
+Set the Supabase Auth Site URL to the production application URL:
+
+```txt
+https://context-vocab-reader.vercel.app
 ```
 
 ## Deployment
@@ -315,6 +393,7 @@ Planned GitHub Actions checks:
 - typecheck
 - unit tests
 - production build
+- Playwright end-to-end tests in desktop and mobile Chromium
 
 CI is used to validate code quality before merging.
 

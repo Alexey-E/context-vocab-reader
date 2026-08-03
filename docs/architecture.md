@@ -119,7 +119,10 @@ User chooses Google or email/password authentication
 → user accesses private documents and vocabulary
 ```
 
-Google OAuth redirect URLs must be configured for both localhost and Vercel deployments.
+Google OAuth redirect URLs must be configured for both local `127.0.0.1` and Vercel deployments.
+Local development uses `http://127.0.0.1:3000` for Next.js and
+`http://127.0.0.1:54321` for Supabase. `localhost` must not be mixed into local
+environment variables, application redirects, or OAuth configuration.
 
 ## Translation flow
 
