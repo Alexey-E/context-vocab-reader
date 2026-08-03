@@ -313,8 +313,9 @@ For Google login:
 1. Create a Google OAuth Client ID in Google Cloud Console.
 2. Add the local and hosted Supabase callback URLs to Google OAuth settings.
 3. Enable Google provider in Supabase Auth.
-4. Add local and production redirect URLs in Supabase.
-5. Add Vercel production URL after deployment.
+4. Set the production Site URL and add local, production, and Vercel preview
+   redirect URLs in Supabase.
+5. Verify Google login on both production and a pull request preview.
 
 The application uses only the publishable Supabase key. A service-role key is
 not required for the current authentication or user-owned data flows.
@@ -352,6 +353,13 @@ Supabase Auth redirect URLs:
 ```txt
 http://127.0.0.1:3000/**
 https://context-vocab-reader.vercel.app/**
+https://*-aleksei4.vercel.app/**
+```
+
+Set the Supabase Auth Site URL to the production application URL:
+
+```txt
+https://context-vocab-reader.vercel.app
 ```
 
 ## Deployment
