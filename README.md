@@ -173,6 +173,9 @@ TRANSLATION_PROVIDER=mock
 NEXT_PUBLIC_APP_URL=http://127.0.0.1:3000
 ```
 
+`NEXT_PUBLIC_APP_URL` is required in production. The local
+`http://127.0.0.1:3000` fallback is used only outside production.
+
 ### Translation provider
 
 Use mock translations by default:

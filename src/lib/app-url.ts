@@ -6,12 +6,18 @@ export function getAppUrl() {
   const configuredUrl =
     process.env.VERCEL_ENV === "preview" && process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
-      : (process.env.NEXT_PUBLIC_APP_URL ?? DEFAULT_APP_URL);
+      : process.env.NEXT_PUBLIC_APP_URL;
+
+  if (!configuredUrl && process.env.NODE_ENV === "production") {
+    throw new Error(
+      "Missing NEXT_PUBLIC_APP_URL. Set it to the public application origin in production.",
+    );
+  }
 
   let url: URL;
 
   try {
-    url = new URL(configuredUrl);
+    url = new URL(configuredUrl || DEFAULT_APP_URL);
   } catch {
     throw new Error(
       `Invalid application URL "${configuredUrl}". Set NEXT_PUBLIC_APP_URL to an absolute http(s) URL.`,
