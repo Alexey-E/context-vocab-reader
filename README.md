@@ -2,6 +2,8 @@
 
 A language learning reader that helps users translate text on demand and save vocabulary cards from real reading context.
 
+[Live demo](https://context-vocab-reader.vercel.app/)
+
 The project is built as a production-style MVP using **Next.js**, **TypeScript**, **Supabase**, and **Vercel**. The main goal is not to build another generic translator, but to demonstrate a clean full-stack architecture around authentication, user-owned data, translation flow, vocabulary cards, and cost-aware API usage.
 
 ## Product idea
