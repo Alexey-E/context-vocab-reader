@@ -11,7 +11,7 @@ set local test.card_b_id = 'b0000000-0000-4000-8000-000000000002';
 set local test.new_document_a_id = 'a0000000-0000-4000-8000-000000000003';
 set local test.new_card_a_id = 'a0000000-0000-4000-8000-000000000004';
 
-select plan(17);
+select plan(19);
 
 insert into auth.users (id, email)
 values
@@ -219,6 +219,34 @@ select results_eq(
   $$,
   array[0::bigint],
   'another user document cannot be updated'
+);
+
+-- Verifies that deleting another user's document affects no rows.
+select results_eq(
+  $$
+    with deleted as (
+      delete from public.documents
+      where id = current_setting('test.document_b_id')::uuid
+      returning 1
+    )
+    select count(*)::bigint from deleted
+  $$,
+  array[0::bigint],
+  'another user document cannot be deleted'
+);
+
+-- Verifies that a user can delete their own document.
+select results_eq(
+  $$
+    with deleted as (
+      delete from public.documents
+      where id = current_setting('test.document_a_id')::uuid
+      returning 1
+    )
+    select count(*)::bigint from deleted
+  $$,
+  array[1::bigint],
+  'a user can delete their own document'
 );
 
 -- Verifies that deleting another user's vocabulary card affects no rows.

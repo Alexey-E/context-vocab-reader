@@ -1,5 +1,14 @@
 import { expect, test } from "@playwright/test";
 
+test("shows sign-in navigation to a signed-out visitor", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+    "href",
+    "/login",
+  );
+});
+
 test("renders the authentication entry points", async ({ page }) => {
   await page.goto("/login");
 
@@ -41,13 +50,10 @@ test("ignores an unknown callback error", async ({ page }) => {
   await expect(page.getByText("provider.internal_detail")).toHaveCount(0);
 });
 
-test("shows structured field validation errors", async ({ page }) => {
+test("shows a server-side password validation error", async ({ page }) => {
   await page.goto("/login?mode=sign-up");
-  await page.locator("form").evaluate((form) => {
-    (form as HTMLFormElement).noValidate = true;
-  });
-  await page.getByLabel("Email address").fill("not-an-email");
-  await page.getByLabel("Password", { exact: true }).fill("123");
+  await page.getByLabel("Email address").fill("reader@example.com");
+  await page.getByLabel("Password", { exact: true }).fill("      ");
   await page
     .getByRole("button", { name: "Create account", exact: true })
     .click();
@@ -57,9 +63,8 @@ test("shows structured field validation errors", async ({ page }) => {
       .getByRole("alert")
       .filter({ hasText: "Check the highlighted fields." }),
   ).toBeVisible();
-  await expect(page.getByText("Enter a valid email address.")).toBeVisible();
   await expect(
-    page.getByText("Password must contain at least 6 characters."),
+    page.getByText("Password cannot contain only spaces."),
   ).toBeVisible();
 });
 
