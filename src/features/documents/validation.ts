@@ -19,9 +19,24 @@ export type ValidDocumentInput = {
   title: string;
 };
 
+export type DocumentFormValues = {
+  content: string;
+  sourceLanguage: string;
+  targetLanguage: string;
+  title: string;
+};
+
 export type DocumentValidationResult =
-  | { errors: DocumentFieldErrors; valid: false }
-  | { input: ValidDocumentInput; valid: true };
+  | {
+      errors: DocumentFieldErrors;
+      valid: false;
+      values: DocumentFormValues;
+    }
+  | {
+      input: ValidDocumentInput;
+      valid: true;
+      values: DocumentFormValues;
+    };
 
 function readText(formData: FormData, name: string) {
   const value = formData.get(name);
@@ -32,10 +47,16 @@ function readText(formData: FormData, name: string) {
 export function validateDocumentForm(
   formData: FormData,
 ): DocumentValidationResult {
-  const title = readText(formData, "title").trim();
-  const content = readText(formData, "content");
-  const sourceLanguage = readText(formData, "sourceLanguage").trim();
-  const targetLanguage = readText(formData, "targetLanguage").trim();
+  const values = {
+    content: readText(formData, "content"),
+    sourceLanguage: readText(formData, "sourceLanguage"),
+    targetLanguage: readText(formData, "targetLanguage"),
+    title: readText(formData, "title"),
+  };
+  const title = values.title.trim();
+  const content = values.content;
+  const sourceLanguage = values.sourceLanguage.trim();
+  const targetLanguage = values.targetLanguage.trim();
   const errors: DocumentFieldErrors = {};
 
   if (!title) {
@@ -67,7 +88,7 @@ export function validateDocumentForm(
   }
 
   if (Object.keys(errors).length > 0) {
-    return { errors, valid: false };
+    return { errors, valid: false, values };
   }
 
   return {
@@ -78,5 +99,6 @@ export function validateDocumentForm(
       title,
     },
     valid: true,
+    values,
   };
 }

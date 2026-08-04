@@ -3,33 +3,41 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import type { DocumentFieldErrors } from "@/features/documents/validation";
+import type {
+  DocumentFieldErrors,
+  DocumentFormValues,
+} from "@/features/documents/validation";
 import { validateDocumentForm } from "@/features/documents/validation";
 import { requireUser } from "@/lib/auth/require-user";
 import { createErrorPayload, type AppErrorPayload } from "@/lib/errors/catalog";
 
 export type DocumentFormState =
-  | { status: "idle" }
+  | { revision: 0; status: "idle" }
   | {
       error: AppErrorPayload;
       fieldErrors?: DocumentFieldErrors;
+      revision: number;
       status: "error";
+      values: DocumentFormValues;
     };
 
 export type DeleteDocumentState =
   { status: "idle" } | { error: AppErrorPayload; status: "error" };
 
 export async function createDocument(
-  _previousState: DocumentFormState,
+  previousState: DocumentFormState,
   formData: FormData,
 ): Promise<DocumentFormState> {
   const result = validateDocumentForm(formData);
+  const revision = previousState.revision + 1;
 
   if (!result.valid) {
     return {
       error: createErrorPayload("validation.form_invalid"),
       fieldErrors: result.errors,
+      revision,
       status: "error",
+      values: result.values,
     };
   }
 
@@ -49,7 +57,9 @@ export async function createDocument(
   if (error) {
     return {
       error: createErrorPayload("documents.create_failed"),
+      revision,
       status: "error",
+      values: result.values,
     };
   }
 

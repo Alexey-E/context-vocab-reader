@@ -11,9 +11,16 @@ import {
   DOCUMENT_CONTENT_MAX_LENGTH,
   DOCUMENT_TITLE_MAX_LENGTH,
 } from "@/features/documents/constants";
+import type { DocumentFormValues } from "@/features/documents/validation";
 import { LANGUAGES } from "@/lib/languages";
 
-const initialState: DocumentFormState = { status: "idle" };
+const initialState: DocumentFormState = { revision: 0, status: "idle" };
+const initialValues: DocumentFormValues = {
+  content: "",
+  sourceLanguage: "en",
+  targetLanguage: "es",
+  title: "",
+};
 
 export function DocumentForm() {
   const [state, formAction, pending] = useActionState(
@@ -21,9 +28,12 @@ export function DocumentForm() {
     initialState,
   );
   const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
+  const values = state.status === "error" ? state.values : initialValues;
 
+  // A rejected React form action resets uncontrolled fields. Remount the form
+  // so they adopt the submitted values returned by the server action.
   return (
-    <form action={formAction} className="mt-8 space-y-6">
+    <form key={state.revision} action={formAction} className="mt-8 space-y-6">
       {state.status === "error" ? (
         <div
           role="alert"
@@ -43,6 +53,7 @@ export function DocumentForm() {
           type="text"
           required
           maxLength={DOCUMENT_TITLE_MAX_LENGTH}
+          defaultValue={values.title}
           aria-invalid={Boolean(fieldErrors?.title)}
           aria-describedby={fieldErrors?.title ? "title-error" : undefined}
           placeholder="A useful article"
@@ -67,7 +78,7 @@ export function DocumentForm() {
             id="sourceLanguage"
             name="sourceLanguage"
             required
-            defaultValue="en"
+            defaultValue={values.sourceLanguage}
             aria-invalid={Boolean(fieldErrors?.sourceLanguage)}
             aria-describedby={
               fieldErrors?.sourceLanguage ? "source-language-error" : undefined
@@ -101,7 +112,7 @@ export function DocumentForm() {
             id="targetLanguage"
             name="targetLanguage"
             required
-            defaultValue="es"
+            defaultValue={values.targetLanguage}
             aria-invalid={Boolean(fieldErrors?.targetLanguage)}
             aria-describedby={
               fieldErrors?.targetLanguage ? "target-language-error" : undefined
@@ -137,6 +148,7 @@ export function DocumentForm() {
           name="content"
           required
           maxLength={DOCUMENT_CONTENT_MAX_LENGTH}
+          defaultValue={values.content}
           rows={14}
           aria-invalid={Boolean(fieldErrors?.content)}
           aria-describedby={fieldErrors?.content ? "content-error" : undefined}

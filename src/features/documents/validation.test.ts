@@ -43,6 +43,12 @@ describe("validateDocumentForm", () => {
         title: "A useful text",
       },
       valid: true,
+      values: {
+        content: "First line.\n\nSecond line.",
+        sourceLanguage: " en ",
+        targetLanguage: " es ",
+        title: "  A useful text  ",
+      },
     });
   });
 
@@ -57,6 +63,12 @@ describe("validateDocumentForm", () => {
         title: createErrorPayload("validation.document.title.required"),
       },
       valid: false,
+      values: {
+        content: " \n ",
+        sourceLanguage: "en",
+        targetLanguage: "es",
+        title: "   ",
+      },
     });
   });
 
@@ -74,6 +86,12 @@ describe("validateDocumentForm", () => {
         title,
       },
       valid: true,
+      values: {
+        content,
+        sourceLanguage: "en",
+        targetLanguage: "es",
+        title,
+      },
     });
   });
 
@@ -91,6 +109,12 @@ describe("validateDocumentForm", () => {
         title: createErrorPayload("validation.document.title.too_long"),
       },
       valid: false,
+      values: {
+        content: "a".repeat(DOCUMENT_CONTENT_MAX_LENGTH + 1),
+        sourceLanguage: "en",
+        targetLanguage: "es",
+        title: "a".repeat(DOCUMENT_TITLE_MAX_LENGTH + 1),
+      },
     });
   });
 
@@ -112,6 +136,12 @@ describe("validateDocumentForm", () => {
         ),
       },
       valid: false,
+      values: {
+        content: "First line.\n\nSecond line.",
+        sourceLanguage: "__invalid_source__",
+        targetLanguage: "__invalid_target__",
+        title: "  A useful text  ",
+      },
     });
   });
 
@@ -127,6 +157,12 @@ describe("validateDocumentForm", () => {
         ),
       },
       valid: false,
+      values: {
+        content: "First line.\n\nSecond line.",
+        sourceLanguage: "fr",
+        targetLanguage: "fr",
+        title: "  A useful text  ",
+      },
     });
   });
 });
