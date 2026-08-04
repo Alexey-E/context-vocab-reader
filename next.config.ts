@@ -22,6 +22,15 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/documents/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store",
+          },
+        ],
+      },
     ];
   },
 };

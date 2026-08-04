@@ -77,19 +77,21 @@ The database can be recreated from versioned migrations, public samples are read
 
 ### Exit criteria
 
-A visitor can use the read-and-translate demo without a session, and a user can register, sign in, refresh the application, access protected routes, and sign out locally and on Vercel.
+An unauthenticated visitor can access public routes. A user can register, sign in, refresh the application, access protected routes, and sign out locally and on Vercel. A profile is created automatically for every registered user.
 
 ## Stage 5 — Documents vertical slice
 
-- [ ] List curated sample documents without requiring a session.
-- [ ] Open a sample document in read-only mode.
-- [ ] Create the documents dashboard.
-- [ ] Create a document form with title, content, source language, and target language.
-- [ ] Store documents under the authenticated user.
-- [ ] List only the current user's documents.
-- [ ] Open a document by ID.
-- [ ] Delete a document with confirmation.
-- [ ] Add empty, loading, validation, and error states.
+- [x] List curated sample documents without requiring a session.
+- [x] Open a sample document in read-only mode.
+- [x] Create the documents dashboard.
+- [x] Create a document form with title, content, source language, and target language.
+- [x] Store documents under the authenticated user.
+- [x] List only the current user's documents.
+- [x] Open a document by ID.
+- [x] Delete a document with confirmation.
+- [x] Add empty, loading, validation, and error states.
+- [x] Verify the Stage 5 acceptance flow locally.
+- [ ] Verify the Stage 5 acceptance flow on Vercel.
 
 ### Exit criteria
 
@@ -115,13 +117,16 @@ Normal prose is rendered without losing punctuation or spacing, and sentences an
 - [ ] Define the translation-provider contract.
 - [ ] Implement a deterministic mock provider.
 - [ ] Implement the Google Cloud Translation provider.
+- [ ] Add supported-language discovery to the provider contract.
+- [ ] Support every source and target language reported by Google Cloud Translation, including display names and text direction metadata.
+- [ ] Keep the four-language Stage 5 catalog as the deterministic fallback for local development and the mock provider.
 - [ ] Select the provider through environment configuration.
 - [ ] Keep provider credentials server-side.
 - [ ] Add input validation, timeouts, and controlled error mapping.
 
 ### Exit criteria
 
-Feature code can request a translation without knowing which provider is active.
+Feature code can request a translation without knowing which provider is active, and the Google-backed application can select any language supported by Google Cloud Translation.
 
 ## Stage 8 — Sentence translation and short-lived cache
 
@@ -231,6 +236,42 @@ Application deployment is automatic and database deployment is explicit, repeata
 
 A reviewer can understand the product, architecture, trade-offs, security model, and engineering process without additional explanation.
 
+## Stage 16 — Structured long documents and reading progress
+
+- [ ] Separate document metadata from document body storage.
+- [ ] Add ordered `document_sections` owned through their parent document.
+- [ ] Migrate existing document content into an initial section without data loss.
+- [ ] Split long text at stable paragraph or sentence boundaries instead of fixed character offsets.
+- [ ] Load sections incrementally with keyset pagination rather than returning the entire document.
+- [ ] Keep section identifiers and ordering stable across ordinary reads.
+- [ ] Add per-user reading progress using a section identifier and an offset within that section.
+- [ ] Restore the last saved position after refresh and across devices.
+- [ ] Add RLS, constraints, indexes, and integration tests for sections and reading progress.
+- [ ] Revisit the Stage 5 content limit based on measured parsing, rendering, and storage behavior.
+
+### Exit criteria
+
+A long document can be opened without loading its full content, navigation continues across ordered sections, and an authenticated reader resumes from a persisted position.
+
+## Stage 17 — File and book import pipeline
+
+- [ ] Define the supported import formats, starting with plain text and then EPUB; keep PDF and OCR out of the initial scope.
+- [ ] Add a private Supabase Storage bucket with ownership policies for source files.
+- [ ] Upload files directly to Storage and validate size, content type, and detected file format.
+- [ ] Track document import states such as `uploaded`, `processing`, `ready`, and `failed`.
+- [ ] Implement a bounded synchronous path for small plain-text files.
+- [ ] Add idempotent background processing with retries for large files and EPUB books.
+- [ ] Extract EPUB chapters and convert imported content into ordered document sections.
+- [ ] Preserve paragraph boundaries and reject malformed or unsupported files safely.
+- [ ] Surface processing progress and recoverable failures without exposing technical details.
+- [ ] Delete source files and derived sections when their document is deleted.
+- [ ] Test ownership isolation, duplicate job delivery, retry behavior, cleanup, and representative large imports.
+- [ ] Document operational limits, background-worker deployment, and recovery procedures.
+
+### Exit criteria
+
+An authenticated user can upload a supported book, leave while it is processed, return to a clear ready or failed state, and read the result incrementally without accessing another user's files or derived content.
+
 ## Recommended pull request sequence
 
 1. Project foundation
@@ -248,6 +289,8 @@ A reviewer can understand the product, architecture, trade-offs, security model,
 13. End-to-end tests
 14. Stable database delivery
 15. Portfolio documentation
+16. Structured long documents and reading progress
+17. File and book import pipeline
 
 ## Working rule
 

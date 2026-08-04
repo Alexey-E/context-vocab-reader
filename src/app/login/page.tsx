@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { AuthForm } from "@/features/auth/auth-form";
+import { getAuthContext } from "@/lib/auth/require-user";
 import { parseErrorPayload } from "@/lib/errors/catalog";
-import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -23,10 +23,9 @@ function getFirstValue(value: string | string[] | undefined) {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
+  const { authenticated } = await getAuthContext();
 
-  if (data?.claims?.sub) {
+  if (authenticated) {
     redirect("/account");
   }
 

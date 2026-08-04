@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { AuthNavigationLink } from "@/components/auth-navigation-link";
+import { ArrowRightIcon } from "@/components/icons/arrow-icons";
 export default function Home() {
   return (
     <main className="min-h-dvh w-full overflow-hidden bg-slate-50 text-slate-950">
@@ -16,12 +18,7 @@ export default function Home() {
             >
               Portfolio MVP
             </Link>
-            <Link
-              href="/login"
-              className="inline-flex min-h-10 items-center justify-center rounded-full bg-slate-900 px-4 text-sm font-semibold text-white transition-colors hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
-            >
-              Sign in
-            </Link>
+            <AuthNavigationLink className="inline-flex min-h-10 items-center justify-center rounded-full bg-slate-900 px-4 text-sm font-semibold text-white transition-colors hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900" />
           </div>
         </div>
       </header>
@@ -44,7 +41,7 @@ export default function Home() {
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/login?mode=sign-up"
+              href="/samples"
               className="inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-6 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
             >
               Start reading
@@ -112,9 +109,7 @@ export default function Home() {
                   <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">
                     English
                   </span>
-                  <span className="text-slate-300" aria-hidden="true">
-                    →
-                  </span>
+                  <ArrowRightIcon className="size-3.5 text-slate-300" />
                   <span className="rounded-full bg-blue-50 px-2.5 py-1 text-blue-700">
                     Spanish
                   </span>

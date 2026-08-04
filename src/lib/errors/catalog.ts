@@ -2,6 +2,10 @@ import {
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
 } from "@/features/auth/constants";
+import {
+  DOCUMENT_CONTENT_MAX_LENGTH,
+  DOCUMENT_TITLE_MAX_LENGTH,
+} from "@/features/documents/constants";
 
 export const APP_ERROR_MESSAGES = {
   "auth.confirmation_failed":
@@ -17,6 +21,20 @@ export const APP_ERROR_MESSAGES = {
   "auth.signout_failed": "Sign-out could not be completed. Please try again.",
   "auth.user_already_exists": "An account with this email already exists.",
   "auth.weak_password": "Choose a stronger password.",
+  "documents.create_failed":
+    "The document could not be created. Please try again.",
+  "documents.delete_failed":
+    "The document could not be deleted. Please try again.",
+  "validation.document.content.required": "Enter the document text.",
+  "validation.document.content.too_long": `Document text must contain at most ${DOCUMENT_CONTENT_MAX_LENGTH.toLocaleString("en-US")} characters.`,
+  "validation.document.languages_same":
+    "Choose different source and target languages.",
+  "validation.document.source_language.invalid":
+    "Choose a supported source language.",
+  "validation.document.target_language.invalid":
+    "Choose a supported target language.",
+  "validation.document.title.required": "Enter a document title.",
+  "validation.document.title.too_long": `Title must contain at most ${DOCUMENT_TITLE_MAX_LENGTH} characters.`,
   "validation.email.invalid": "Enter a valid email address.",
   "validation.form_invalid": "Check the highlighted fields.",
   "validation.password.only_spaces": "Password cannot contain only spaces.",
