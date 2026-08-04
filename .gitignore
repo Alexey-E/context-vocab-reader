@@ -70,6 +70,8 @@ logs/
 .AppleDouble
 .LSOverride
 Icon?
+!src/components/icons/
+!src/components/icons/**
 ._*
 .Spotlight-V100
 .Trashes
