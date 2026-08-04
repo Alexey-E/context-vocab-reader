@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRightIcon } from "@/components/icons/arrow-icons";
 import { SiteHeader } from "@/components/site-header";
 import { listSampleDocuments } from "@/features/documents/queries";
+import { getAuthContext } from "@/lib/auth/require-user";
 import { getLanguage } from "@/lib/languages";
 
 export const metadata: Metadata = {
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function SamplesPage() {
-  const samples = await listSampleDocuments();
+  const [samples, { authenticated }] = await Promise.all([
+    listSampleDocuments(),
+    getAuthContext(),
+  ]);
 
   return (
     <main className="min-h-dvh bg-slate-50 text-slate-950">
@@ -72,20 +76,22 @@ export default async function SamplesPage() {
           </div>
         )}
 
-        <aside className="mt-10 flex flex-col gap-4 rounded-3xl bg-slate-900 px-6 py-7 text-white sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <div>
-            <h2 className="text-xl font-bold">Want to use your own text?</h2>
-            <p className="mt-1 text-sm leading-6 text-slate-300">
-              Create an account to keep private documents and vocabulary.
-            </p>
-          </div>
-          <Link
-            href="/login?mode=sign-up"
-            className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-white px-5 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            Create account
-          </Link>
-        </aside>
+        {!authenticated ? (
+          <aside className="mt-10 flex flex-col gap-4 rounded-3xl bg-slate-900 px-6 py-7 text-white sm:flex-row sm:items-center sm:justify-between sm:px-8">
+            <div>
+              <h2 className="text-xl font-bold">Want to use your own text?</h2>
+              <p className="mt-1 text-sm leading-6 text-slate-300">
+                Create an account to keep private documents and vocabulary.
+              </p>
+            </div>
+            <Link
+              href="/login?mode=sign-up"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-white px-5 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              Create account
+            </Link>
+          </aside>
+        ) : null}
       </section>
     </main>
   );
