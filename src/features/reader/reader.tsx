@@ -48,14 +48,14 @@ export function Reader({
         <div
           dir={direction}
           data-reader-source-text
-          className="mx-auto max-w-[68ch] text-lg leading-9 text-muted sm:text-xl sm:leading-10"
+          className="mx-auto max-w-[68ch] whitespace-pre-wrap text-lg leading-9 text-muted sm:text-xl sm:leading-10"
         >
           {paragraphs.map((paragraph) => (
             <p
               key={paragraph.id}
               id={paragraph.id}
               data-paragraph-id={paragraph.id}
-              className="mt-6 whitespace-pre-wrap first:mt-0"
+              className="inline"
             >
               {paragraph.sentences.map((sentence) => (
                 <span
@@ -75,6 +75,9 @@ export function Reader({
                   ))}
                 </span>
               ))}
+              {paragraph.separatorAfter ? (
+                <span data-paragraph-separator>{paragraph.separatorAfter}</span>
+              ) : null}
             </p>
           ))}
         </div>

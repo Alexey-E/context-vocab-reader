@@ -5,6 +5,14 @@ vi.mock("server-only", () => ({}));
 
 import { Reader } from "@/features/reader/reader";
 
+function getRenderedSourceText(markup: string) {
+  const sourceMarkup = markup.match(
+    /data-reader-source-text="true"[^>]*>([\s\S]*?)<\/div>/,
+  )?.[1];
+
+  return sourceMarkup?.replace(/<[^>]+>/g, "");
+}
+
 describe("Reader", () => {
   it("renders identifiable sentence and word spans without interactive prose", () => {
     const markup = renderToStaticMarkup(
@@ -36,5 +44,21 @@ describe("Reader", () => {
     );
 
     expect(markup).toContain('dir="rtl"');
+  });
+
+  it("renders leading, repeated, and trailing paragraph separators", () => {
+    const content = "\n\nFirst paragraph.\n\n\nSecond paragraph.\n\n";
+    const markup = renderToStaticMarkup(
+      <Reader
+        content={content}
+        sourceLanguage="en"
+        targetLanguage="es"
+        title="Spacing sample"
+        visibility="public"
+      />,
+    );
+
+    expect(getRenderedSourceText(markup)).toBe(content);
+    expect(markup).toContain("data-paragraph-separator");
   });
 });
