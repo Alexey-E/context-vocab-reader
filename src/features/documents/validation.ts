@@ -1,7 +1,4 @@
-import {
-  DOCUMENT_CONTENT_MAX_LENGTH,
-  DOCUMENT_TITLE_MAX_LENGTH,
-} from "@/features/documents/constants";
+import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 import { isLanguageCode, type LanguageCode } from "@/lib/languages";
 import { createErrorPayload, type AppErrorPayload } from "@/lib/errors/catalog";
 
@@ -61,13 +58,13 @@ export function validateDocumentForm(
 
   if (!title) {
     errors.title = createErrorPayload("validation.document.title.required");
-  } else if (title.length > DOCUMENT_TITLE_MAX_LENGTH) {
+  } else if (title.length > DOCUMENT_FIELD_LIMITS.title.maxLength) {
     errors.title = createErrorPayload("validation.document.title.too_long");
   }
 
   if (!content.trim()) {
     errors.content = createErrorPayload("validation.document.content.required");
-  } else if (content.length > DOCUMENT_CONTENT_MAX_LENGTH) {
+  } else if (content.length > DOCUMENT_FIELD_LIMITS.content.maxLength) {
     errors.content = createErrorPayload("validation.document.content.too_long");
   }
 

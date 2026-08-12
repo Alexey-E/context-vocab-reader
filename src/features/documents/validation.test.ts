@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  DOCUMENT_CONTENT_MAX_LENGTH,
-  DOCUMENT_TITLE_MAX_LENGTH,
-} from "@/features/documents/constants";
+import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 import { validateDocumentForm } from "@/features/documents/validation";
 import { createErrorPayload } from "@/lib/errors/catalog";
 
@@ -73,8 +70,8 @@ describe("validateDocumentForm", () => {
   });
 
   it("accepts fields at their maximum lengths", () => {
-    const content = "a".repeat(DOCUMENT_CONTENT_MAX_LENGTH);
-    const title = "a".repeat(DOCUMENT_TITLE_MAX_LENGTH);
+    const content = "a".repeat(DOCUMENT_FIELD_LIMITS.content.maxLength);
+    const title = "a".repeat(DOCUMENT_FIELD_LIMITS.title.maxLength);
 
     expect(
       validateDocumentForm(createDocumentFormData({ content, title })),
@@ -98,8 +95,8 @@ describe("validateDocumentForm", () => {
   it("rejects fields over their maximum lengths", () => {
     const result = validateDocumentForm(
       createDocumentFormData({
-        content: "a".repeat(DOCUMENT_CONTENT_MAX_LENGTH + 1),
-        title: "a".repeat(DOCUMENT_TITLE_MAX_LENGTH + 1),
+        content: "a".repeat(DOCUMENT_FIELD_LIMITS.content.maxLength + 1),
+        title: "a".repeat(DOCUMENT_FIELD_LIMITS.title.maxLength + 1),
       }),
     );
 
@@ -110,10 +107,10 @@ describe("validateDocumentForm", () => {
       },
       valid: false,
       values: {
-        content: "a".repeat(DOCUMENT_CONTENT_MAX_LENGTH + 1),
+        content: "a".repeat(DOCUMENT_FIELD_LIMITS.content.maxLength + 1),
         sourceLanguage: "en",
         targetLanguage: "es",
-        title: "a".repeat(DOCUMENT_TITLE_MAX_LENGTH + 1),
+        title: "a".repeat(DOCUMENT_FIELD_LIMITS.title.maxLength + 1),
       },
     });
   });

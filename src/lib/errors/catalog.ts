@@ -1,11 +1,5 @@
-import {
-  PASSWORD_MAX_LENGTH,
-  PASSWORD_MIN_LENGTH,
-} from "@/features/auth/constants";
-import {
-  DOCUMENT_CONTENT_MAX_LENGTH,
-  DOCUMENT_TITLE_MAX_LENGTH,
-} from "@/features/documents/constants";
+import { AUTH_FIELD_LIMITS } from "@/features/auth/constants";
+import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 
 export const APP_ERROR_MESSAGES = {
   "auth.confirmation_failed":
@@ -26,7 +20,7 @@ export const APP_ERROR_MESSAGES = {
   "documents.delete_failed":
     "The document could not be deleted. Please try again.",
   "validation.document.content.required": "Enter the document text.",
-  "validation.document.content.too_long": `Document text must contain at most ${DOCUMENT_CONTENT_MAX_LENGTH.toLocaleString("en-US")} characters.`,
+  "validation.document.content.too_long": `Document text must contain at most ${DOCUMENT_FIELD_LIMITS.content.maxLength.toLocaleString("en-US")} characters.`,
   "validation.document.languages_same":
     "Choose different source and target languages.",
   "validation.document.source_language.invalid":
@@ -34,12 +28,12 @@ export const APP_ERROR_MESSAGES = {
   "validation.document.target_language.invalid":
     "Choose a supported target language.",
   "validation.document.title.required": "Enter a document title.",
-  "validation.document.title.too_long": `Title must contain at most ${DOCUMENT_TITLE_MAX_LENGTH} characters.`,
+  "validation.document.title.too_long": `Title must contain at most ${DOCUMENT_FIELD_LIMITS.title.maxLength} characters.`,
   "validation.email.invalid": "Enter a valid email address.",
   "validation.form_invalid": "Check the highlighted fields.",
   "validation.password.only_spaces": "Password cannot contain only spaces.",
-  "validation.password.too_long": `Password must contain at most ${PASSWORD_MAX_LENGTH} characters.`,
-  "validation.password.too_short": `Password must contain at least ${PASSWORD_MIN_LENGTH} characters.`,
+  "validation.password.too_long": `Password must contain at most ${AUTH_FIELD_LIMITS.password.maxLength} characters.`,
+  "validation.password.too_short": `Password must contain at least ${AUTH_FIELD_LIMITS.password.minLength} characters.`,
 } as const satisfies Record<string, string>;
 
 export type AppErrorCode = keyof typeof APP_ERROR_MESSAGES;

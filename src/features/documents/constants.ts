@@ -1,2 +1,8 @@
-export const DOCUMENT_TITLE_MAX_LENGTH = 120;
-export const DOCUMENT_CONTENT_MAX_LENGTH = 50_000;
+export const DOCUMENT_FIELD_LIMITS = {
+  content: {
+    maxLength: 50_000,
+  },
+  title: {
+    maxLength: 120,
+  },
+} as const;

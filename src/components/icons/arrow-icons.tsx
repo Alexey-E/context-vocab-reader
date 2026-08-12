@@ -1,6 +1,6 @@
-type ArrowIconProps = {
+type ArrowIconProps = Readonly<{
   className?: string;
-};
+}>;
 
 export function ArrowLeftIcon({ className = "size-4" }: ArrowIconProps) {
   return (

@@ -29,29 +29,29 @@ export default async function AccountPage() {
   const email = typeof claims.email === "string" ? claims.email : null;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-16">
-      <section className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-10 shadow-sm">
-        <p className="text-sm font-semibold tracking-[0.08em] text-blue-600 uppercase">
+    <main className="flex min-h-screen items-center justify-center bg-page px-6 py-16">
+      <section className="w-full max-w-lg rounded-3xl border border-border bg-surface p-10 shadow-sm">
+        <p className="text-sm font-semibold tracking-[0.08em] text-primary uppercase">
           Context Vocab Reader
         </p>
-        <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-text">
           You are signed in
         </h1>
-        {email && <p className="mt-3 text-slate-600">{email}</p>}
-        <p className="mt-8 text-sm leading-6 text-slate-500">
+        {email && <p className="mt-3 text-muted">{email}</p>}
+        <p className="mt-8 text-sm leading-6 text-muted">
           The authenticated session is active. Open your private documents or
           explore a public sample.
         </p>
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
           <Link
             href="/documents"
-            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-contrast transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             My documents
           </Link>
           <Link
             href="/samples"
-            className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700"
+            className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border-strong bg-surface px-5 text-sm font-semibold text-muted transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Browse samples
           </Link>
@@ -59,7 +59,7 @@ export default async function AccountPage() {
         <form action={signOut} className="mt-3">
           <button
             type="submit"
-            className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-slate-900 px-5 font-semibold text-white transition-colors hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+            className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-inverse px-5 font-semibold text-inverse-text transition-colors hover:bg-inverse-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Sign out
           </button>

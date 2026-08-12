@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icons";
+import { LanguagePair } from "@/components/language-pair";
 import { SiteHeader } from "@/components/site-header";
 import { listSampleDocuments } from "@/features/documents/queries";
 import { getAuthContext } from "@/lib/auth/require-user";
@@ -19,17 +20,17 @@ export default async function SamplesPage() {
   ]);
 
   return (
-    <main className="min-h-dvh bg-slate-50 text-slate-950">
+    <main className="min-h-dvh bg-page text-text">
       <SiteHeader />
       <section className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="max-w-2xl">
-          <p className="text-xs font-bold tracking-[0.14em] text-blue-600 uppercase">
+          <p className="text-xs font-bold tracking-[0.14em] text-primary uppercase">
             Public library
           </p>
           <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
             Choose a sample text
           </h1>
-          <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
+          <p className="mt-4 text-base leading-7 text-muted sm:text-lg">
             Start reading without an account. Translation controls will be added
             in the next stages.
           </p>
@@ -45,21 +46,20 @@ export default async function SamplesPage() {
                 <li key={sample.id}>
                   <Link
                     href={`/samples/${sample.slug}`}
-                    className="group flex h-full min-h-48 flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:p-7"
+                    className="group flex h-full min-h-48 flex-col rounded-3xl border border-border bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-primary hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:p-7"
                   >
-                    <div className="flex items-center gap-2 text-xs font-semibold">
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">
-                        {source?.name ?? sample.source_language.toUpperCase()}
-                      </span>
-                      <ArrowRightIcon className="size-3.5 text-slate-300" />
-                      <span className="rounded-full bg-blue-50 px-2.5 py-1 text-blue-700">
-                        {target?.name ?? sample.target_language.toUpperCase()}
-                      </span>
-                    </div>
-                    <h2 className="mt-6 text-2xl font-bold tracking-tight group-hover:text-blue-700">
+                    <LanguagePair
+                      sourceLanguage={
+                        source?.name ?? sample.source_language.toUpperCase()
+                      }
+                      targetLanguage={
+                        target?.name ?? sample.target_language.toUpperCase()
+                      }
+                    />
+                    <h2 className="mt-6 text-2xl font-bold tracking-tight group-hover:text-primary">
                       {sample.title}
                     </h2>
-                    <span className="mt-auto inline-flex items-center gap-1 pt-8 text-sm font-semibold text-blue-600">
+                    <span className="mt-auto inline-flex items-center gap-1 pt-8 text-sm font-semibold text-primary">
                       Open sample <ArrowRightIcon />
                     </span>
                   </Link>
@@ -68,25 +68,25 @@ export default async function SamplesPage() {
             })}
           </ul>
         ) : (
-          <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
+          <div className="mt-10 rounded-3xl border border-dashed border-border-strong bg-surface px-6 py-12 text-center">
             <h2 className="text-xl font-bold">No sample texts yet</h2>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-muted">
               Curated texts will appear here when they are available.
             </p>
           </div>
         )}
 
         {!authenticated ? (
-          <aside className="mt-10 flex flex-col gap-4 rounded-3xl bg-slate-900 px-6 py-7 text-white sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <aside className="mt-10 flex flex-col gap-4 rounded-3xl bg-inverse px-6 py-7 text-inverse-text sm:flex-row sm:items-center sm:justify-between sm:px-8">
             <div>
               <h2 className="text-xl font-bold">Want to use your own text?</h2>
-              <p className="mt-1 text-sm leading-6 text-slate-300">
+              <p className="mt-1 text-sm leading-6 text-inverse-text-muted">
                 Create an account to keep private documents and vocabulary.
               </p>
             </div>
             <Link
               href="/login?mode=sign-up"
-              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-white px-5 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-surface px-5 text-sm font-semibold text-text transition hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               Create account
             </Link>

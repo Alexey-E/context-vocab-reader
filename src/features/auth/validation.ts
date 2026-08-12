@@ -1,8 +1,4 @@
-import {
-  EMAIL_MAX_LENGTH,
-  PASSWORD_MAX_LENGTH,
-  PASSWORD_MIN_LENGTH,
-} from "@/features/auth/constants";
+import { AUTH_FIELD_LIMITS } from "@/features/auth/constants";
 import { createErrorPayload, type AppErrorPayload } from "@/lib/errors/catalog";
 
 export type Credentials = {
@@ -30,14 +26,16 @@ export function validateCredentials(
 
   if (
     !EMAIL_PATTERN.test(credentials.email) ||
-    credentials.email.length > EMAIL_MAX_LENGTH
+    credentials.email.length > AUTH_FIELD_LIMITS.email.maxLength
   ) {
     errors.email = createErrorPayload("validation.email.invalid");
   }
 
-  if (credentials.password.length < PASSWORD_MIN_LENGTH) {
+  if (credentials.password.length < AUTH_FIELD_LIMITS.password.minLength) {
     errors.password = createErrorPayload("validation.password.too_short");
-  } else if (credentials.password.length > PASSWORD_MAX_LENGTH) {
+  } else if (
+    credentials.password.length > AUTH_FIELD_LIMITS.password.maxLength
+  ) {
     errors.password = createErrorPayload("validation.password.too_long");
   } else if (mode === "sign-up" && credentials.password.trim().length === 0) {
     errors.password = createErrorPayload("validation.password.only_spaces");

@@ -100,6 +100,36 @@ The following values must never be exposed to the client:
 - `GOOGLE_TRANSLATE_API_KEY`
 - any future privileged database credentials
 
+## Configuration ownership
+
+Application configuration belongs to the feature that defines its meaning. Related public settings are exported as a single typed configuration object, while implementation constants used by only one module remain private to that module.
+
+Data catalogs, environment configuration, and algorithm-specific patterns remain separate from feature configuration objects. A value should be extracted into a named constant only when it is reused or represents an explicit product policy that should have one source of truth.
+
+## Accessible interaction primitives
+
+`react-aria-components` is the default foundation for complex client-side controls whose correctness depends on coordinated keyboard, focus, touch, overlay, and screen-reader behavior. The theme menu is the first implementation. Appropriate future uses include the interface-language switcher, searchable translation-language comboboxes, translation dialogs and popovers, sentence disclosures, and vocabulary search or filters.
+
+The library owns interaction semantics: ARIA relationships, keyboard navigation, focus management, overlay dismissal and positioning, and cross-input behavior. Application code continues to own domain state, Server Actions, validation, authentication and authorization, cookies and persistence, translation selection and caching, Tailwind styling, and design tokens.
+
+Prefer React Aria Components over its lower-level hooks. Use a hook only when the component API cannot express a required interaction. Keep native HTML for simple links, buttons, inputs, forms, and selects when native behavior is sufficient; do not wrap every element or build a universal UI kit around the library. Avoid introducing a second headless component library for the same primitives without a concrete unmet requirement.
+
+## Action feedback and notifications
+
+Toasts are client-side presentation, not something a Server Action renders or triggers directly. A Server Action returns a typed, serializable result; the initiating Client Component interprets that result and asks the shared toast system to display safe feedback.
+
+```text
+Client interaction
+→ Server Action validates and performs the operation
+→ action returns success or a public AppErrorPayload
+→ Client Component updates local UI
+→ client toast system announces background feedback when appropriate
+```
+
+Technical errors, stack traces, provider responses, and internal error details stay on the server. Action results reuse safe application error codes and payloads rather than passing arbitrary exception messages to the browser. Redirect-based flows may use an explicitly bounded status mechanism, but must not turn arbitrary URL values into notifications.
+
+Toasts are reserved for results without a natural persistent location, such as saving a device preference, copying content, or completing a background action. Field validation remains next to the field, form or dialog errors remain inside their owning surface, and route failures remain route-level error states. A toast must not be the only place for information the user needs in order to recover. The shared system owns queueing, dismissal, timeout, focus-safe behavior, and accessible live announcements; feature code owns the message and the action result that caused it.
+
 ## Public demo and authentication flow
 
 ```text
@@ -191,6 +221,16 @@ Pure functions should handle:
 - word normalization
 
 These functions should preserve punctuation and spacing required for correct rendering.
+
+The initial reader uses `Intl.Segmenter` with the document's source language for sentence and word boundaries. Text processing runs on the server and the resulting serializable structure is passed to the interactive client component, avoiding server/browser segmentation differences during hydration.
+
+Paragraph separators and raw token text remain available so the original content can be reconstructed exactly. Word normalization applies Unicode compatibility normalization, locale-aware lowercase conversion, canonical apostrophes, and removal of surrounding punctuation while preserving internal punctuation and diacritics.
+
+Reader prose remains semantic selectable text: paragraphs, sentences, and tokens are identifiable spans rather than controls. Native pointer selection can later prepare an exact word or arbitrary fragment for translation, but selecting text alone must not create a provider request.
+
+Complete sentence translation uses a separate disclosure button with its result rendered directly below the source sentence. This avoids nested controls and preserves ordinary screen-reader document navigation. An accessible custom-text dialog provides the keyboard and screen-reader path for arbitrary fragments without implementing a custom range-selection widget. Word controls are introduced only for saved vocabulary and remain separate from sentence disclosure controls.
+
+The System, Light, or Dark preference applies to the entire application. The root layout reads a validated `app-theme` cookie before rendering, sets `data-theme` on the document element, and supplies the initial value to the client theme provider. System mode follows `prefers-color-scheme` in CSS, so the first server-rendered frame uses the correct palette without a hydration flash. The preference is device-local and is not synchronized through the user profile.
 
 ## Security principles
 

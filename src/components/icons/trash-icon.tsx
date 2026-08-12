@@ -1,6 +1,6 @@
-type TrashIconProps = {
+type TrashIconProps = Readonly<{
   className?: string;
-};
+}>;
 
 export function TrashIcon({ className = "size-4" }: TrashIconProps) {
   return (

@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import { getAuthContext } from "@/lib/auth/require-user";
 
-type AuthNavigationLinkProps = {
+type AuthNavigationLinkProps = Readonly<{
   className: string;
-};
+}>;
 
 export async function AuthNavigationLink({
   className,

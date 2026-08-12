@@ -91,7 +91,7 @@ An unauthenticated visitor can access public routes. A user can register, sign i
 - [x] Delete a document with confirmation.
 - [x] Add empty, loading, validation, and error states.
 - [x] Verify the Stage 5 acceptance flow locally.
-- [ ] Verify the Stage 5 acceptance flow on Vercel.
+- [x] Verify the Stage 5 acceptance flow on Vercel.
 
 ### Exit criteria
 
@@ -99,20 +99,41 @@ A visitor can open a curated sample, while a signed-in user can create, list, op
 
 ## Stage 6 — Reader without translation
 
-- [ ] Render document content in a readable responsive layout.
-- [ ] Split content into paragraphs.
-- [ ] Split paragraphs into interactive sentences.
-- [ ] Tokenize text while preserving whitespace and punctuation.
-- [ ] Implement `normalizeWord`.
-- [ ] Add selected-sentence state.
-- [ ] Add light and dark themes.
-- [ ] Add unit tests for splitting, tokenization, and normalization.
+- [x] Render document content in a readable responsive layout.
+- [x] Split content into paragraphs.
+- [x] Split paragraphs into identifiable, non-interactive sentences.
+- [x] Tokenize text while preserving whitespace and punctuation.
+- [x] Implement `normalizeWord`.
+- [x] Render sentences and tokens as semantic text without turning prose into controls.
+- [x] Add global System, Light, and Dark themes.
+- [x] Adopt React Aria Components for the accessible theme menu and document the library boundary.
+- [x] Add unit tests for splitting, tokenization, normalization, reader markup, and theme cookies.
+- [ ] Verify the Stage 6 acceptance flow locally.
+- [ ] Verify the Stage 6 acceptance flow on Vercel.
 
 ### Exit criteria
 
-Normal prose is rendered without losing punctuation or spacing, and sentences and words can be interacted with independently.
+Normal prose is rendered without losing punctuation or spacing, sentences and words remain identifiable deterministic text spans for the later translation and vocabulary stages, native text selection remains available, and the selected application theme persists on the current device.
 
-## Stage 7 — Translation provider abstraction
+## Stage 7 — Interface internationalization
+
+- [ ] Add `next-intl` and define typed `en` and `ru` message catalogs.
+- [ ] Use English as the default locale with unprefixed URLs and Russian under `/ru` via `localePrefix: "as-needed"`.
+- [ ] Detect locale from the explicit URL, saved locale cookie, browser preferences, then fall back to English.
+- [ ] Add a global language switcher with React Aria Components that preserves the current destination and saves the preference.
+- [ ] Localize navigation, forms, validation, authentication, document flows, route states, and accessibility labels.
+- [ ] Convert the centralized error catalog from fixed English messages to typed localization keys while preserving safe application error codes.
+- [ ] Localize page metadata and set the correct document `lang`.
+- [ ] Format dates, numbers, and plurals using the active locale.
+- [ ] Keep user documents, sample contents, and source/target language names separate from interface localization.
+- [ ] Add unit and Playwright coverage for locale validation, routing, switching, and persistence.
+- [ ] Verify the localization flow locally and on Vercel.
+
+### Exit criteria
+
+English pages use canonical unprefixed URLs, Russian pages use `/ru`, language switching preserves the current flow, refresh keeps the selected locale, and all existing user-facing interface states are available in both languages without translating user content.
+
+## Stage 8 — Translation provider abstraction
 
 - [ ] Define the translation-provider contract.
 - [ ] Implement a deterministic mock provider.
@@ -128,20 +149,25 @@ Normal prose is rendered without losing punctuation or spacing, and sentences an
 
 Feature code can request a translation without knowing which provider is active, and the Google-backed application can select any language supported by Google Cloud Translation.
 
-## Stage 8 — Sentence translation and short-lived cache
+## Stage 9 — Reader translation and short-lived cache
 
 - [ ] Add a server action or route handler for translation.
 - [ ] Generate a cache key from normalized text, languages, and provider.
 - [ ] Add a short-lived in-memory cache.
-- [ ] Add idle, loading, success, error, and retry states.
+- [ ] Translate an explicitly submitted native selection as a word or arbitrary fragment without making prose interactive.
+- [ ] Add an accessible custom-text dialog as the keyboard and screen-reader path for arbitrary fragments.
+- [ ] Add a separate disclosure button for each sentence and render its translation directly below the source sentence.
+- [ ] Allow multiple sentence translations to remain expanded independently.
+- [ ] Show selection translations in one dismissible responsive context card.
+- [ ] Add idle, loading, success, error, retry, and accessible live states.
 - [ ] Avoid duplicate provider requests during the cache lifetime.
 - [ ] Document the limits of instance-local serverless memory.
 
 ### Exit criteria
 
-A sentence can be translated on demand, and an immediate repeated request can reuse the cached response without creating persistent translation history.
+A word, arbitrary fragment, or complete sentence can be translated through an explicit accessible action. Sentence translations expand below their source text, and an immediate repeated request can reuse the cached response without creating persistent translation history.
 
-## Stage 9 — Save vocabulary cards
+## Stage 10 — Save vocabulary cards
 
 - [ ] Allow the user to select or activate a word.
 - [ ] Request or enter a word translation.
@@ -153,12 +179,13 @@ A sentence can be translated on demand, and an immediate repeated request can re
 - [ ] Show the existing card when the normalized word and language pair are already saved.
 - [ ] Store multiple meanings in the card's `translation` array without duplicate values.
 - [ ] Save or update the card under the authenticated user.
+- [ ] Offer `Save word` only when the translated selection matches exactly one word token; fragment and sentence translations remain temporary.
 
 ### Exit criteria
 
 A card persists after refresh and remains inaccessible to other users.
 
-## Stage 10 — Saved words in the reader
+## Stage 11 — Saved words in the reader
 
 - [ ] Load vocabulary cards matching the document's source and target languages.
 - [ ] Build a lookup structure keyed by language pair and normalized word.
@@ -166,12 +193,13 @@ A card persists after refresh and remains inaccessible to other users.
 - [ ] Add hover, keyboard focus, click, and mobile tap interactions.
 - [ ] Show the matching card in a popover.
 - [ ] Update reader state after saving without a full reload.
+- [ ] Keep saved-word controls separate from sentence disclosure controls and preserve native selection around them.
 
 ### Exit criteria
 
 Saved words are visible and accessible in the reader across mouse, keyboard, and touch interaction models.
 
-## Stage 11 — Vocabulary dashboard
+## Stage 12 — Vocabulary dashboard
 
 - [ ] List vocabulary cards.
 - [ ] Add search.
@@ -183,11 +211,17 @@ Saved words are visible and accessible in the reader across mouse, keyboard, and
 
 Vocabulary cards can be managed independently of the reader.
 
-## Stage 12 — Production behavior and accessibility
+## Stage 13 — Production behavior and accessibility
 
 - [ ] Add route-level error and not-found states.
 - [ ] Handle expired authentication.
 - [ ] Handle provider timeouts and rate limits.
+- [ ] Add a shared accessible client-side toast system for transient action feedback using the already installed React Aria Components rather than adding another notification library.
+- [ ] Hide React Aria toast primitives and the queue behind a local typed notification adapter such as `toast.success()`, `toast.error()`, and `toast.info()`; feature code must not import `UNSTABLE_Toast*` directly.
+- [ ] Before implementation, upgrade or verify React Aria Components and prefer stable Toast exports when available; if the installed API is still `UNSTABLE_*`, contain that compatibility risk inside the notification adapter.
+- [ ] Define a typed serializable Server Action result that carries safe `AppErrorPayload` values to the initiating client without exposing technical causes.
+- [ ] Integrate toasts only for actions without a natural inline feedback surface, starting with failed theme persistence and other established background interactions.
+- [ ] Keep field, form, dialog, and route errors in their owning UI instead of duplicating or replacing them with toasts.
 - [ ] Audit keyboard navigation and focus visibility.
 - [ ] Audit contrast in light and dark themes.
 - [ ] Verify responsive behavior.
@@ -195,9 +229,9 @@ Vocabulary cards can be managed independently of the reader.
 
 ### Exit criteria
 
-Expected failures do not break the demo and all primary flows are keyboard accessible.
+Expected failures do not break the demo, transient action feedback is announced accessibly without exposing internal errors, and all primary flows are keyboard accessible.
 
-## Stage 13 — Testing
+## Stage 14 — Testing
 
 - [ ] Unit-test text processing, URL validation, cache keys, and vocabulary normalization.
 - [ ] Integration-test document and vocabulary operations.
@@ -211,7 +245,7 @@ Expected failures do not break the demo and all primary flows are keyboard acces
 
 The core user journey and the most important security boundaries are covered by automated tests.
 
-## Stage 14 — Stable database delivery
+## Stage 15 — Stable database delivery
 
 - [ ] Keep migrations versioned and validated in CI.
 - [ ] Add a manual GitHub Actions workflow for remote migration deployment.
@@ -222,7 +256,7 @@ The core user journey and the most important security boundaries are covered by 
 
 Application deployment is automatic and database deployment is explicit, repeatable, and auditable.
 
-## Stage 15 — Portfolio packaging
+## Stage 16 — Portfolio packaging
 
 - [ ] Add live demo and Figma links.
 - [ ] Add screenshots or short product media.
@@ -236,7 +270,7 @@ Application deployment is automatic and database deployment is explicit, repeata
 
 A reviewer can understand the product, architecture, trade-offs, security model, and engineering process without additional explanation.
 
-## Stage 16 — Structured long documents and reading progress
+## Stage 17 — Structured long documents and reading progress
 
 - [ ] Separate document metadata from document body storage.
 - [ ] Add ordered `document_sections` owned through their parent document.
@@ -253,7 +287,7 @@ A reviewer can understand the product, architecture, trade-offs, security model,
 
 A long document can be opened without loading its full content, navigation continues across ordered sections, and an authenticated reader resumes from a persisted position.
 
-## Stage 17 — File and book import pipeline
+## Stage 18 — File and book import pipeline
 
 - [ ] Define the supported import formats, starting with plain text and then EPUB; keep PDF and OCR out of the initial scope.
 - [ ] Add a private Supabase Storage bucket with ownership policies for source files.
@@ -280,17 +314,18 @@ An authenticated user can upload a supported book, leave while it is processed, 
 4. Authentication
 5. Documents CRUD
 6. Reader text processing
-7. Translation-provider abstraction
-8. Sentence translation and cache
-9. Vocabulary-card creation
-10. Saved-word reader states
-11. Vocabulary dashboard
-12. Production behavior and accessibility
-13. End-to-end tests
-14. Stable database delivery
-15. Portfolio documentation
-16. Structured long documents and reading progress
-17. File and book import pipeline
+7. Interface internationalization
+8. Translation-provider abstraction
+9. Reader translation and cache
+10. Vocabulary-card creation
+11. Saved-word reader states
+12. Vocabulary dashboard
+13. Production behavior and accessibility
+14. End-to-end tests
+15. Stable database delivery
+16. Portfolio documentation
+17. Structured long documents and reading progress
+18. File and book import pipeline
 
 ## Working rule
 
