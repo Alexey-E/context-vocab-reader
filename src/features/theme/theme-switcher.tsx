@@ -94,7 +94,7 @@ export function ThemeSwitcher({ inverse = false }: ThemeSwitcherProps) {
   }, [isPending]);
 
   function chooseTheme(nextTheme: AppTheme) {
-    if (nextTheme === theme || pendingThemeRef.current === nextTheme) return;
+    if (nextTheme === theme || pendingThemeRef.current !== null) return;
 
     pendingThemeRef.current = nextTheme;
     setTheme(nextTheme);
@@ -106,6 +106,7 @@ export function ThemeSwitcher({ inverse = false }: ThemeSwitcherProps) {
         <Button
           ref={triggerRef}
           aria-label={`Theme: ${THEME_LABELS[theme]}`}
+          isPending={isPending}
           className={`inline-flex size-10 cursor-pointer items-center justify-center rounded-full border transition outline-none data-focus-visible:outline-2 data-focus-visible:outline-offset-2 data-focus-visible:outline-solid data-focus-visible:outline-primary ${
             inverse
               ? "border-inverse-border text-inverse-text hover:bg-inverse-muted"

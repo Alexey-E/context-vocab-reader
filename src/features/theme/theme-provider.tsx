@@ -6,6 +6,7 @@ import {
   startTransition,
   useContext,
   useMemo,
+  useRef,
   useState,
   useTransition,
   type ReactNode,
@@ -30,10 +31,14 @@ type ThemeProviderProps = Readonly<{
 export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
   const [theme, setThemeState] = useState(initialTheme);
   const [isPending, startSaving] = useTransition();
+  const savingRef = useRef(false);
 
   const setTheme = useCallback(
     (nextTheme: AppTheme) => {
+      if (nextTheme === theme || savingRef.current) return;
+
       const previousTheme = theme;
+      savingRef.current = true;
 
       setThemeState(nextTheme);
       document.documentElement.dataset.theme = nextTheme;
@@ -46,6 +51,8 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
             setThemeState(previousTheme);
             document.documentElement.dataset.theme = previousTheme;
           });
+        } finally {
+          savingRef.current = false;
         }
       });
     },
