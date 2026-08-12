@@ -108,8 +108,8 @@ A visitor can open a curated sample, while a signed-in user can create, list, op
 - [x] Add global System, Light, and Dark themes.
 - [x] Adopt React Aria Components for the accessible theme menu and document the library boundary.
 - [x] Add unit tests for splitting, tokenization, normalization, reader markup, and theme cookies.
-- [ ] Verify the Stage 6 acceptance flow locally.
-- [ ] Verify the Stage 6 acceptance flow on Vercel.
+- [x] Verify the Stage 6 acceptance flow locally.
+- [x] Verify the Stage 6 acceptance flow on Vercel.
 
 ### Exit criteria
 
