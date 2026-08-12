@@ -1,3 +1,9 @@
-export const EMAIL_MAX_LENGTH = 254;
-export const PASSWORD_MAX_LENGTH = 72;
-export const PASSWORD_MIN_LENGTH = 6;
+export const AUTH_FIELD_LIMITS = {
+  email: {
+    maxLength: 254,
+  },
+  password: {
+    maxLength: 72,
+    minLength: 6,
+  },
+} as const;

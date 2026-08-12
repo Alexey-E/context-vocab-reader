@@ -74,6 +74,7 @@ Real Google Translation API integration can be enabled locally or in a controlle
 - **Next.js** — application framework
 - **React** — UI
 - **TypeScript** — type safety
+- **React Aria Components** — accessible interaction primitives for menus, dialogs, disclosures, and overlays
 - **Supabase** — auth, Postgres database, RLS
 - **Vercel** — deployment
 - **Google OAuth** — social login
