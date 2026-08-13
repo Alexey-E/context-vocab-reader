@@ -4,12 +4,22 @@ import createMiddleware from "next-intl/middleware";
 
 import { routing } from "@/i18n/routing";
 import { logServerError } from "@/lib/log-server-error";
-import { updateSession } from "@/lib/supabase/proxy";
+import { type SessionUpdate, updateSession } from "@/lib/supabase/proxy";
 
 const handleI18nRouting = createMiddleware(routing);
 
 function copyCookies(source: NextResponse, target: NextResponse) {
   source.cookies.getAll().forEach((cookie) => target.cookies.set(cookie));
+}
+
+function applySessionUpdate(response: NextResponse, update: SessionUpdate) {
+  update.cookies.forEach(({ name, options, value }) => {
+    response.cookies.set(name, value, options);
+  });
+
+  Object.entries(update.headers).forEach(([name, value]) => {
+    response.headers.set(name, value);
+  });
 }
 
 function getNegotiatedLocale(request: NextRequest, response: NextResponse) {
@@ -28,10 +38,10 @@ function getNegotiatedLocale(request: NextRequest, response: NextResponse) {
 
 export async function proxy(request: NextRequest) {
   try {
-    const authResponse = await updateSession(request);
+    const sessionUpdate = await updateSession(request);
     const response = handleI18nRouting(request);
 
-    copyCookies(authResponse, response);
+    applySessionUpdate(response, sessionUpdate);
 
     return response;
   } catch (error) {
