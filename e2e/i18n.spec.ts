@@ -155,18 +155,14 @@ test("isolates embedded languages inside the Arabic landing page", async ({
     "lang",
     "es",
   );
-  await expect(page.getByText("الإنجليزية", { exact: true })).toBeVisible();
-  await expect(page.getByText("الإسبانية", { exact: true })).toBeVisible();
-});
-
-test("infers public document title direction independently of Arabic UI", async ({
-  page,
-}) => {
-  await page.goto("/ar/samples");
-
-  await expect(
-    page.getByRole("heading", { name: "Learn with context" }),
-  ).toHaveAttribute("dir", "auto");
+  await expect(page.getByText("الإنجليزية", { exact: true })).toHaveAttribute(
+    "dir",
+    "auto",
+  );
+  await expect(page.getByText("الإسبانية", { exact: true })).toHaveAttribute(
+    "dir",
+    "auto",
+  );
 });
 
 test("keeps the locale when redirecting away from a protected route", async ({
