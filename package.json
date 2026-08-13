@@ -2,6 +2,7 @@
   "name": "context-vocab-reader",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.21.0",
   "scripts": {
     "check:supabase": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-local-supabase.mjs",
     "predev": "pnpm check:supabase",
@@ -20,29 +21,29 @@
     "lint:db": "supabase db lint"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.12.3",
-    "@supabase/supabase-js": "^2.110.8",
-    "@vercel/analytics": "^2.0.1",
-    "geist": "^1.7.2",
+    "@supabase/ssr": "0.12.3",
+    "@supabase/supabase-js": "2.110.8",
+    "@vercel/analytics": "2.0.1",
+    "geist": "1.7.2",
     "next": "16.2.10",
-    "next-intl": "^4.13.6",
+    "next-intl": "4.13.6",
     "react": "19.2.4",
-    "react-aria-components": "^1.20.0",
+    "react-aria-components": "1.20.0",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@playwright/test": "^1.61.1",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@playwright/test": "1.61.1",
+    "@tailwindcss/postcss": "4.3.2",
+    "@types/node": "20.19.43",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
     "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
+    "eslint": "9.39.5",
     "eslint-config-next": "16.2.10",
-    "prettier": "^3.9.5",
+    "prettier": "3.9.5",
     "supabase": "2.113.0",
-    "tailwindcss": "^4",
-    "typescript": "^5",
-    "vitest": "^4.1.10"
+    "tailwindcss": "4.3.2",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
   }
 }

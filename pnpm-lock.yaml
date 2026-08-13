@@ -9,71 +9,71 @@ importers:
   .:
     dependencies:
       '@supabase/ssr':
-        specifier: ^0.12.3
+        specifier: 0.12.3
         version: 0.12.3(@supabase/supabase-js@2.110.8)
       '@supabase/supabase-js':
-        specifier: ^2.110.8
+        specifier: 2.110.8
         version: 2.110.8
       '@vercel/analytics':
-        specifier: ^2.0.1
+        specifier: 2.0.1
         version: 2.0.1(next@16.2.10(@babel/core@7.29.7)(@playwright/test@1.61.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       geist:
-        specifier: ^1.7.2
+        specifier: 1.7.2
         version: 1.7.2(next@16.2.10(@babel/core@7.29.7)(@playwright/test@1.61.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       next:
         specifier: 16.2.10
         version: 16.2.10(@babel/core@7.29.7)(@playwright/test@1.61.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       next-intl:
-        specifier: ^4.13.6
+        specifier: 4.13.6
         version: 4.13.6(next@16.2.10(@babel/core@7.29.7)(@playwright/test@1.61.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
       react:
         specifier: 19.2.4
         version: 19.2.4
       react-aria-components:
-        specifier: ^1.20.0
+        specifier: 1.20.0
         version: 1.20.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
     devDependencies:
       '@playwright/test':
-        specifier: ^1.61.1
+        specifier: 1.61.1
         version: 1.61.1
       '@tailwindcss/postcss':
-        specifier: ^4
+        specifier: 4.3.2
         version: 4.3.2
       '@types/node':
-        specifier: ^20
+        specifier: 20.19.43
         version: 20.19.43
       '@types/react':
-        specifier: ^19
+        specifier: 19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19
+        specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.17)
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
       eslint:
-        specifier: ^9
+        specifier: 9.39.5
         version: 9.39.5(jiti@2.7.0)
       eslint-config-next:
         specifier: 16.2.10
         version: 16.2.10(@typescript-eslint/parser@8.64.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
       prettier:
-        specifier: ^3.9.5
+        specifier: 3.9.5
         version: 3.9.5
       supabase:
         specifier: 2.113.0
         version: 2.113.0
       tailwindcss:
-        specifier: ^4
+        specifier: 4.3.2
         version: 4.3.2
       typescript:
-        specifier: ^5
+        specifier: 5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.1.10
+        specifier: 4.1.10
         version: 4.1.10(@types/node@20.19.43)(vite@8.1.4(@types/node@20.19.43)(jiti@2.7.0))
 
 packages:

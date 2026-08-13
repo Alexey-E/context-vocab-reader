@@ -1,3 +1,38 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+saveExact: true
+frozenLockfile: true
+
+minimumReleaseAge: 10080
+minimumReleaseAgeStrict: true
+minimumReleaseAgeIgnoreMissingTime: false
+minimumReleaseAgeExclude:
+  # Bootstrap exceptions for versions reviewed before the policy was enabled.
+  # Remove this entire list after 2026-08-17T13:10:00Z.
+  - "@supabase/cli-darwin-arm64@2.113.0"
+  - "@supabase/cli-darwin-x64@2.113.0"
+  - "@supabase/cli-linux-arm64-musl@2.113.0"
+  - "@supabase/cli-linux-arm64@2.113.0"
+  - "@supabase/cli-linux-x64-musl@2.113.0"
+  - "@supabase/cli-linux-x64@2.113.0"
+  - "@supabase/cli-windows-arm64@2.113.0"
+  - "@supabase/cli-windows-x64@2.113.0"
+  - "icu-minify@4.13.6"
+  - "next-intl-swc-plugin-extractor@4.13.6"
+  - "next-intl@4.13.6"
+  - "supabase@2.113.0"
+  - "use-intl@4.13.6"
+
+trustPolicy: no-downgrade
+trustLockfile: false
+trustPolicyExclude:
+  # Existing transitive versions that predate this policy. Review on parent updates.
+  - "eslint-import-resolver-typescript@3.10.1"
+  - "semver@6.3.1"
+  - "undici-types@6.21.0"
+
+blockExoticSubdeps: true
+strictDepBuilds: true
+allowBuilds:
+  "@parcel/watcher": false
+  "@swc/core": false
+  sharp: false
+  unrs-resolver: false
