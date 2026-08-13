@@ -1,13 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
 import { useTranslations } from "next-intl";
+import { useActionState, useState } from "react";
 
 import type { DocumentFormState } from "@/features/documents/actions";
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 import type { DocumentFormValues } from "@/features/documents/validation";
 import type { AppErrorPayload } from "@/lib/errors/catalog";
-import { LANGUAGES } from "@/lib/languages";
+import { getLanguage, LANGUAGES } from "@/lib/languages";
 import { Link } from "@/i18n/navigation";
 
 const initialState: DocumentFormState = { revision: 0, status: "idle" };
@@ -22,6 +22,7 @@ type LanguageSelectFieldProps = Readonly<{
   error?: AppErrorPayload;
   label: string;
   name: "sourceLanguage" | "targetLanguage";
+  onChange?: (value: string) => void;
   value: string;
 }>;
 
@@ -29,6 +30,7 @@ function LanguageSelectField({
   error,
   label,
   name,
+  onChange,
   value,
 }: LanguageSelectFieldProps) {
   const errorId =
@@ -46,6 +48,7 @@ function LanguageSelectField({
         name={name}
         required
         defaultValue={value}
+        onChange={(event) => onChange?.(event.target.value)}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         className="mt-2 h-12 w-full rounded-xl border border-border-strong bg-surface px-4 text-[15px] text-text outline-none transition focus:border-primary focus:ring-3 focus:ring-primary/10"
@@ -79,8 +82,12 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
     createAction,
     initialState,
   );
+  const [sourceLanguage, setSourceLanguage] = useState(
+    initialValues.sourceLanguage,
+  );
   const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
   const values = state.status === "error" ? state.values : initialValues;
+  const sourceDirection = getLanguage(sourceLanguage)?.direction ?? "auto";
 
   // A rejected React form action resets uncontrolled fields. Remount the form
   // so they adopt the submitted values returned by the server action.
@@ -123,6 +130,7 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
           error={fieldErrors?.sourceLanguage}
           label={t("sourceLanguage")}
           name="sourceLanguage"
+          onChange={setSourceLanguage}
           value={values.sourceLanguage}
         />
         <LanguageSelectField
@@ -143,6 +151,8 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
           required
           maxLength={DOCUMENT_FIELD_LIMITS.content.maxLength}
           defaultValue={values.content}
+          lang={sourceLanguage}
+          dir={sourceDirection}
           rows={14}
           aria-invalid={Boolean(fieldErrors?.content)}
           aria-describedby={fieldErrors?.content ? "content-error" : undefined}
