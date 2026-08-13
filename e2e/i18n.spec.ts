@@ -86,6 +86,23 @@ test("switches locale while preserving path, query, hash, and preference", async
   await expect(page).toHaveURL(/\/fr$/);
 });
 
+test("preserves an auth mode selected in the UI across locale changes", async ({
+  page,
+}) => {
+  await page.goto("/login");
+
+  await page.getByRole("tab", { name: "Create account" }).click();
+  await expect(page).toHaveURL(/\/login\?mode=sign-up$/);
+
+  await page.getByRole("button", { name: "Language: English" }).click();
+  await page.getByRole("menuitemradio", { name: /^Français/ }).click();
+
+  await expect(page).toHaveURL(/\/fr\/login\?mode=sign-up$/);
+  await expect(
+    page.getByRole("tab", { name: "Créer un compte" }),
+  ).toHaveAttribute("aria-selected", "true");
+});
+
 test("supports keyboard navigation in the language menu", async ({ page }) => {
   await page.goto("/");
 

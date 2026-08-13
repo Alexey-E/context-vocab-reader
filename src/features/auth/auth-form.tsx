@@ -1,10 +1,12 @@
 "use client";
 
-import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
+import { useActionState, useState } from "react";
 
 import type { AuthActionState } from "@/app/login/actions";
 import { AUTH_FIELD_LIMITS } from "@/features/auth/constants";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import type { AppErrorPayload } from "@/lib/errors/catalog";
 
 type AuthMode = "sign-in" | "sign-up";
@@ -17,7 +19,6 @@ const initialAuthActionState: AuthActionState = {
 
 type AuthFormProps = Readonly<{
   initialError?: AppErrorPayload;
-  initialMode: AuthMode;
   signInAction: (
     previousState: AuthActionState,
     formData: FormData,
@@ -131,13 +132,16 @@ function PasswordField({ error, mode }: PasswordFieldProps) {
 
 export function AuthForm({
   initialError,
-  initialMode,
   signInAction,
   signInWithGoogleAction,
   signUpAction,
 }: AuthFormProps) {
   const t = useTranslations("Auth");
-  const [mode, setMode] = useState<AuthMode>(initialMode);
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const mode: AuthMode =
+    searchParams.get("mode") === "sign-up" ? "sign-up" : "sign-in";
   const [signInState, signInDispatch, signInPending] = useActionState(
     signInAction,
     initialAuthActionState,
@@ -175,6 +179,24 @@ export function AuthForm({
   const feedback = getAuthFeedback(state, initialError);
   const submitLabel = pending ? t("pending") : modeContent.submitLabel;
 
+  function chooseMode(nextMode: AuthMode) {
+    if (nextMode === mode) return;
+
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (nextMode === "sign-up") {
+      nextSearchParams.set("mode", nextMode);
+    } else {
+      nextSearchParams.delete("mode");
+    }
+
+    const query = nextSearchParams.toString();
+    const hash = window.location.hash;
+    const href = `${pathname}${query ? `?${query}` : ""}${hash}`;
+
+    router.replace(href, { scroll: false });
+  }
+
   return (
     <section className="w-full min-w-0 max-w-full bg-surface sm:max-w-117.5 sm:rounded-[28px] sm:border sm:border-border sm:px-11 sm:py-10 sm:shadow-[0_8px_30px_rgba(15,23,42,0.04)]">
       <p className="text-xs font-bold tracking-[0.16em] text-primary uppercase">
@@ -198,7 +220,7 @@ export function AuthForm({
             type="button"
             role="tab"
             aria-selected={mode === option}
-            onClick={() => setMode(option)}
+            onClick={() => chooseMode(option)}
             className={`min-h-10 cursor-pointer rounded-full border px-3 text-sm font-semibold transition-colors ${
               mode === option
                 ? "border-border bg-surface text-text shadow-sm"

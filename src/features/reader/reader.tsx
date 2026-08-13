@@ -43,7 +43,7 @@ export function Reader({
         </div>
 
         <h1
-          lang={sourceLanguage}
+          dir="auto"
           className="mt-7 max-w-[22ch] text-3xl font-bold tracking-[-0.035em] text-balance sm:text-5xl"
         >
           {title}

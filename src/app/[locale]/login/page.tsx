@@ -22,7 +22,6 @@ export async function generateMetadata(): Promise<Metadata> {
 type LoginPageProps = Readonly<{
   searchParams: Promise<{
     error?: string | string[];
-    mode?: string | string[];
   }>;
 }>;
 
@@ -47,8 +46,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const initialError = parsedErrorCode
     ? await createErrorPayload(parsedErrorCode, locale)
     : undefined;
-  const initialMode =
-    getFirstValue(params.mode) === "sign-up" ? "sign-up" : "sign-in";
   const signInAction = signIn.bind(null, locale);
   const signUpAction = signUp.bind(null, locale);
   const signInWithGoogleAction = signInWithGoogle.bind(null, locale);
@@ -113,7 +110,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="-mt-5 flex w-full min-w-0 flex-1 flex-col rounded-t-[28px] bg-surface px-5 pt-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:mx-auto sm:-mt-6 sm:max-w-[550px] sm:px-10 lg:m-0 lg:max-w-none lg:flex-none lg:rounded-none lg:bg-transparent lg:p-0">
           <AuthForm
             initialError={initialError}
-            initialMode={initialMode}
             signInAction={signInAction}
             signInWithGoogleAction={signInWithGoogleAction}
             signUpAction={signUpAction}
