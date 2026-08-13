@@ -1,5 +1,7 @@
 import "server-only";
 
+import { useTranslations } from "next-intl";
+
 import { LanguagePair } from "@/components/language-pair";
 import { processReaderText } from "@/features/reader/text-processing";
 import { getLanguage } from "@/lib/languages";
@@ -19,6 +21,7 @@ export function Reader({
   title,
   visibility,
 }: ReaderProps) {
+  const t = useTranslations("Reader");
   const source = getLanguage(sourceLanguage);
   const target = getLanguage(targetLanguage);
   const direction = source?.direction ?? "auto";
@@ -30,7 +33,7 @@ export function Reader({
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
           {visibility === "public" ? (
             <span className="rounded-full bg-success-soft px-2.5 py-1 text-success-soft-text">
-              Public sample
+              {t("publicSample")}
             </span>
           ) : null}
           <LanguagePair

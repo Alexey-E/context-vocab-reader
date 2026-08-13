@@ -1,13 +1,11 @@
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 import { isLanguageCode, type LanguageCode } from "@/lib/languages";
-import { createErrorPayload, type AppErrorPayload } from "@/lib/errors/catalog";
+import type { AppErrorCode } from "@/lib/errors/catalog";
 
 export type DocumentField =
   "content" | "sourceLanguage" | "targetLanguage" | "title";
 
-export type DocumentFieldErrors = Partial<
-  Record<DocumentField, AppErrorPayload>
->;
+export type DocumentFieldErrors = Partial<Record<DocumentField, AppErrorCode>>;
 
 export type ValidDocumentInput = {
   content: string;
@@ -57,31 +55,25 @@ export function validateDocumentForm(
   const errors: DocumentFieldErrors = {};
 
   if (!title) {
-    errors.title = createErrorPayload("validation.document.title.required");
+    errors.title = "validation.document.title.required";
   } else if (title.length > DOCUMENT_FIELD_LIMITS.title.maxLength) {
-    errors.title = createErrorPayload("validation.document.title.too_long");
+    errors.title = "validation.document.title.too_long";
   }
 
   if (!content.trim()) {
-    errors.content = createErrorPayload("validation.document.content.required");
+    errors.content = "validation.document.content.required";
   } else if (content.length > DOCUMENT_FIELD_LIMITS.content.maxLength) {
-    errors.content = createErrorPayload("validation.document.content.too_long");
+    errors.content = "validation.document.content.too_long";
   }
 
   if (!isLanguageCode(sourceLanguage)) {
-    errors.sourceLanguage = createErrorPayload(
-      "validation.document.source_language.invalid",
-    );
+    errors.sourceLanguage = "validation.document.source_language.invalid";
   }
 
   if (!isLanguageCode(targetLanguage)) {
-    errors.targetLanguage = createErrorPayload(
-      "validation.document.target_language.invalid",
-    );
+    errors.targetLanguage = "validation.document.target_language.invalid";
   } else if (sourceLanguage === targetLanguage) {
-    errors.targetLanguage = createErrorPayload(
-      "validation.document.languages_same",
-    );
+    errors.targetLanguage = "validation.document.languages_same";
   }
 
   if (Object.keys(errors).length > 0) {

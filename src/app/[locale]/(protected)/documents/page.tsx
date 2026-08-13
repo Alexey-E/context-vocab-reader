@@ -1,25 +1,28 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icons";
 import { LanguagePair } from "@/components/language-pair";
 import { SiteHeader } from "@/components/site-header";
 import { DeleteDocumentButton } from "@/features/documents/delete-document-button";
+import { deleteDocument } from "@/features/documents/actions";
 import { listDocuments } from "@/features/documents/queries";
 import { getLanguage } from "@/lib/languages";
+import { Link } from "@/i18n/navigation";
 
-export const metadata: Metadata = {
-  title: "My documents",
-};
-
-const dateFormatter = new Intl.DateTimeFormat("en", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Metadata");
+  return { title: t("documents") };
+}
 
 export default async function DocumentsPage() {
-  const documents = await listDocuments();
+  const [documents, t, common, format, locale] = await Promise.all([
+    listDocuments(),
+    getTranslations("Documents"),
+    getTranslations("Common"),
+    getFormatter(),
+    getLocale(),
+  ]);
 
   return (
     <main className="min-h-dvh bg-page text-text">
@@ -28,20 +31,20 @@ export default async function DocumentsPage() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-bold tracking-[0.14em] text-primary uppercase">
-              Private library
+              {t("eyebrow")}
             </p>
             <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-              My documents
+              {t("heading")}
             </h1>
             <p className="mt-3 max-w-xl text-base leading-7 text-muted">
-              Add texts you want to read and keep them private to your account.
+              {t("description")}
             </p>
           </div>
           <Link
             href="/documents/new"
             className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-contrast shadow-lg transition hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Add document
+            {t("add")}
           </Link>
         </div>
 
@@ -64,9 +67,13 @@ export default async function DocumentsPage() {
                           target?.name ?? document.target_language.toUpperCase()
                         }
                       />
-                      <div className="ml-auto -mt-1 -mr-2">
+                      <div className="ms-auto -mt-1 -me-2">
                         <DeleteDocumentButton
-                          documentId={document.id}
+                          deleteAction={deleteDocument.bind(
+                            null,
+                            locale,
+                            document.id,
+                          )}
                           documentTitle={document.title}
                         />
                       </div>
@@ -81,13 +88,20 @@ export default async function DocumentsPage() {
                     </h2>
                     <div className="mt-auto flex items-center justify-between gap-4 pt-8 text-xs text-subtle">
                       <span>
-                        {dateFormatter.format(new Date(document.created_at))}
+                        {format.dateTime(new Date(document.created_at), {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
                       </span>
                       <Link
                         href={`/documents/${document.id}`}
                         className="inline-flex items-center gap-1 font-semibold text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                       >
-                        Open <ArrowRightIcon />
+                        {common("open")}{" "}
+                        <span className="rtl:rotate-180">
+                          <ArrowRightIcon />
+                        </span>
                       </Link>
                     </div>
                   </article>
@@ -97,16 +111,15 @@ export default async function DocumentsPage() {
           </ul>
         ) : (
           <div className="mt-10 rounded-3xl border border-dashed border-border-strong bg-surface px-6 py-14 text-center">
-            <h2 className="text-2xl font-bold">Your library is empty</h2>
+            <h2 className="text-2xl font-bold">{t("emptyHeading")}</h2>
             <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted">
-              Paste your first text to prepare it for contextual reading and
-              translation.
+              {t("emptyDescription")}
             </p>
             <Link
               href="/documents/new"
               className="mt-7 inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-contrast hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
-              Create first document
+              {t("createFirst")}
             </Link>
           </div>
         )}

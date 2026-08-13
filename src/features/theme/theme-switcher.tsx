@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import {
   Button,
   Menu,
@@ -11,12 +12,6 @@ import {
 
 import { APP_THEMES, type AppTheme } from "@/features/theme/theme";
 import { useTheme } from "@/features/theme/theme-provider";
-
-const THEME_LABELS: Record<AppTheme, string> = {
-  dark: "Dark",
-  light: "Light",
-  system: "System",
-};
 
 function ThemeIcon({ theme }: Readonly<{ theme: AppTheme }>) {
   if (theme === "light") {
@@ -82,6 +77,7 @@ type ThemeSwitcherProps = Readonly<{
 }>;
 
 export function ThemeSwitcher({ inverse = false }: ThemeSwitcherProps) {
+  const t = useTranslations("Theme");
   const { isPending, setTheme, theme } = useTheme();
   const pendingThemeRef = useRef<AppTheme | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -100,12 +96,18 @@ export function ThemeSwitcher({ inverse = false }: ThemeSwitcherProps) {
     setTheme(nextTheme);
   }
 
+  const labels: Record<AppTheme, string> = {
+    dark: t("dark"),
+    light: t("light"),
+    system: t("system"),
+  };
+
   return (
     <div className="shrink-0">
       <MenuTrigger>
         <Button
           ref={triggerRef}
-          aria-label={`Theme: ${THEME_LABELS[theme]}`}
+          aria-label={t("current", { theme: labels[theme] })}
           isPending={isPending}
           className={`inline-flex size-10 cursor-pointer items-center justify-center rounded-full border transition outline-none data-focus-visible:outline-2 data-focus-visible:outline-offset-2 data-focus-visible:outline-solid data-focus-visible:outline-primary ${
             inverse
@@ -117,48 +119,30 @@ export function ThemeSwitcher({ inverse = false }: ThemeSwitcherProps) {
         </Button>
 
         <Popover
-          isNonModal
           placement="bottom end"
           offset={8}
           className="z-50 w-40 rounded-2xl border border-border bg-surface p-2 text-text shadow-xl"
         >
-          <div
-            onKeyDownCapture={(event) => {
-              if (event.code !== "Space") return;
-
-              const activeElement = document.activeElement;
-              if (!(activeElement instanceof HTMLElement)) return;
-
-              const nextTheme = APP_THEMES.find(
-                (option) => option === activeElement.dataset.themeOption,
-              );
-              if (!nextTheme) return;
-
-              chooseTheme(nextTheme);
-            }}
+          <Menu
+            aria-label={t("menuLabel")}
+            selectionMode="single"
+            selectedKeys={[theme]}
+            shouldCloseOnSelect
+            className="outline-none"
           >
-            <Menu
-              aria-label="Color theme"
-              selectionMode="single"
-              selectedKeys={[theme]}
-              shouldCloseOnSelect
-              className="outline-none"
-            >
-              {APP_THEMES.map((option) => (
-                <MenuItem
-                  key={option}
-                  id={option}
-                  data-theme-option={option}
-                  textValue={THEME_LABELS[option]}
-                  onAction={() => chooseTheme(option)}
-                  className="flex min-h-10 w-full cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold text-muted transition outline-none hover:bg-surface-muted hover:text-text data-focus-visible:bg-surface-muted data-focus-visible:text-text data-focus-visible:outline-2 data-focus-visible:outline-solid data-focus-visible:outline-primary data-selected:bg-selected data-selected:text-selected-text"
-                >
-                  <ThemeIcon theme={option} />
-                  {THEME_LABELS[option]}
-                </MenuItem>
-              ))}
-            </Menu>
-          </div>
+            {APP_THEMES.map((option) => (
+              <MenuItem
+                key={option}
+                id={option}
+                textValue={labels[option]}
+                onAction={() => chooseTheme(option)}
+                className="flex min-h-10 w-full cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold text-muted transition outline-none hover:bg-surface-muted hover:text-text data-focus-visible:bg-surface-muted data-focus-visible:text-text data-focus-visible:outline-2 data-focus-visible:outline-solid data-focus-visible:outline-primary data-selected:bg-selected data-selected:text-selected-text"
+              >
+                <ThemeIcon theme={option} />
+                {labels[option]}
+              </MenuItem>
+            ))}
+          </Menu>
         </Popover>
       </MenuTrigger>
     </div>

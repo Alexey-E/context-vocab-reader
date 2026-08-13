@@ -1,14 +1,17 @@
 "use client";
 
 import { RouteErrorState } from "@/components/route-error-state";
+import { useTranslations } from "next-intl";
 
 export default function DocumentsError({ reset }: { reset: () => void }) {
+  const t = useTranslations("RouteStates.documentsError");
+
   return (
     <RouteErrorState
-      description="Please try again. Your saved documents have not been changed."
-      eyebrow="Library unavailable"
+      description={t("description")}
+      eyebrow={t("eyebrow")}
       onRetry={reset}
-      title="Your documents could not be loaded"
+      title={t("title")}
     />
   );
 }

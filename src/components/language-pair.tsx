@@ -18,7 +18,7 @@ export function LanguagePair({
       <span className="rounded-full bg-surface-muted px-2.5 py-1 text-muted">
         {sourceLanguage}
       </span>
-      <ArrowRightIcon className="size-3.5 text-subtle" />
+      <ArrowRightIcon className="size-3.5 text-subtle rtl:rotate-180" />
       <span className="rounded-full bg-primary-soft px-2.5 py-1 text-primary-soft-text">
         {targetLanguage}
       </span>

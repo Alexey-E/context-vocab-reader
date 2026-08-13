@@ -106,6 +106,14 @@ Application configuration belongs to the feature that defines its meaning. Relat
 
 Data catalogs, environment configuration, and algorithm-specific patterns remain separate from feature configuration objects. A value should be extracted into a named constant only when it is reused or represents an explicit product policy that should have one source of truth.
 
+## Interface internationalization
+
+`next-intl` provides locale-aware routing and message formatting for the application interface. English is the canonical default locale and uses unprefixed URLs. Russian, French, Spanish, and Arabic use `/ru`, `/fr`, `/es`, and `/ar`. Locale selection follows this priority: an explicit URL prefix, the saved `NEXT_LOCALE` device cookie, browser language preferences, then English.
+
+Interface localization and document languages are separate domains. Switching the interface locale translates navigation, forms, validation, route states, metadata, and accessibility labels; it never translates a sample or user document. Translation-provider language discovery is likewise independent and belongs to the translation feature.
+
+The active interface locale sets `<html lang>` and its writing direction. Arabic uses RTL for the application chrome. Reader content sets its own `lang` and `dir` from the source document, so an English document remains LTR inside Arabic UI and an Arabic document remains RTL in every interface locale.
+
 ## Accessible interaction primitives
 
 `react-aria-components` is the default foundation for complex client-side controls whose correctness depends on coordinated keyboard, focus, touch, overlay, and screen-reader behavior. The theme menu is the first implementation. Appropriate future uses include the interface-language switcher, searchable translation-language comboboxes, translation dialogs and popovers, sentence disclosures, and vocabulary search or filters.

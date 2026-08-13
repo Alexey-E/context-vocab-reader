@@ -1,8 +1,10 @@
 import "server-only";
 
-import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 import { cache } from "react";
 
+import { redirect } from "@/i18n/navigation";
+import type { AppLocale } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 
 export const getAuthContext = cache(async () => {
@@ -28,12 +30,13 @@ export const getAuthContext = cache(async () => {
   };
 });
 
-export async function requireUser() {
+export async function requireUser(localeOverride?: AppLocale) {
   const auth = await getAuthContext();
 
-  if (!auth.authenticated) {
-    redirect("/login");
+  if (auth.authenticated) {
+    return auth;
   }
 
-  return auth;
+  const locale = localeOverride ?? (await getLocale());
+  return redirect({ href: "/login", locale });
 }

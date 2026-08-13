@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { BackLink } from "@/components/back-link";
 import { SiteHeader } from "@/components/site-header";
 import { getDocument, isDocumentId } from "@/features/documents/queries";
 import { Reader } from "@/features/reader/reader";
 
-export const metadata: Metadata = {
-  title: "Document",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Metadata");
+  return { title: t("document") };
+}
 
 type DocumentPageProps = Readonly<{
   params: Promise<{ id: string }>;
 }>;
 
 export default async function DocumentPage({ params }: DocumentPageProps) {
-  const { id } = await params;
+  const [{ id }, common] = await Promise.all([
+    params,
+    getTranslations("Common"),
+  ]);
 
   if (!isDocumentId(id)) {
     notFound();
@@ -31,7 +36,7 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
     <main className="min-h-dvh bg-page text-text">
       <SiteHeader />
       <div className="mx-auto w-full max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
-        <BackLink href="/documents" label="My documents" />
+        <BackLink href="/documents" label={common("myDocuments")} />
 
         <Reader
           content={document.content}

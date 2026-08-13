@@ -111,7 +111,7 @@ test("navigates the theme menu with arrows and selects with Enter", async ({
   await expect(system).toBeFocused();
   await page.keyboard.press("End");
   await expect(dark).toBeFocused();
-  await page.keyboard.press("Enter");
+  await dark.press("Enter");
 
   await expect(menu).toBeHidden();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -119,7 +119,9 @@ test("navigates the theme menu with arrows and selects with Enter", async ({
   await expect(page.getByRole("button", { name: "Theme: Dark" })).toBeFocused();
 });
 
-test("supports trigger arrows, Space, Escape, and Tab", async ({ page }) => {
+test("supports trigger arrows, Space, Escape, and modal focus containment", async ({
+  page,
+}) => {
   await page.goto("/");
 
   const systemTrigger = page.getByRole("button", { name: "Theme: System" });
@@ -140,9 +142,16 @@ test("supports trigger arrows, Space, Escape, and Tab", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(system).toBeFocused();
   await page.keyboard.press("Tab");
+  await expect(menu).toBeVisible();
+  await expect
+    .poll(() =>
+      menu.evaluate((element) =>
+        element.parentElement?.contains(document.activeElement),
+      ),
+    )
+    .toBe(true);
+  await page.keyboard.press("Escape");
   await expect(menu).toBeHidden();
-  await expect(page.getByRole("link", { name: "Sign in" })).toBeFocused();
-  await page.keyboard.press("Shift+Tab");
   await expect(systemTrigger).toBeFocused();
 
   await page.keyboard.press("ArrowUp");

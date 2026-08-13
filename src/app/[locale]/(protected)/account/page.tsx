@@ -1,31 +1,36 @@
 import type { Metadata } from "next";
 import { revalidatePath } from "next/cache";
-import Link from "next/link";
-import { redirect, RedirectType } from "next/navigation";
+import { RedirectType } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { Link, redirect } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth/require-user";
-import { createErrorPayload } from "@/lib/errors/catalog";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = {
-  title: "Account",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Metadata");
+  return { title: t("account") };
+}
 
 export default async function AccountPage() {
+  const [locale, { claims }, t, common] = await Promise.all([
+    getLocale(),
+    requireUser(),
+    getTranslations("Account"),
+    getTranslations("Common"),
+  ]);
+
   async function signOut() {
     "use server";
 
     const supabase = await createClient();
     const { error } = await supabase.auth.signOut({ scope: "local" });
-    const destination = error
-      ? `/login?error=${createErrorPayload("auth.signout_failed").code}`
-      : "/login";
+    const destination = error ? "/login?error=auth.signout_failed" : "/login";
 
     revalidatePath("/", "layout");
-    redirect(destination, RedirectType.replace);
+    redirect({ href: destination, locale }, RedirectType.replace);
   }
 
-  const { claims } = await requireUser();
   const email = typeof claims.email === "string" ? claims.email : null;
 
   return (
@@ -35,25 +40,22 @@ export default async function AccountPage() {
           Context Vocab Reader
         </p>
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-text">
-          You are signed in
+          {t("heading")}
         </h1>
         {email && <p className="mt-3 text-muted">{email}</p>}
-        <p className="mt-8 text-sm leading-6 text-muted">
-          The authenticated session is active. Open your private documents or
-          explore a public sample.
-        </p>
+        <p className="mt-8 text-sm leading-6 text-muted">{t("description")}</p>
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
           <Link
             href="/documents"
             className="inline-flex min-h-12 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-contrast transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            My documents
+            {common("myDocuments")}
           </Link>
           <Link
             href="/samples"
             className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border-strong bg-surface px-5 text-sm font-semibold text-muted transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Browse samples
+            {common("browseSamples")}
           </Link>
         </div>
         <form action={signOut} className="mt-3">
@@ -61,7 +63,7 @@ export default async function AccountPage() {
             type="submit"
             className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-inverse px-5 font-semibold text-inverse-text transition-colors hover:bg-inverse-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Sign out
+            {t("signOut")}
           </button>
         </form>
       </section>

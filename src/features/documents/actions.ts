@@ -1,21 +1,27 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 import type {
-  DocumentFieldErrors,
+  DocumentField,
   DocumentFormValues,
 } from "@/features/documents/validation";
 import { validateDocumentForm } from "@/features/documents/validation";
 import { requireUser } from "@/lib/auth/require-user";
-import { createErrorPayload, type AppErrorPayload } from "@/lib/errors/catalog";
+import { getPathname, redirect } from "@/i18n/navigation";
+import { parseAppLocale, type AppLocale } from "@/i18n/routing";
+import type { AppErrorPayload } from "@/lib/errors/catalog";
+import { createErrorPayload, localizeFieldErrors } from "@/lib/errors/localize";
+
+type LocalizedDocumentFieldErrors = Partial<
+  Record<DocumentField, AppErrorPayload>
+>;
 
 export type DocumentFormState =
   | { revision: 0; status: "idle" }
   | {
       error: AppErrorPayload;
-      fieldErrors?: DocumentFieldErrors;
+      fieldErrors?: LocalizedDocumentFieldErrors;
       revision: number;
       status: "error";
       values: DocumentFormValues;
@@ -25,23 +31,25 @@ export type DeleteDocumentState =
   { status: "idle" } | { error: AppErrorPayload; status: "error" };
 
 export async function createDocument(
+  actionLocale: AppLocale,
   previousState: DocumentFormState,
   formData: FormData,
 ): Promise<DocumentFormState> {
+  const locale = parseAppLocale(actionLocale);
   const result = validateDocumentForm(formData);
   const revision = previousState.revision + 1;
 
   if (!result.valid) {
     return {
-      error: createErrorPayload("validation.form_invalid"),
-      fieldErrors: result.errors,
+      error: await createErrorPayload("validation.form_invalid", locale),
+      fieldErrors: await localizeFieldErrors(result.errors, locale),
       revision,
       status: "error",
       values: result.values,
     };
   }
 
-  const { supabase, userId } = await requireUser();
+  const { supabase, userId } = await requireUser(locale);
   const { data, error } = await supabase
     .from("documents")
     .insert({
@@ -56,18 +64,19 @@ export async function createDocument(
 
   if (error) {
     return {
-      error: createErrorPayload("documents.create_failed"),
+      error: await createErrorPayload("documents.create_failed", locale),
       revision,
       status: "error",
       values: result.values,
     };
   }
 
-  revalidatePath("/documents");
-  redirect(`/documents/${data.id}`);
+  revalidatePath(getPathname({ href: "/documents", locale }));
+  return redirect({ href: `/documents/${data.id}`, locale });
 }
 
 export async function deleteDocument(
+  actionLocale: AppLocale,
   documentId: string,
   _previousState: DeleteDocumentState,
   _formData: FormData,
@@ -75,7 +84,8 @@ export async function deleteDocument(
   void _previousState;
   void _formData;
 
-  const { supabase, userId } = await requireUser();
+  const locale = parseAppLocale(actionLocale);
+  const { supabase, userId } = await requireUser(locale);
   const { data, error } = await supabase
     .from("documents")
     .delete()
@@ -86,11 +96,11 @@ export async function deleteDocument(
 
   if (error || !data) {
     return {
-      error: createErrorPayload("documents.delete_failed"),
+      error: await createErrorPayload("documents.delete_failed", locale),
       status: "error",
     };
   }
 
-  revalidatePath("/documents");
-  redirect("/documents");
+  revalidatePath(getPathname({ href: "/documents", locale }));
+  return redirect({ href: "/documents", locale });
 }

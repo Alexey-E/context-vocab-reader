@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { ArrowRightIcon } from "@/components/icons/arrow-icons";
 import { LanguagePair } from "@/components/language-pair";
@@ -7,16 +7,22 @@ import { SiteHeader } from "@/components/site-header";
 import { listSampleDocuments } from "@/features/documents/queries";
 import { getAuthContext } from "@/lib/auth/require-user";
 import { getLanguage } from "@/lib/languages";
+import { Link } from "@/i18n/navigation";
 
-export const metadata: Metadata = {
-  title: "Sample texts",
-  description: "Open a curated text and explore the reader without signing in.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Metadata");
+  return {
+    description: t("samplesDescription"),
+    title: t("samples"),
+  };
+}
 
 export default async function SamplesPage() {
-  const [samples, { authenticated }] = await Promise.all([
+  const [samples, { authenticated }, t, auth] = await Promise.all([
     listSampleDocuments(),
     getAuthContext(),
+    getTranslations("Samples"),
+    getTranslations("Auth"),
   ]);
 
   return (
@@ -25,14 +31,13 @@ export default async function SamplesPage() {
       <section className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="max-w-2xl">
           <p className="text-xs font-bold tracking-[0.14em] text-primary uppercase">
-            Public library
+            {t("eyebrow")}
           </p>
           <h1 className="mt-3 text-4xl font-bold tracking-[-0.04em] sm:text-5xl">
-            Choose a sample text
+            {t("heading")}
           </h1>
           <p className="mt-4 text-base leading-7 text-muted sm:text-lg">
-            Start reading without an account. Translation controls will be added
-            in the next stages.
+            {t("description")}
           </p>
         </div>
 
@@ -60,7 +65,10 @@ export default async function SamplesPage() {
                       {sample.title}
                     </h2>
                     <span className="mt-auto inline-flex items-center gap-1 pt-8 text-sm font-semibold text-primary">
-                      Open sample <ArrowRightIcon />
+                      {t("open")}{" "}
+                      <span className="rtl:rotate-180">
+                        <ArrowRightIcon />
+                      </span>
                     </span>
                   </Link>
                 </li>
@@ -69,26 +77,24 @@ export default async function SamplesPage() {
           </ul>
         ) : (
           <div className="mt-10 rounded-3xl border border-dashed border-border-strong bg-surface px-6 py-12 text-center">
-            <h2 className="text-xl font-bold">No sample texts yet</h2>
-            <p className="mt-2 text-sm text-muted">
-              Curated texts will appear here when they are available.
-            </p>
+            <h2 className="text-xl font-bold">{t("emptyHeading")}</h2>
+            <p className="mt-2 text-sm text-muted">{t("emptyDescription")}</p>
           </div>
         )}
 
         {!authenticated ? (
           <aside className="mt-10 flex flex-col gap-4 rounded-3xl bg-inverse px-6 py-7 text-inverse-text sm:flex-row sm:items-center sm:justify-between sm:px-8">
             <div>
-              <h2 className="text-xl font-bold">Want to use your own text?</h2>
+              <h2 className="text-xl font-bold">{t("signupHeading")}</h2>
               <p className="mt-1 text-sm leading-6 text-inverse-text-muted">
-                Create an account to keep private documents and vocabulary.
+                {t("signupDescription")}
               </p>
             </div>
             <Link
               href="/login?mode=sign-up"
               className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-surface px-5 text-sm font-semibold text-text transition hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
-              Create account
+              {auth("createAccount")}
             </Link>
           </aside>
         ) : null}

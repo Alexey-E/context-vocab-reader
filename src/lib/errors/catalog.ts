@@ -1,59 +1,100 @@
 import { AUTH_FIELD_LIMITS } from "@/features/auth/constants";
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 
-export const APP_ERROR_MESSAGES = {
-  "auth.confirmation_failed":
-    "The confirmation link is invalid or expired. Request a new one and try again.",
-  "auth.email_not_confirmed": "Confirm your email before signing in.",
-  "auth.failed": "Authentication failed. Please try again.",
-  "auth.invalid_credentials": "The email or password is incorrect.",
-  "auth.oauth_callback_failed":
-    "Google sign-in could not be completed. Please try again.",
-  "auth.oauth_start_failed":
-    "Google sign-in could not be started. Please try again.",
-  "auth.rate_limited": "Too many attempts. Please wait a moment and try again.",
-  "auth.signout_failed": "Sign-out could not be completed. Please try again.",
-  "auth.user_already_exists": "An account with this email already exists.",
-  "auth.weak_password": "Choose a stronger password.",
-  "documents.create_failed":
-    "The document could not be created. Please try again.",
-  "documents.delete_failed":
-    "The document could not be deleted. Please try again.",
-  "validation.document.content.required": "Enter the document text.",
-  "validation.document.content.too_long": `Document text must contain at most ${DOCUMENT_FIELD_LIMITS.content.maxLength.toLocaleString("en-US")} characters.`,
-  "validation.document.languages_same":
-    "Choose different source and target languages.",
-  "validation.document.source_language.invalid":
-    "Choose a supported source language.",
-  "validation.document.target_language.invalid":
-    "Choose a supported target language.",
-  "validation.document.title.required": "Enter a document title.",
-  "validation.document.title.too_long": `Title must contain at most ${DOCUMENT_FIELD_LIMITS.title.maxLength} characters.`,
-  "validation.email.invalid": "Enter a valid email address.",
-  "validation.form_invalid": "Check the highlighted fields.",
-  "validation.password.only_spaces": "Password cannot contain only spaces.",
-  "validation.password.too_long": `Password must contain at most ${AUTH_FIELD_LIMITS.password.maxLength} characters.`,
-  "validation.password.too_short": `Password must contain at least ${AUTH_FIELD_LIMITS.password.minLength} characters.`,
-} as const satisfies Record<string, string>;
+type ErrorDefinition = Readonly<{
+  key: string;
+  values?: Readonly<Record<string, number>>;
+}>;
 
-export type AppErrorCode = keyof typeof APP_ERROR_MESSAGES;
+export const APP_ERROR_DEFINITIONS = {
+  "auth.confirmation_failed": { key: "auth.confirmationFailed" },
+  "auth.email_not_confirmed": { key: "auth.emailNotConfirmed" },
+  "auth.failed": { key: "auth.failed" },
+  "auth.invalid_credentials": { key: "auth.invalidCredentials" },
+  "auth.oauth_callback_failed": { key: "auth.oauthCallbackFailed" },
+  "auth.oauth_start_failed": { key: "auth.oauthStartFailed" },
+  "auth.rate_limited": { key: "auth.rateLimited" },
+  "auth.signout_failed": { key: "auth.signoutFailed" },
+  "auth.user_already_exists": { key: "auth.userAlreadyExists" },
+  "auth.weak_password": { key: "auth.weakPassword" },
+  "documents.create_failed": { key: "documents.createFailed" },
+  "documents.delete_failed": { key: "documents.deleteFailed" },
+  "validation.document.content.required": {
+    key: "validation.contentRequired",
+  },
+  "validation.document.content.too_long": {
+    key: "validation.contentTooLong",
+    values: { max: DOCUMENT_FIELD_LIMITS.content.maxLength },
+  },
+  "validation.document.languages_same": {
+    key: "validation.languagesSame",
+  },
+  "validation.document.source_language.invalid": {
+    key: "validation.sourceLanguageInvalid",
+  },
+  "validation.document.target_language.invalid": {
+    key: "validation.targetLanguageInvalid",
+  },
+  "validation.document.title.required": {
+    key: "validation.titleRequired",
+  },
+  "validation.document.title.too_long": {
+    key: "validation.titleTooLong",
+    values: { max: DOCUMENT_FIELD_LIMITS.title.maxLength },
+  },
+  "validation.email.invalid": { key: "validation.emailInvalid" },
+  "validation.form_invalid": { key: "validation.formInvalid" },
+  "validation.password.only_spaces": {
+    key: "validation.passwordOnlySpaces",
+  },
+  "validation.password.too_long": {
+    key: "validation.passwordTooLong",
+    values: { max: AUTH_FIELD_LIMITS.password.maxLength },
+  },
+  "validation.password.too_short": {
+    key: "validation.passwordTooShort",
+    values: { min: AUTH_FIELD_LIMITS.password.minLength },
+  },
+} as const satisfies Record<string, ErrorDefinition>;
+
+export type AppErrorCode = keyof typeof APP_ERROR_DEFINITIONS;
 
 export type AppErrorPayload = Readonly<{
   code: AppErrorCode;
   message: string;
 }>;
 
-function isAppErrorCode(value: unknown): value is AppErrorCode {
-  return typeof value === "string" && Object.hasOwn(APP_ERROR_MESSAGES, value);
+export type AppErrorTranslator = (
+  key: (typeof APP_ERROR_DEFINITIONS)[AppErrorCode]["key"],
+  values?: Readonly<Record<string, number>>,
+) => string;
+
+export function isAppErrorCode(value: unknown): value is AppErrorCode {
+  return (
+    typeof value === "string" && Object.hasOwn(APP_ERROR_DEFINITIONS, value)
+  );
 }
 
-export function createErrorPayload(code: AppErrorCode): AppErrorPayload {
+export function parseAppErrorCode(value: unknown) {
+  return isAppErrorCode(value) ? value : undefined;
+}
+
+export function formatErrorPayload(
+  code: AppErrorCode,
+  translate: AppErrorTranslator,
+): AppErrorPayload {
+  const definition: ErrorDefinition = APP_ERROR_DEFINITIONS[code];
+
   return {
     code,
-    message: APP_ERROR_MESSAGES[code],
+    message: translate(
+      definition.key as AppErrorTranslator extends (
+        key: infer Key,
+        ...args: never[]
+      ) => string
+        ? Key
+        : never,
+      definition.values,
+    ),
   };
-}
-
-export function parseErrorPayload(value: unknown) {
-  return isAppErrorCode(value) ? createErrorPayload(value) : undefined;
 }

@@ -1,0 +1,225 @@
+{
+  "Common": {
+    "account": "Account",
+    "backToDocuments": "Back to documents",
+    "browseSamples": "Browse samples",
+    "cancel": "Cancel",
+    "documents": "Documents",
+    "myDocuments": "My documents",
+    "open": "Open",
+    "portfolioMvp": "Portfolio MVP",
+    "samples": "Samples",
+    "signIn": "Sign in",
+    "tryAgain": "Try again"
+  },
+  "Navigation": {
+    "primary": "Primary navigation"
+  },
+  "LocaleSwitcher": {
+    "label": "Language: {language}",
+    "menuLabel": "Interface language"
+  },
+  "Theme": {
+    "current": "Theme: {theme}",
+    "dark": "Dark",
+    "light": "Light",
+    "menuLabel": "Color theme",
+    "system": "System"
+  },
+  "Landing": {
+    "badge": "Context-based language learning",
+    "description": "Translate only what you need and turn useful words into vocabulary cards without losing the context where you found them.",
+    "existingAccount": "I already have an account",
+    "headingFirst": "Read naturally.",
+    "headingSecond": "Remember deeply.",
+    "preview": {
+      "ariaLabel": "Reader workflow preview",
+      "contextBodyAfter": "Instead of memorizing isolated definitions, readers build connections between meaning, tone, and real usage.",
+      "contextBodyBefore": "Language learning becomes more effective when new words appear in",
+      "contextTitle": "Learning from context",
+      "meaningfulContext": "meaningful context",
+      "minutes": "{count, plural, one {# min read} other {# min read}}",
+      "reader": "Reader preview",
+      "saveWord": "Save word",
+      "savedWithContext": "Saved with context",
+      "savedWords": "{count, plural, one {# saved word} other {# saved words}}",
+      "translation": "Translation",
+      "vocabularyCards": "Vocabulary cards"
+    },
+    "startReading": "Start reading",
+    "stats": {
+      "readLabel": "Read",
+      "readValue": "Real texts",
+      "rememberLabel": "Remember",
+      "rememberValue": "In context",
+      "translateLabel": "Translate",
+      "translateValue": "On demand"
+    }
+  },
+  "Auth": {
+    "authentication": "Authentication",
+    "createAccount": "Create account",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordHint": "Password recovery will be added in a later stage.",
+    "google": "Continue with Google",
+    "hidePassword": "Hide password",
+    "modeLabel": "Authentication mode",
+    "orEmail": "or continue with email",
+    "password": "Password",
+    "passwordPlaceholder": "At least {count} characters",
+    "pending": "Please wait…",
+    "showPassword": "Show password",
+    "signIn": {
+      "description": "Use Google for the fastest demo flow, or continue with email and password.",
+      "heading": "Welcome back",
+      "submit": "Sign in"
+    },
+    "signUp": {
+      "description": "Create an account to keep documents and vocabulary synced.",
+      "heading": "Create your account",
+      "submit": "Create account",
+      "success": "Check your inbox and follow the confirmation link to continue."
+    },
+    "side": {
+      "badgeAuth": "Supabase Auth",
+      "badgePrivate": "Per-user data",
+      "description": "Sign in to sync your documents, saved vocabulary cards, reading progress, and vocabulary across devices.",
+      "heading": "Read, translate, and save words from real context.",
+      "mobileDescription": "Keep useful words connected to the context where you found them.",
+      "mobileHeading": "Read. Translate. Remember.",
+      "storageDescription": "Your documents and vocabulary stay protected by Row Level Security. Temporary sentence translations expire after one minute.",
+      "storageHeading": "What gets stored"
+    },
+    "tier": {
+      "description": "Supabase Auth is enough for the portfolio MVP and can scale with the product.",
+      "heading": "Free tier friendly"
+    }
+  },
+  "Account": {
+    "description": "The authenticated session is active. Open your private documents or explore a public sample.",
+    "heading": "You are signed in",
+    "signOut": "Sign out"
+  },
+  "Samples": {
+    "description": "Start reading without an account. Translation controls will be added in the next stages.",
+    "emptyDescription": "Curated texts will appear here when they are available.",
+    "emptyHeading": "No sample texts yet",
+    "eyebrow": "Public library",
+    "heading": "Choose a sample text",
+    "open": "Open sample",
+    "readerBack": "All samples",
+    "readerNotice": "This sample is read-only. Translation controls for selected text and complete sentences will be added in the next implementation stages.",
+    "signupDescription": "Create an account to keep private documents and vocabulary.",
+    "signupHeading": "Want to use your own text?"
+  },
+  "Documents": {
+    "add": "Add document",
+    "createFirst": "Create first document",
+    "description": "Add texts you want to read and keep them private to your account.",
+    "emptyDescription": "Paste your first text to prepare it for contextual reading and translation.",
+    "emptyHeading": "Your library is empty",
+    "eyebrow": "Private library",
+    "heading": "My documents",
+    "form": {
+      "content": "Document text",
+      "contentHint": "Up to {count, number} characters",
+      "contentPlaceholder": "Paste the text you want to read…",
+      "create": "Create document",
+      "creating": "Creating…",
+      "description": "Paste plain text and choose the language pair you want to use while reading.",
+      "eyebrow": "New document",
+      "heading": "Add a text to your library",
+      "sourceLanguage": "Source language",
+      "targetLanguage": "Translate into",
+      "title": "Title",
+      "titlePlaceholder": "A useful article"
+    },
+    "delete": {
+      "ariaLabel": "Delete {title}",
+      "cancel": "Cancel",
+      "confirm": "Delete permanently",
+      "description": "“{title}” will be permanently removed. This cannot be undone.",
+      "eyebrow": "Permanent action",
+      "heading": "Delete this document?",
+      "pending": "Deleting…",
+      "title": "Delete document"
+    }
+  },
+  "Reader": {
+    "publicSample": "Public sample"
+  },
+  "RouteStates": {
+    "documentsError": {
+      "description": "Please try again. Your saved documents have not been changed.",
+      "eyebrow": "Library unavailable",
+      "title": "Your documents could not be loaded"
+    },
+    "documentNotFound": {
+      "description": "It may have been deleted, or it may not belong to your account.",
+      "title": "This document is unavailable"
+    },
+    "notFoundEyebrow": "Not found",
+    "samplesError": {
+      "description": "Please try again. Your request did not change any saved data.",
+      "eyebrow": "Library unavailable",
+      "title": "Sample texts could not be loaded"
+    },
+    "sampleNotFound": {
+      "description": "It may have been removed, or the link may be incorrect.",
+      "title": "This sample is unavailable"
+    },
+    "serviceUnavailable": {
+      "description": "Authentication and saved reading data cannot be reached right now. Please try again in a few minutes.",
+      "eyebrow": "Temporary interruption",
+      "title": "The service is currently unavailable"
+    }
+  },
+  "Errors": {
+    "auth": {
+      "confirmationFailed": "The confirmation link is invalid or expired. Request a new one and try again.",
+      "emailNotConfirmed": "Confirm your email before signing in.",
+      "failed": "Authentication failed. Please try again.",
+      "invalidCredentials": "The email or password is incorrect.",
+      "oauthCallbackFailed": "Google sign-in could not be completed. Please try again.",
+      "oauthStartFailed": "Google sign-in could not be started. Please try again.",
+      "rateLimited": "Too many attempts. Please wait a moment and try again.",
+      "signoutFailed": "Sign-out could not be completed. Please try again.",
+      "userAlreadyExists": "An account with this email already exists.",
+      "weakPassword": "Choose a stronger password."
+    },
+    "documents": {
+      "createFailed": "The document could not be created. Please try again.",
+      "deleteFailed": "The document could not be deleted. Please try again."
+    },
+    "validation": {
+      "contentRequired": "Enter the document text.",
+      "contentTooLong": "Document text must contain at most {max, number} characters.",
+      "emailInvalid": "Enter a valid email address.",
+      "formInvalid": "Check the highlighted fields.",
+      "languagesSame": "Choose different source and target languages.",
+      "passwordOnlySpaces": "Password cannot contain only spaces.",
+      "passwordTooLong": "Password must contain at most {max, number} characters.",
+      "passwordTooShort": "Password must contain at least {min, number} characters.",
+      "sourceLanguageInvalid": "Choose a supported source language.",
+      "targetLanguageInvalid": "Choose a supported target language.",
+      "titleRequired": "Enter a document title.",
+      "titleTooLong": "Title must contain at most {max, number} characters."
+    }
+  },
+  "Metadata": {
+    "account": "Account",
+    "defaultDescription": "Read foreign-language texts, translate sentences in context, and save useful words to your personal vocabulary.",
+    "defaultTitle": "Context Vocab Reader",
+    "document": "Document",
+    "documents": "My documents",
+    "login": "Sign in",
+    "loginDescription": "Sign in to sync your documents and vocabulary cards.",
+    "newDocument": "New document",
+    "sample": "Sample reader",
+    "samples": "Sample texts",
+    "samplesDescription": "Open a curated text and explore the reader without signing in.",
+    "serviceUnavailable": "Service unavailable"
+  }
+}

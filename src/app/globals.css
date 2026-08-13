@@ -132,7 +132,9 @@ html[data-theme="dark"] {
   --color-overlay: var(--app-overlay);
   --color-selected: var(--app-selected);
   --color-selected-text: var(--app-selected-text);
-  --font-sans: var(--font-geist-sans);
+  --font-sans:
+    var(--font-geist-sans), "Noto Sans Arabic", Tahoma, Arial, ui-sans-serif,
+    system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 

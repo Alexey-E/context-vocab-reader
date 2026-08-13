@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import { validateCredentials } from "@/features/auth/validation";
-import { createErrorPayload } from "@/lib/errors/catalog";
 
 function credentials(email: string, password: string) {
   const formData = new FormData();
@@ -36,8 +35,8 @@ describe("validateCredentials", () => {
 
     expect(result.valid).toBe(false);
     expect(result.errors).toEqual({
-      email: createErrorPayload("validation.email.invalid"),
-      password: createErrorPayload("validation.password.too_short"),
+      email: "validation.email.invalid",
+      password: "validation.password.too_short",
     });
   });
 
@@ -47,9 +46,7 @@ describe("validateCredentials", () => {
       "sign-up",
     );
 
-    expect(result.errors.password).toEqual(
-      createErrorPayload("validation.password.too_long"),
-    );
+    expect(result.errors.password).toBe("validation.password.too_long");
   });
 
   it("rejects a sign-up password containing only spaces", () => {
@@ -58,8 +55,6 @@ describe("validateCredentials", () => {
       "sign-up",
     );
 
-    expect(result.errors.password).toEqual(
-      createErrorPayload("validation.password.only_spaces"),
-    );
+    expect(result.errors.password).toBe("validation.password.only_spaces");
   });
 });

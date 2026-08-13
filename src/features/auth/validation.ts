@@ -1,14 +1,12 @@
 import { AUTH_FIELD_LIMITS } from "@/features/auth/constants";
-import { createErrorPayload, type AppErrorPayload } from "@/lib/errors/catalog";
+import type { AppErrorCode } from "@/lib/errors/catalog";
 
 export type Credentials = {
   email: string;
   password: string;
 };
 
-export type CredentialErrors = Partial<
-  Record<keyof Credentials, AppErrorPayload>
->;
+export type CredentialErrors = Partial<Record<keyof Credentials, AppErrorCode>>;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -28,17 +26,17 @@ export function validateCredentials(
     !EMAIL_PATTERN.test(credentials.email) ||
     credentials.email.length > AUTH_FIELD_LIMITS.email.maxLength
   ) {
-    errors.email = createErrorPayload("validation.email.invalid");
+    errors.email = "validation.email.invalid";
   }
 
   if (credentials.password.length < AUTH_FIELD_LIMITS.password.minLength) {
-    errors.password = createErrorPayload("validation.password.too_short");
+    errors.password = "validation.password.too_short";
   } else if (
     credentials.password.length > AUTH_FIELD_LIMITS.password.maxLength
   ) {
-    errors.password = createErrorPayload("validation.password.too_long");
+    errors.password = "validation.password.too_long";
   } else if (mode === "sign-up" && credentials.password.trim().length === 0) {
-    errors.password = createErrorPayload("validation.password.only_spaces");
+    errors.password = "validation.password.only_spaces";
   }
 
   return {

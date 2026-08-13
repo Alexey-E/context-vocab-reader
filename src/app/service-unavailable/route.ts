@@ -1,4 +1,9 @@
+import { createTranslator } from "next-intl";
+
 import { APP_THEME_COOKIE, parseAppTheme } from "@/features/theme/theme";
+import { loadMessages } from "@/i18n/messages";
+import { getPathname } from "@/i18n/navigation";
+import { getLocaleDirection, parseAppLocale } from "@/i18n/routing";
 
 function getTheme(request: Request) {
   const cookie = request.headers
@@ -10,14 +15,26 @@ function getTheme(request: Request) {
   return parseAppTheme(cookie?.slice(APP_THEME_COOKIE.name.length + 1));
 }
 
-function createServiceUnavailablePage(theme: string) {
+type ServiceUnavailableCopy = Readonly<{
+  description: string;
+  eyebrow: string;
+  retry: string;
+  title: string;
+}>;
+
+function createServiceUnavailablePage(
+  theme: string,
+  locale: ReturnType<typeof parseAppLocale>,
+  retryPath: string,
+  copy: ServiceUnavailableCopy,
+) {
   return `<!doctype html>
-<html lang="en" data-theme="${theme}">
+<html lang="${locale}" dir="${getLocaleDirection(locale)}" data-theme="${theme}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Service unavailable | Context Vocab Reader</title>
+    <title>${copy.title} | Context Vocab Reader</title>
     <style>
       :root, html[data-theme="light"] { --page: #f8fafc; --surface: #fff; --text: #0f172a; --muted: #475569; --border: #e2e8f0; --primary: #2563eb; --primary-hover: #1d4ed8; --primary-text: #fff; color-scheme: light; }
       html[data-theme="dark"] { --page: #020617; --surface: #0f172a; --text: #f8fafc; --muted: #cbd5e1; --border: #334155; --primary: #60a5fa; --primary-hover: #93c5fd; --primary-text: #0f172a; color-scheme: dark; }
@@ -38,23 +55,38 @@ function createServiceUnavailablePage(theme: string) {
   <body>
     <main>
       <section>
-        <p class="eyebrow">Temporary interruption</p>
-        <h1>The service is currently unavailable</h1>
-        <p class="description">Authentication and saved reading data cannot be reached right now. Please try again in a few minutes.</p>
-        <form action="/" method="get"><button type="submit">Try again</button></form>
+        <p class="eyebrow">${copy.eyebrow}</p>
+        <h1>${copy.title}</h1>
+        <p class="description">${copy.description}</p>
+        <form action="${retryPath}" method="get"><button type="submit">${copy.retry}</button></form>
       </section>
     </main>
   </body>
 </html>`;
 }
 
-export function GET(request: Request) {
-  return new Response(createServiceUnavailablePage(getTheme(request)), {
-    status: 503,
-    headers: {
-      "Cache-Control": "no-store",
-      "Content-Type": "text/html; charset=utf-8",
-      "Retry-After": "60",
+export async function GET(request: Request) {
+  const locale = parseAppLocale(
+    new URL(request.url).searchParams.get("locale"),
+  );
+  const messages = await loadMessages(locale);
+  const t = createTranslator({ locale, messages });
+  const retryPath = getPathname({ href: "/", locale });
+
+  return new Response(
+    createServiceUnavailablePage(getTheme(request), locale, retryPath, {
+      description: t("RouteStates.serviceUnavailable.description"),
+      eyebrow: t("RouteStates.serviceUnavailable.eyebrow"),
+      retry: t("Common.tryAgain"),
+      title: t("RouteStates.serviceUnavailable.title"),
+    }),
+    {
+      status: 503,
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/html; charset=utf-8",
+        "Retry-After": "60",
+      },
     },
-  });
+  );
 }
