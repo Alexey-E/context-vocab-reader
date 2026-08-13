@@ -42,13 +42,17 @@ export function Reader({
           />
         </div>
 
-        <h1 className="mt-7 max-w-[22ch] text-3xl font-bold tracking-[-0.035em] text-balance sm:text-5xl">
+        <h1
+          lang={sourceLanguage}
+          className="mt-7 max-w-[22ch] text-3xl font-bold tracking-[-0.035em] text-balance sm:text-5xl"
+        >
           {title}
         </h1>
       </header>
 
       <div className="border-t border-border px-6 py-8 sm:px-10 sm:py-10">
         <div
+          lang={sourceLanguage}
           dir={direction}
           data-reader-source-text
           className="mx-auto max-w-[68ch] whitespace-pre-wrap text-lg leading-9 text-muted sm:text-xl sm:leading-10"

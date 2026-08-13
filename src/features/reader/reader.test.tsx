@@ -41,7 +41,7 @@ describe("Reader", () => {
     expect(markup).not.toContain("aria-pressed");
   });
 
-  it("uses the source language direction", () => {
+  it("marks the title and content with the source language and direction", () => {
     const markup = renderReader({
       content: "مرحبًا!",
       sourceLanguage: "ar",
@@ -50,6 +50,8 @@ describe("Reader", () => {
       visibility: "public",
     });
 
+    expect(markup).toMatch(/<h1[^>]*lang="ar"/);
+    expect(markup).toMatch(/<div[^>]*lang="ar"[^>]*dir="rtl"/);
     expect(markup).toContain('dir="rtl"');
   });
 
