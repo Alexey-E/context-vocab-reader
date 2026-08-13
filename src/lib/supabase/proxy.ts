@@ -1,11 +1,25 @@
-import { createServerClient } from "@supabase/ssr";
-import { type NextRequest, NextResponse } from "next/server";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import type { NextRequest } from "next/server";
 
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import type { Database } from "@/lib/supabase/database.types";
 
-export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request });
+export type SessionUpdate = Readonly<{
+  cookies: ReadonlyArray<
+    Readonly<{
+      name: string;
+      options: CookieOptions;
+      value: string;
+    }>
+  >;
+  headers: Readonly<Record<string, string>>;
+}>;
+
+export async function updateSession(
+  request: NextRequest,
+): Promise<SessionUpdate> {
+  const cookies: Array<SessionUpdate["cookies"][number]> = [];
+  const responseHeaders: Record<string, string> = {};
   const { publishableKey, url } = getSupabaseConfig();
 
   const supabase = createServerClient<Database>(url, publishableKey, {
@@ -18,15 +32,8 @@ export async function updateSession(request: NextRequest) {
           request.cookies.set(name, value);
         });
 
-        response = NextResponse.next({ request });
-
-        cookiesToSet.forEach(({ name, options, value }) => {
-          response.cookies.set(name, value, options);
-        });
-
-        Object.entries(headers).forEach(([name, value]) => {
-          response.headers.set(name, value);
-        });
+        cookies.push(...cookiesToSet);
+        Object.assign(responseHeaders, headers);
       },
     },
   });
@@ -34,5 +41,5 @@ export async function updateSession(request: NextRequest) {
   // Keep this directly after client creation so a refresh can still set cookies.
   await supabase.auth.getClaims();
 
-  return response;
+  return { cookies, headers: responseHeaders } satisfies SessionUpdate;
 }

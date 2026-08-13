@@ -117,23 +117,44 @@ Normal prose is rendered without losing punctuation or spacing, sentences and wo
 
 ## Stage 7 — Interface internationalization
 
-- [ ] Add `next-intl` and define typed `en` and `ru` message catalogs.
-- [ ] Use English as the default locale with unprefixed URLs and Russian under `/ru` via `localePrefix: "as-needed"`.
-- [ ] Detect locale from the explicit URL, saved locale cookie, browser preferences, then fall back to English.
-- [ ] Add a global language switcher with React Aria Components that preserves the current destination and saves the preference.
-- [ ] Localize navigation, forms, validation, authentication, document flows, route states, and accessibility labels.
-- [ ] Convert the centralized error catalog from fixed English messages to typed localization keys while preserving safe application error codes.
-- [ ] Localize page metadata and set the correct document `lang`.
-- [ ] Format dates, numbers, and plurals using the active locale.
-- [ ] Keep user documents, sample contents, and source/target language names separate from interface localization.
-- [ ] Add unit and Playwright coverage for locale validation, routing, switching, and persistence.
+- [x] Add `next-intl` and define typed `en`, `ru`, `fr`, `es`, and `ar` message catalogs.
+- [x] Use English as the default locale with unprefixed URLs and Russian, French, Spanish, and Arabic under `/ru`, `/fr`, `/es`, and `/ar` via `localePrefix: "as-needed"`.
+- [x] Detect locale from the explicit URL, saved locale cookie, browser preferences, then fall back to English.
+- [x] Add a global language switcher with React Aria Components that preserves the current destination and saves the preference.
+- [x] Localize navigation, forms, validation, authentication, document flows, route states, and accessibility labels.
+- [x] Convert the centralized error catalog from fixed English messages to typed localization keys while preserving safe application error codes.
+- [x] Localize page metadata and set the correct document `lang`.
+- [x] Set the entire interface to RTL for Arabic while keeping reader content direction tied to the document language.
+- [x] Format dates, numbers, and plurals using the active locale.
+- [x] Keep user documents and sample contents separate from interface localization; keep language codes and capabilities in an independent catalog while formatting their display names for the active interface locale.
+- [x] Add unit and Playwright coverage for locale validation, routing, switching, and persistence.
 - [ ] Verify the localization flow locally and on Vercel.
 
 ### Exit criteria
 
-English pages use canonical unprefixed URLs, Russian pages use `/ru`, language switching preserves the current flow, refresh keeps the selected locale, and all existing user-facing interface states are available in both languages without translating user content.
+English pages use canonical unprefixed URLs, Russian, French, Spanish, and Arabic pages use their locale prefixes, language switching preserves the current flow, refresh keeps the selected locale, Arabic renders the interface in RTL, and all existing user-facing interface states are available in all five languages without translating user content.
 
-## Stage 8 — Translation provider abstraction
+## Stage 8 — Dependency supply-chain security
+
+- [ ] Upgrade to a verified pnpm release that supports release-age, trust, integrity, and exotic-source policies.
+- [ ] Pin the exact pnpm version in `packageManager` and use the same version locally and in CI.
+- [ ] Pin direct dependencies and dev dependencies to exact versions and enable `saveExact` for future additions.
+- [ ] Keep `pnpm-lock.yaml` committed and require `pnpm install --frozen-lockfile` in CI and deployment builds.
+- [ ] Reject tarballs whose integrity differs from the committed lockfile instead of updating checksums automatically.
+- [ ] Delay newly published direct and transitive dependency versions by seven days with `minimumReleaseAge`.
+- [ ] Enable `trustPolicy: no-downgrade` after validating the existing dependency graph and document any narrowly scoped exceptions.
+- [ ] Block exotic transitive dependency sources such as arbitrary Git repositories and tarball URLs.
+- [ ] Keep dependency lifecycle scripts disabled by default and explicitly allow only reviewed packages that require a build step.
+- [ ] Add weekly Dependabot updates for the pnpm/npm ecosystem and GitHub Actions.
+- [ ] Pin third-party GitHub Actions to full commit SHAs while retaining the release tag in a comment for maintenance.
+- [ ] Enable GitHub dependency alerts and define how known vulnerabilities block or expedite an update PR.
+- [ ] Document the dependency-update workflow: review the changelog and provenance, inspect lockfile changes, run CI, and merge through a pull request.
+
+### Exit criteria
+
+A clean install resolves only the reviewed dependency graph from the committed lockfile, newly published or lower-trust packages cannot enter through routine installation, lifecycle code runs only for explicitly reviewed packages, and dependency updates arrive as auditable pull requests.
+
+## Stage 9 — Translation provider abstraction
 
 - [ ] Define the translation-provider contract.
 - [ ] Implement a deterministic mock provider.
@@ -149,7 +170,7 @@ English pages use canonical unprefixed URLs, Russian pages use `/ru`, language s
 
 Feature code can request a translation without knowing which provider is active, and the Google-backed application can select any language supported by Google Cloud Translation.
 
-## Stage 9 — Reader translation and short-lived cache
+## Stage 10 — Reader translation and short-lived cache
 
 - [ ] Add a server action or route handler for translation.
 - [ ] Generate a cache key from normalized text, languages, and provider.
@@ -167,7 +188,7 @@ Feature code can request a translation without knowing which provider is active,
 
 A word, arbitrary fragment, or complete sentence can be translated through an explicit accessible action. Sentence translations expand below their source text, and an immediate repeated request can reuse the cached response without creating persistent translation history.
 
-## Stage 10 — Save vocabulary cards
+## Stage 11 — Save vocabulary cards
 
 - [ ] Allow the user to select or activate a word.
 - [ ] Request or enter a word translation.
@@ -185,7 +206,7 @@ A word, arbitrary fragment, or complete sentence can be translated through an ex
 
 A card persists after refresh and remains inaccessible to other users.
 
-## Stage 11 — Saved words in the reader
+## Stage 12 — Saved words in the reader
 
 - [ ] Load vocabulary cards matching the document's source and target languages.
 - [ ] Build a lookup structure keyed by language pair and normalized word.
@@ -199,7 +220,7 @@ A card persists after refresh and remains inaccessible to other users.
 
 Saved words are visible and accessible in the reader across mouse, keyboard, and touch interaction models.
 
-## Stage 12 — Vocabulary dashboard
+## Stage 13 — Vocabulary dashboard
 
 - [ ] List vocabulary cards.
 - [ ] Add search.
@@ -211,8 +232,9 @@ Saved words are visible and accessible in the reader across mouse, keyboard, and
 
 Vocabulary cards can be managed independently of the reader.
 
-## Stage 13 — Production behavior and accessibility
+## Stage 14 — Production behavior and accessibility
 
+- [ ] Add an `Edit` link to personal document cards and implement a prefilled document editing flow with the same validation and ownership checks as creation.
 - [ ] Add route-level error and not-found states.
 - [ ] Handle expired authentication.
 - [ ] Handle provider timeouts and rate limits.
@@ -229,9 +251,9 @@ Vocabulary cards can be managed independently of the reader.
 
 ### Exit criteria
 
-Expected failures do not break the demo, transient action feedback is announced accessibly without exposing internal errors, and all primary flows are keyboard accessible.
+Personal documents can be edited safely, expected failures do not break the demo, transient action feedback is announced accessibly without exposing internal errors, and all primary flows are keyboard accessible.
 
-## Stage 14 — Testing
+## Stage 15 — Testing
 
 - [ ] Unit-test text processing, URL validation, cache keys, and vocabulary normalization.
 - [ ] Integration-test document and vocabulary operations.
@@ -245,7 +267,7 @@ Expected failures do not break the demo, transient action feedback is announced 
 
 The core user journey and the most important security boundaries are covered by automated tests.
 
-## Stage 15 — Stable database delivery
+## Stage 16 — Stable database delivery
 
 - [ ] Keep migrations versioned and validated in CI.
 - [ ] Add a manual GitHub Actions workflow for remote migration deployment.
@@ -256,7 +278,7 @@ The core user journey and the most important security boundaries are covered by 
 
 Application deployment is automatic and database deployment is explicit, repeatable, and auditable.
 
-## Stage 16 — Portfolio packaging
+## Stage 17 — Portfolio packaging
 
 - [ ] Add live demo and Figma links.
 - [ ] Add screenshots or short product media.
@@ -270,7 +292,7 @@ Application deployment is automatic and database deployment is explicit, repeata
 
 A reviewer can understand the product, architecture, trade-offs, security model, and engineering process without additional explanation.
 
-## Stage 17 — Structured long documents and reading progress
+## Stage 18 — Structured long documents and reading progress
 
 - [ ] Separate document metadata from document body storage.
 - [ ] Add ordered `document_sections` owned through their parent document.
@@ -287,7 +309,7 @@ A reviewer can understand the product, architecture, trade-offs, security model,
 
 A long document can be opened without loading its full content, navigation continues across ordered sections, and an authenticated reader resumes from a persisted position.
 
-## Stage 18 — File and book import pipeline
+## Stage 19 — File and book import pipeline
 
 - [ ] Define the supported import formats, starting with plain text and then EPUB; keep PDF and OCR out of the initial scope.
 - [ ] Add a private Supabase Storage bucket with ownership policies for source files.
@@ -315,17 +337,18 @@ An authenticated user can upload a supported book, leave while it is processed, 
 5. Documents CRUD
 6. Reader text processing
 7. Interface internationalization
-8. Translation-provider abstraction
-9. Reader translation and cache
-10. Vocabulary-card creation
-11. Saved-word reader states
-12. Vocabulary dashboard
-13. Production behavior and accessibility
-14. End-to-end tests
-15. Stable database delivery
-16. Portfolio documentation
-17. Structured long documents and reading progress
-18. File and book import pipeline
+8. Dependency supply-chain security
+9. Translation-provider abstraction
+10. Reader translation and cache
+11. Vocabulary-card creation
+12. Saved-word reader states
+13. Vocabulary dashboard
+14. Production behavior and accessibility
+15. End-to-end tests
+16. Stable database delivery
+17. Portfolio documentation
+18. Structured long documents and reading progress
+19. File and book import pipeline
 
 ## Working rule
 

@@ -1,16 +1,18 @@
 "use client";
 
-import Link from "next/link";
-import { useActionState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useActionState, useState } from "react";
 
-import {
-  createDocument,
-  type DocumentFormState,
-} from "@/features/documents/actions";
+import type { DocumentFormState } from "@/features/documents/actions";
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 import type { DocumentFormValues } from "@/features/documents/validation";
 import type { AppErrorPayload } from "@/lib/errors/catalog";
-import { LANGUAGES } from "@/lib/languages";
+import {
+  getLanguage,
+  getLanguageDisplayName,
+  LANGUAGES,
+} from "@/lib/languages";
+import { Link } from "@/i18n/navigation";
 
 const initialState: DocumentFormState = { revision: 0, status: "idle" };
 const initialValues: DocumentFormValues = {
@@ -23,14 +25,18 @@ const initialValues: DocumentFormValues = {
 type LanguageSelectFieldProps = Readonly<{
   error?: AppErrorPayload;
   label: string;
+  locale: string;
   name: "sourceLanguage" | "targetLanguage";
+  onChange?: (value: string) => void;
   value: string;
 }>;
 
 function LanguageSelectField({
   error,
   label,
+  locale,
   name,
+  onChange,
   value,
 }: LanguageSelectFieldProps) {
   const errorId =
@@ -48,13 +54,14 @@ function LanguageSelectField({
         name={name}
         required
         defaultValue={value}
+        onChange={(event) => onChange?.(event.target.value)}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         className="mt-2 h-12 w-full rounded-xl border border-border-strong bg-surface px-4 text-[15px] text-text outline-none transition focus:border-primary focus:ring-3 focus:ring-primary/10"
       >
         {LANGUAGES.map((language) => (
           <option key={language.code} value={language.code}>
-            {language.name}
+            {getLanguageDisplayName(language.code, locale)}
           </option>
         ))}
       </select>
@@ -67,13 +74,34 @@ function LanguageSelectField({
   );
 }
 
-export function DocumentForm() {
+type DocumentFormProps = Readonly<{
+  createAction: (
+    previousState: DocumentFormState,
+    formData: FormData,
+  ) => Promise<DocumentFormState>;
+}>;
+
+export function DocumentForm({ createAction }: DocumentFormProps) {
+  const locale = useLocale();
+  const t = useTranslations("Documents.form");
+  const common = useTranslations("Common");
   const [state, formAction, pending] = useActionState(
-    createDocument,
+    createAction,
     initialState,
+  );
+  const [sourceLanguage, setSourceLanguage] = useState(
+    initialValues.sourceLanguage,
   );
   const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
   const values = state.status === "error" ? state.values : initialValues;
+  const sourceDirection = getLanguage(sourceLanguage)?.direction ?? "auto";
+  const contentDescribedBy = [
+    "content-guidance",
+    "content-hint",
+    fieldErrors?.content ? "content-error" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   // A rejected React form action resets uncontrolled fields. Remount the form
   // so they adopt the submitted values returned by the server action.
@@ -90,7 +118,7 @@ export function DocumentForm() {
 
       <div>
         <label htmlFor="title" className="text-sm font-semibold text-muted">
-          Title
+          {t("title")}
         </label>
         <input
           id="title"
@@ -99,9 +127,10 @@ export function DocumentForm() {
           required
           maxLength={DOCUMENT_FIELD_LIMITS.title.maxLength}
           defaultValue={values.title}
+          dir="auto"
           aria-invalid={Boolean(fieldErrors?.title)}
           aria-describedby={fieldErrors?.title ? "title-error" : undefined}
-          placeholder="A useful article"
+          placeholder={t("titlePlaceholder")}
           className="mt-2 h-12 w-full rounded-xl border border-border-strong bg-surface px-4 text-[15px] text-text outline-none transition placeholder:text-subtle focus:border-primary focus:ring-3 focus:ring-primary/10"
         />
         {fieldErrors?.title ? (
@@ -114,13 +143,16 @@ export function DocumentForm() {
       <div className="grid gap-5 sm:grid-cols-2">
         <LanguageSelectField
           error={fieldErrors?.sourceLanguage}
-          label="Source language"
+          label={t("sourceLanguage")}
+          locale={locale}
           name="sourceLanguage"
+          onChange={setSourceLanguage}
           value={values.sourceLanguage}
         />
         <LanguageSelectField
           error={fieldErrors?.targetLanguage}
-          label="Translate into"
+          label={t("targetLanguage")}
+          locale={locale}
           name="targetLanguage"
           value={values.targetLanguage}
         />
@@ -128,19 +160,23 @@ export function DocumentForm() {
 
       <div>
         <label htmlFor="content" className="text-sm font-semibold text-muted">
-          Document text
+          {t("content")}
         </label>
+        <p id="content-guidance" className="mt-1.5 text-sm text-muted">
+          {t("contentGuidance")}
+        </p>
         <textarea
           id="content"
           name="content"
           required
           maxLength={DOCUMENT_FIELD_LIMITS.content.maxLength}
           defaultValue={values.content}
+          lang={sourceLanguage}
+          dir={sourceDirection}
           rows={14}
           aria-invalid={Boolean(fieldErrors?.content)}
-          aria-describedby={fieldErrors?.content ? "content-error" : undefined}
-          placeholder="Paste the text you want to read…"
-          className="mt-2 min-h-72 w-full resize-y rounded-xl border border-border-strong bg-surface px-4 py-3 text-[15px] leading-7 text-text outline-none transition placeholder:text-subtle focus:border-primary focus:ring-3 focus:ring-primary/10"
+          aria-describedby={contentDescribedBy}
+          className="mt-2 min-h-72 w-full resize-y rounded-xl border border-border-strong bg-surface px-4 py-3 text-[15px] leading-7 text-text outline-none transition focus:border-primary focus:ring-3 focus:ring-primary/10"
         />
         <div className="mt-1.5 flex items-start justify-between gap-4">
           {fieldErrors?.content ? (
@@ -150,10 +186,10 @@ export function DocumentForm() {
           ) : (
             <span />
           )}
-          <p className="shrink-0 text-xs text-subtle">
-            Up to{" "}
-            {DOCUMENT_FIELD_LIMITS.content.maxLength.toLocaleString("en-US")}{" "}
-            characters
+          <p id="content-hint" className="shrink-0 text-xs text-subtle">
+            {t("contentHint", {
+              count: DOCUMENT_FIELD_LIMITS.content.maxLength,
+            })}
           </p>
         </div>
       </div>
@@ -163,14 +199,14 @@ export function DocumentForm() {
           href="/documents"
           className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border-strong bg-surface px-5 text-sm font-semibold text-muted transition hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
-          Cancel
+          {common("cancel")}
         </Link>
         <button
           type="submit"
           disabled={pending}
           className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-xl bg-primary px-6 text-sm font-semibold text-primary-contrast transition hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-wait disabled:opacity-60"
         >
-          {pending ? "Creating…" : "Create document"}
+          {pending ? t("creating") : t("create")}
         </button>
       </div>
     </form>

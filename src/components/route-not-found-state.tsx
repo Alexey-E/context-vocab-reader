@@ -1,4 +1,6 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+
+import { Link } from "@/i18n/navigation";
 
 type RouteNotFoundStateProps = Readonly<{
   actionHref: string;
@@ -13,11 +15,13 @@ export function RouteNotFoundState({
   description,
   title,
 }: RouteNotFoundStateProps) {
+  const t = useTranslations("RouteStates");
+
   return (
     <main className="grid min-h-dvh place-items-center bg-page px-5 py-16 text-text">
       <section className="w-full max-w-lg rounded-3xl border border-border bg-surface p-8 text-center shadow-sm">
         <p className="text-xs font-bold tracking-[0.12em] text-primary uppercase">
-          Not found
+          {t("notFoundEyebrow")}
         </p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight">{title}</h1>
         <p className="mt-3 text-sm leading-6 text-muted">{description}</p>

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { getLanguage, isLanguageCode, LANGUAGES } from "@/lib/languages";
+import {
+  getLanguage,
+  getLanguageDisplayName,
+  isLanguageCode,
+  LANGUAGES,
+} from "@/lib/languages";
 
 describe("the language catalog", () => {
   it("contains unique supported language codes", () => {
@@ -23,5 +28,19 @@ describe("the language catalog", () => {
     expect(isLanguageCode("en")).toBe(true);
     expect(isLanguageCode("de")).toBe(false);
     expect(isLanguageCode(null)).toBe(false);
+  });
+
+  it.each([
+    ["en", "English"],
+    ["ru", "английский"],
+    ["fr", "anglais"],
+    ["es", "inglés"],
+    ["ar", "الإنجليزية"],
+  ])("formats language names for the %s interface", (locale, expected) => {
+    expect(getLanguageDisplayName("en", locale)).toBe(expected);
+  });
+
+  it("uses an isolated-friendly code fallback for unknown languages", () => {
+    expect(getLanguageDisplayName("unknown", "ar")).toBe("UNKNOWN");
   });
 });

@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  experimental: {
+    rootParams: true,
+  },
   reactCompiler: true,
+  skipProxyUrlNormalize: true,
   async headers() {
     return [
       {
@@ -23,7 +30,25 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: "/:locale(ru|fr|es|ar)/account",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store",
+          },
+        ],
+      },
+      {
         source: "/documents/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store",
+          },
+        ],
+      },
+      {
+        source: "/:locale(ru|fr|es|ar)/documents/:path*",
         headers: [
           {
             key: "Cache-Control",
@@ -35,4 +60,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

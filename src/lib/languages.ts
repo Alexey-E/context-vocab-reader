@@ -14,3 +14,18 @@ export function isLanguageCode(value: unknown): value is LanguageCode {
 export function getLanguage(code: string) {
   return LANGUAGES.find((language) => language.code === code);
 }
+
+export function getLanguageDisplayName(code: string, locale: string) {
+  const language = getLanguage(code);
+
+  if (!language) return code.toUpperCase();
+
+  try {
+    return (
+      new Intl.DisplayNames([locale], { type: "language" }).of(language.code) ??
+      language.name
+    );
+  } catch {
+    return language.name;
+  }
+}

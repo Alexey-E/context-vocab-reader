@@ -1,19 +1,59 @@
+import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
 
-import { createErrorPayload, parseErrorPayload } from "@/lib/errors/catalog";
+import ar from "@messages/ar.json";
+import en from "@messages/en.json";
+import es from "@messages/es.json";
+import fr from "@messages/fr.json";
+import ru from "@messages/ru.json";
+import {
+  formatErrorPayload,
+  parseAppErrorCode,
+  type AppErrorTranslator,
+} from "@/lib/errors/catalog";
+
+const catalogs = { ar, en, es, fr, ru } as const;
+
+function payload(
+  locale: keyof typeof catalogs,
+  code: Parameters<typeof formatErrorPayload>[0],
+) {
+  const translate = createTranslator({
+    locale,
+    messages: catalogs[locale].Errors,
+    namespace: undefined,
+  }) as unknown as AppErrorTranslator;
+
+  return formatErrorPayload(code, translate);
+}
 
 describe("the application error catalog", () => {
-  it("creates a payload for a known code", () => {
-    expect(createErrorPayload("auth.invalid_credentials")).toEqual({
+  it.each([
+    ["en", "The email or password is incorrect."],
+    ["ru", "Неверная электронная почта или пароль."],
+    ["fr", "L’adresse e-mail ou le mot de passe est incorrect."],
+    ["es", "El correo o la contraseña no son correctos."],
+    ["ar", "البريد الإلكتروني أو كلمة المرور غير صحيحة."],
+  ] as const)("creates a localized %s payload", (locale, message) => {
+    expect(payload(locale, "auth.invalid_credentials")).toEqual({
       code: "auth.invalid_credentials",
-      message: "The email or password is incorrect.",
+      message,
     });
   });
 
+  it("formats product limits through ICU numbers", () => {
+    expect(
+      payload("en", "validation.document.content.too_long").message,
+    ).toContain("50,000");
+    expect(
+      payload("fr", "validation.document.content.too_long").message,
+    ).toContain("50 000");
+  });
+
   it("ignores unknown codes from URL parameters", () => {
-    expect(parseErrorPayload("auth.oauth_callback_failed")).toEqual(
-      createErrorPayload("auth.oauth_callback_failed"),
+    expect(parseAppErrorCode("auth.oauth_callback_failed")).toBe(
+      "auth.oauth_callback_failed",
     );
-    expect(parseErrorPayload("auth.made_up")).toBeUndefined();
+    expect(parseAppErrorCode("auth.made_up")).toBeUndefined();
   });
 });

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 import { validateDocumentForm } from "@/features/documents/validation";
-import { createErrorPayload } from "@/lib/errors/catalog";
 
 function createDocumentFormData(
   overrides: Partial<Record<string, string>> = {},
@@ -56,8 +55,8 @@ describe("validateDocumentForm", () => {
 
     expect(result).toEqual({
       errors: {
-        content: createErrorPayload("validation.document.content.required"),
-        title: createErrorPayload("validation.document.title.required"),
+        content: "validation.document.content.required",
+        title: "validation.document.title.required",
       },
       valid: false,
       values: {
@@ -102,8 +101,8 @@ describe("validateDocumentForm", () => {
 
     expect(result).toEqual({
       errors: {
-        content: createErrorPayload("validation.document.content.too_long"),
-        title: createErrorPayload("validation.document.title.too_long"),
+        content: "validation.document.content.too_long",
+        title: "validation.document.title.too_long",
       },
       valid: false,
       values: {
@@ -125,12 +124,8 @@ describe("validateDocumentForm", () => {
 
     expect(result).toEqual({
       errors: {
-        sourceLanguage: createErrorPayload(
-          "validation.document.source_language.invalid",
-        ),
-        targetLanguage: createErrorPayload(
-          "validation.document.target_language.invalid",
-        ),
+        sourceLanguage: "validation.document.source_language.invalid",
+        targetLanguage: "validation.document.target_language.invalid",
       },
       valid: false,
       values: {
@@ -149,9 +144,7 @@ describe("validateDocumentForm", () => {
 
     expect(result).toEqual({
       errors: {
-        targetLanguage: createErrorPayload(
-          "validation.document.languages_same",
-        ),
+        targetLanguage: "validation.document.languages_same",
       },
       valid: false,
       values: {

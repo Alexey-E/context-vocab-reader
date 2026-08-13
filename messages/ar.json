@@ -1,0 +1,221 @@
+{
+  "Common": {
+    "account": "الحساب",
+    "backToDocuments": "العودة إلى المستندات",
+    "browseSamples": "تصفّح النماذج",
+    "cancel": "إلغاء",
+    "documents": "المستندات",
+    "myDocuments": "مستنداتي",
+    "open": "فتح",
+    "portfolioMvp": "نموذج أولي للمعرض",
+    "samples": "النماذج",
+    "signIn": "تسجيل الدخول",
+    "tryAgain": "المحاولة مرة أخرى"
+  },
+  "Navigation": { "primary": "التنقّل الرئيسي" },
+  "LocaleSwitcher": {
+    "label": "اللغة: {language}",
+    "menuLabel": "لغة الواجهة"
+  },
+  "Theme": {
+    "current": "السمة: {theme}",
+    "dark": "داكنة",
+    "light": "فاتحة",
+    "menuLabel": "سمة الألوان",
+    "system": "النظام"
+  },
+  "Landing": {
+    "badge": "تعلّم اللغات من خلال السياق",
+    "description": "ترجم ما تحتاج إليه فقط، وحوّل الكلمات المفيدة إلى بطاقات مفردات من دون فقدان السياق الذي وجدتها فيه.",
+    "existingAccount": "لديّ حساب بالفعل",
+    "headingFirst": "اقرأ بطبيعية.",
+    "headingSecond": "وتذكّر بعمق.",
+    "preview": {
+      "ariaLabel": "معاينة مسار القراءة",
+      "contextBodyAfter": "وبدلًا من حفظ تعريفات منفصلة، يربط القارئ بين المعنى والنبرة والاستخدام الحقيقي.",
+      "contextBodyBefore": "يصبح تعلّم اللغة أكثر فاعلية عندما تظهر الكلمات الجديدة ضمن",
+      "contextTitle": "التعلّم من السياق",
+      "meaningfulContext": "سياق ذي معنى",
+      "minutes": "{count, plural, zero {أقل من دقيقة للقراءة} one {دقيقة واحدة للقراءة} two {دقيقتان للقراءة} few {# دقائق للقراءة} many {# دقيقة للقراءة} other {# دقيقة للقراءة}}",
+      "reader": "معاينة القارئ",
+      "saveWord": "حفظ الكلمة",
+      "savedWithContext": "محفوظة مع السياق",
+      "savedWords": "{count, plural, zero {لا توجد كلمات محفوظة} one {كلمة واحدة محفوظة} two {كلمتان محفوظتان} few {# كلمات محفوظة} many {# كلمة محفوظة} other {# كلمة محفوظة}}",
+      "translation": "الترجمة",
+      "vocabularyCards": "بطاقات المفردات"
+    },
+    "startReading": "ابدأ القراءة",
+    "stats": {
+      "readLabel": "اقرأ",
+      "readValue": "نصوصًا حقيقية",
+      "rememberLabel": "تذكّر",
+      "rememberValue": "ضمن السياق",
+      "translateLabel": "ترجم",
+      "translateValue": "عند الحاجة"
+    }
+  },
+  "Auth": {
+    "authentication": "المصادقة",
+    "createAccount": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "you@example.com",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "forgotPasswordHint": "ستُضاف استعادة كلمة المرور في مرحلة لاحقة.",
+    "google": "المتابعة باستخدام Google",
+    "hidePassword": "إخفاء كلمة المرور",
+    "modeLabel": "وضع المصادقة",
+    "orEmail": "أو المتابعة بالبريد الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "{count} أحرف على الأقل",
+    "pending": "يرجى الانتظار…",
+    "showPassword": "إظهار كلمة المرور",
+    "signIn": {
+      "description": "استخدم Google للتجربة السريعة، أو تابع بالبريد الإلكتروني وكلمة المرور.",
+      "heading": "مرحبًا بعودتك",
+      "submit": "تسجيل الدخول"
+    },
+    "signUp": {
+      "description": "أنشئ حسابًا لمزامنة مستنداتك ومفرداتك.",
+      "heading": "أنشئ حسابك",
+      "submit": "إنشاء حساب",
+      "success": "تحقّق من بريدك واتبع رابط التأكيد للمتابعة."
+    },
+    "side": {
+      "badgeAuth": "Supabase Auth",
+      "badgePrivate": "بيانات خاصة بكل مستخدم",
+      "description": "سجّل الدخول لمزامنة مستنداتك وبطاقات المفردات وتقدّم القراءة والمفردات بين أجهزتك.",
+      "heading": "اقرأ وترجم واحفظ الكلمات من سياقها الحقيقي.",
+      "mobileDescription": "احتفظ بالكلمات المفيدة مرتبطة بالسياق الذي وجدتها فيه.",
+      "mobileHeading": "اقرأ. ترجم. تذكّر.",
+      "storageDescription": "تحمي سياسات Row Level Security مستنداتك ومفرداتك. وتنتهي صلاحية ترجمات الجمل المؤقتة بعد دقيقة واحدة.",
+      "storageHeading": "ما الذي يُحفظ"
+    },
+    "tier": {
+      "description": "تكفي Supabase Auth للنموذج الأولي في المعرض، ويمكنها التوسّع مع المنتج.",
+      "heading": "مناسب للخطة المجانية"
+    }
+  },
+  "Account": {
+    "description": "جلستك نشطة. افتح مستنداتك الخاصة أو استكشف نموذجًا عامًا.",
+    "heading": "أنت مسجّل الدخول",
+    "signOut": "تسجيل الخروج"
+  },
+  "Samples": {
+    "description": "ابدأ القراءة من دون حساب. ستُضاف أدوات الترجمة في المراحل التالية.",
+    "emptyDescription": "ستظهر النصوص المختارة هنا عندما تصبح متاحة.",
+    "emptyHeading": "لا توجد نصوص نموذجية بعد",
+    "eyebrow": "المكتبة العامة",
+    "heading": "اختر نصًا نموذجيًا",
+    "open": "فتح النموذج",
+    "readerBack": "كل النماذج",
+    "readerNotice": "هذا النموذج للقراءة فقط. ستُضاف ترجمة النص المحدد والجمل الكاملة في مراحل التنفيذ التالية.",
+    "signupDescription": "أنشئ حسابًا للاحتفاظ بالمستندات الخاصة والمفردات.",
+    "signupHeading": "هل تريد استخدام نصك الخاص؟"
+  },
+  "Documents": {
+    "add": "إضافة مستند",
+    "createFirst": "إنشاء المستند الأول",
+    "description": "أضف النصوص التي تريد قراءتها واحتفظ بها خاصة في حسابك.",
+    "emptyDescription": "ألصق نصك الأول لإعداده للقراءة والترجمة ضمن السياق.",
+    "emptyHeading": "مكتبتك فارغة",
+    "eyebrow": "المكتبة الخاصة",
+    "heading": "مستنداتي",
+    "form": {
+      "content": "نص المستند",
+      "contentHint": "حتى {count, number} حرف",
+      "contentGuidance": "ألصق النص الذي تريد قراءته.",
+      "create": "إنشاء المستند",
+      "creating": "جارٍ الإنشاء…",
+      "description": "ألصق نصًا عاديًا واختر زوج اللغات الذي تريد استخدامه أثناء القراءة.",
+      "eyebrow": "مستند جديد",
+      "heading": "أضف نصًا إلى مكتبتك",
+      "sourceLanguage": "اللغة المصدر",
+      "targetLanguage": "الترجمة إلى",
+      "title": "العنوان",
+      "titlePlaceholder": "مقال مفيد"
+    },
+    "delete": {
+      "ariaLabel": "حذف {title}",
+      "cancel": "إلغاء",
+      "confirm": "الحذف نهائيًا",
+      "description": "سيُحذف «<documentTitle>{title}</documentTitle>» نهائيًا، ولا يمكن التراجع عن ذلك.",
+      "eyebrow": "إجراء نهائي",
+      "heading": "هل تريد حذف هذا المستند؟",
+      "pending": "جارٍ الحذف…",
+      "title": "حذف المستند"
+    }
+  },
+  "Reader": { "publicSample": "نموذج عام" },
+  "RouteStates": {
+    "documentsError": {
+      "description": "يرجى المحاولة مرة أخرى. لم تتغيّر مستنداتك المحفوظة.",
+      "eyebrow": "المكتبة غير متاحة",
+      "title": "تعذّر تحميل مستنداتك"
+    },
+    "documentNotFound": {
+      "description": "ربما حُذف المستند أو لا ينتمي إلى حسابك.",
+      "title": "هذا المستند غير متاح"
+    },
+    "notFoundEyebrow": "غير موجود",
+    "samplesError": {
+      "description": "يرجى المحاولة مرة أخرى. لم يغيّر طلبك أي بيانات محفوظة.",
+      "eyebrow": "المكتبة غير متاحة",
+      "title": "تعذّر تحميل النصوص النموذجية"
+    },
+    "sampleNotFound": {
+      "description": "ربما أُزيل النموذج أو أن الرابط غير صحيح.",
+      "title": "هذا النموذج غير متاح"
+    },
+    "serviceUnavailable": {
+      "description": "يتعذّر حاليًا الوصول إلى المصادقة وبيانات القراءة المحفوظة. يرجى المحاولة بعد بضع دقائق.",
+      "eyebrow": "انقطاع مؤقت",
+      "title": "الخدمة غير متاحة حاليًا"
+    }
+  },
+  "Errors": {
+    "auth": {
+      "confirmationFailed": "رابط التأكيد غير صالح أو منتهي الصلاحية. اطلب رابطًا جديدًا وحاول مرة أخرى.",
+      "emailNotConfirmed": "أكّد بريدك الإلكتروني قبل تسجيل الدخول.",
+      "failed": "فشلت المصادقة. يرجى المحاولة مرة أخرى.",
+      "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "oauthCallbackFailed": "تعذّر إكمال تسجيل الدخول باستخدام Google. يرجى المحاولة مرة أخرى.",
+      "oauthStartFailed": "تعذّر بدء تسجيل الدخول باستخدام Google. يرجى المحاولة مرة أخرى.",
+      "rateLimited": "محاولات كثيرة جدًا. انتظر قليلًا ثم حاول مرة أخرى.",
+      "signoutFailed": "تعذّر تسجيل الخروج. يرجى المحاولة مرة أخرى.",
+      "userAlreadyExists": "يوجد حساب مرتبط بهذا البريد الإلكتروني بالفعل.",
+      "weakPassword": "اختر كلمة مرور أقوى."
+    },
+    "documents": {
+      "createFailed": "تعذّر إنشاء المستند. يرجى المحاولة مرة أخرى.",
+      "deleteFailed": "تعذّر حذف المستند. يرجى المحاولة مرة أخرى."
+    },
+    "validation": {
+      "contentRequired": "أدخل نص المستند.",
+      "contentTooLong": "يجب ألا يزيد نص المستند على {max, number} حرف.",
+      "emailInvalid": "أدخل عنوان بريد إلكتروني صالحًا.",
+      "formInvalid": "تحقّق من الحقول المحددة.",
+      "languagesSame": "اختر لغتين مختلفتين للمصدر والترجمة.",
+      "passwordOnlySpaces": "لا يمكن أن تتكوّن كلمة المرور من مسافات فقط.",
+      "passwordTooLong": "يجب ألا تزيد كلمة المرور على {max, number} حرف.",
+      "passwordTooShort": "يجب ألا تقل كلمة المرور عن {min, number} أحرف.",
+      "sourceLanguageInvalid": "اختر لغة مصدر مدعومة.",
+      "targetLanguageInvalid": "اختر لغة ترجمة مدعومة.",
+      "titleRequired": "أدخل عنوانًا للمستند.",
+      "titleTooLong": "يجب ألا يزيد العنوان على {max, number} حرف."
+    }
+  },
+  "Metadata": {
+    "account": "الحساب",
+    "defaultDescription": "اقرأ نصوصًا بلغات أجنبية، وترجم الجمل ضمن سياقها، واحفظ الكلمات المفيدة في مفرداتك الشخصية.",
+    "defaultTitle": "Context Vocab Reader",
+    "document": "مستند",
+    "documents": "مستنداتي",
+    "login": "تسجيل الدخول",
+    "loginDescription": "سجّل الدخول لمزامنة مستنداتك وبطاقات المفردات.",
+    "newDocument": "مستند جديد",
+    "sample": "قارئ النموذج",
+    "samples": "نصوص نموذجية",
+    "samplesDescription": "افتح نصًا مختارًا واستكشف القارئ من دون تسجيل الدخول.",
+    "serviceUnavailable": "الخدمة غير متاحة"
+  }
+}

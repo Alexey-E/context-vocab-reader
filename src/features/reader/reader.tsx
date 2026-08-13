@@ -1,5 +1,7 @@
 import "server-only";
 
+import { useTranslations } from "next-intl";
+
 import { LanguagePair } from "@/components/language-pair";
 import { processReaderText } from "@/features/reader/text-processing";
 import { getLanguage } from "@/lib/languages";
@@ -19,8 +21,8 @@ export function Reader({
   title,
   visibility,
 }: ReaderProps) {
+  const t = useTranslations("Reader");
   const source = getLanguage(sourceLanguage);
-  const target = getLanguage(targetLanguage);
   const direction = source?.direction ?? "auto";
   const paragraphs = processReaderText(content, sourceLanguage);
 
@@ -30,22 +32,26 @@ export function Reader({
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
           {visibility === "public" ? (
             <span className="rounded-full bg-success-soft px-2.5 py-1 text-success-soft-text">
-              Public sample
+              {t("publicSample")}
             </span>
           ) : null}
           <LanguagePair
-            sourceLanguage={source?.name ?? sourceLanguage.toUpperCase()}
-            targetLanguage={target?.name ?? targetLanguage.toUpperCase()}
+            sourceLanguageCode={sourceLanguage}
+            targetLanguageCode={targetLanguage}
           />
         </div>
 
-        <h1 className="mt-7 max-w-[22ch] text-3xl font-bold tracking-[-0.035em] text-balance sm:text-5xl">
+        <h1
+          dir="auto"
+          className="mt-7 max-w-[22ch] text-3xl font-bold tracking-[-0.035em] text-balance sm:text-5xl"
+        >
           {title}
         </h1>
       </header>
 
       <div className="border-t border-border px-6 py-8 sm:px-10 sm:py-10">
         <div
+          lang={sourceLanguage}
           dir={direction}
           data-reader-source-text
           className="mx-auto max-w-[68ch] whitespace-pre-wrap text-lg leading-9 text-muted sm:text-xl sm:leading-10"

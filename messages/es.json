@@ -1,0 +1,221 @@
+{
+  "Common": {
+    "account": "Cuenta",
+    "backToDocuments": "Volver a los documentos",
+    "browseSamples": "Ver ejemplos",
+    "cancel": "Cancelar",
+    "documents": "Documentos",
+    "myDocuments": "Mis documentos",
+    "open": "Abrir",
+    "portfolioMvp": "MVP del portafolio",
+    "samples": "Ejemplos",
+    "signIn": "Iniciar sesión",
+    "tryAgain": "Intentar de nuevo"
+  },
+  "Navigation": { "primary": "Navegación principal" },
+  "LocaleSwitcher": {
+    "label": "Idioma: {language}",
+    "menuLabel": "Idioma de la interfaz"
+  },
+  "Theme": {
+    "current": "Tema: {theme}",
+    "dark": "Oscuro",
+    "light": "Claro",
+    "menuLabel": "Tema de color",
+    "system": "Sistema"
+  },
+  "Landing": {
+    "badge": "Aprendizaje de idiomas en contexto",
+    "description": "Traduce solo lo que necesites y convierte las palabras útiles en tarjetas de vocabulario sin perder el contexto donde las encontraste.",
+    "existingAccount": "Ya tengo una cuenta",
+    "headingFirst": "Lee con naturalidad.",
+    "headingSecond": "Recuerda de verdad.",
+    "preview": {
+      "ariaLabel": "Vista previa del flujo de lectura",
+      "contextBodyAfter": "En vez de memorizar definiciones aisladas, los lectores conectan el significado, el tono y el uso real.",
+      "contextBodyBefore": "Aprender un idioma es más eficaz cuando las palabras nuevas aparecen en un",
+      "contextTitle": "Aprender con contexto",
+      "meaningfulContext": "contexto significativo",
+      "minutes": "{count, plural, one {# min de lectura} other {# min de lectura}}",
+      "reader": "Vista previa del lector",
+      "saveWord": "Guardar palabra",
+      "savedWithContext": "Guardadas con contexto",
+      "savedWords": "{count, plural, one {# palabra guardada} other {# palabras guardadas}}",
+      "translation": "Traducción",
+      "vocabularyCards": "Tarjetas de vocabulario"
+    },
+    "startReading": "Empezar a leer",
+    "stats": {
+      "readLabel": "Lee",
+      "readValue": "Textos reales",
+      "rememberLabel": "Recuerda",
+      "rememberValue": "En contexto",
+      "translateLabel": "Traduce",
+      "translateValue": "Cuando lo necesites"
+    }
+  },
+  "Auth": {
+    "authentication": "Autenticación",
+    "createAccount": "Crear cuenta",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tu@ejemplo.com",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "forgotPasswordHint": "La recuperación de contraseña se añadirá en una etapa posterior.",
+    "google": "Continuar con Google",
+    "hidePassword": "Ocultar contraseña",
+    "modeLabel": "Modo de autenticación",
+    "orEmail": "o continúa con tu correo",
+    "password": "Contraseña",
+    "passwordPlaceholder": "Al menos {count} caracteres",
+    "pending": "Espera un momento…",
+    "showPassword": "Mostrar contraseña",
+    "signIn": {
+      "description": "Usa Google para probar el servicio rápidamente o continúa con tu correo y contraseña.",
+      "heading": "Te damos la bienvenida de nuevo",
+      "submit": "Iniciar sesión"
+    },
+    "signUp": {
+      "description": "Crea una cuenta para sincronizar tus documentos y tu vocabulario.",
+      "heading": "Crea tu cuenta",
+      "submit": "Crear cuenta",
+      "success": "Revisa tu bandeja de entrada y sigue el enlace de confirmación."
+    },
+    "side": {
+      "badgeAuth": "Supabase Auth",
+      "badgePrivate": "Datos por usuario",
+      "description": "Inicia sesión para sincronizar tus documentos, tarjetas, progreso de lectura y vocabulario entre dispositivos.",
+      "heading": "Lee, traduce y guarda palabras de contextos reales.",
+      "mobileDescription": "Mantén las palabras útiles conectadas con el contexto donde las encontraste.",
+      "mobileHeading": "Lee. Traduce. Recuerda.",
+      "storageDescription": "Tus documentos y tu vocabulario están protegidos mediante Row Level Security. Las traducciones temporales caducan después de un minuto.",
+      "storageHeading": "Qué se guarda"
+    },
+    "tier": {
+      "description": "Supabase Auth es suficiente para el MVP del portafolio y puede crecer con el producto.",
+      "heading": "Compatible con el plan gratuito"
+    }
+  },
+  "Account": {
+    "description": "La sesión está activa. Abre tus documentos privados o explora un ejemplo público.",
+    "heading": "Has iniciado sesión",
+    "signOut": "Cerrar sesión"
+  },
+  "Samples": {
+    "description": "Empieza a leer sin una cuenta. Los controles de traducción se añadirán en las próximas etapas.",
+    "emptyDescription": "Los textos seleccionados aparecerán aquí cuando estén disponibles.",
+    "emptyHeading": "Todavía no hay ejemplos",
+    "eyebrow": "Biblioteca pública",
+    "heading": "Elige un texto de ejemplo",
+    "open": "Abrir ejemplo",
+    "readerBack": "Todos los ejemplos",
+    "readerNotice": "Este ejemplo es de solo lectura. La traducción de texto seleccionado y frases completas se añadirá en las próximas etapas.",
+    "signupDescription": "Crea una cuenta para guardar documentos privados y vocabulario.",
+    "signupHeading": "¿Quieres usar tu propio texto?"
+  },
+  "Documents": {
+    "add": "Añadir documento",
+    "createFirst": "Crear el primer documento",
+    "description": "Añade los textos que quieras leer y mantenlos privados en tu cuenta.",
+    "emptyDescription": "Pega tu primer texto para prepararlo para la lectura y la traducción en contexto.",
+    "emptyHeading": "Tu biblioteca está vacía",
+    "eyebrow": "Biblioteca privada",
+    "heading": "Mis documentos",
+    "form": {
+      "content": "Texto del documento",
+      "contentHint": "Hasta {count, number} caracteres",
+      "contentGuidance": "Pega el texto que quieras leer.",
+      "create": "Crear documento",
+      "creating": "Creando…",
+      "description": "Pega texto sin formato y elige el par de idiomas que usarás durante la lectura.",
+      "eyebrow": "Nuevo documento",
+      "heading": "Añade un texto a tu biblioteca",
+      "sourceLanguage": "Idioma de origen",
+      "targetLanguage": "Traducir a",
+      "title": "Título",
+      "titlePlaceholder": "Un artículo útil"
+    },
+    "delete": {
+      "ariaLabel": "Eliminar {title}",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar permanentemente",
+      "description": "«<documentTitle>{title}</documentTitle>» se eliminará permanentemente. Esta acción no se puede deshacer.",
+      "eyebrow": "Acción permanente",
+      "heading": "¿Eliminar este documento?",
+      "pending": "Eliminando…",
+      "title": "Eliminar documento"
+    }
+  },
+  "Reader": { "publicSample": "Ejemplo público" },
+  "RouteStates": {
+    "documentsError": {
+      "description": "Inténtalo de nuevo. Tus documentos guardados no se han modificado.",
+      "eyebrow": "Biblioteca no disponible",
+      "title": "No se pudieron cargar tus documentos"
+    },
+    "documentNotFound": {
+      "description": "Puede que se haya eliminado o que no pertenezca a tu cuenta.",
+      "title": "Este documento no está disponible"
+    },
+    "notFoundEyebrow": "No encontrado",
+    "samplesError": {
+      "description": "Inténtalo de nuevo. Tu solicitud no modificó ningún dato guardado.",
+      "eyebrow": "Biblioteca no disponible",
+      "title": "No se pudieron cargar los ejemplos"
+    },
+    "sampleNotFound": {
+      "description": "Puede que se haya eliminado o que el enlace sea incorrecto.",
+      "title": "Este ejemplo no está disponible"
+    },
+    "serviceUnavailable": {
+      "description": "Ahora mismo no se puede acceder a la autenticación ni a los datos guardados. Inténtalo de nuevo en unos minutos.",
+      "eyebrow": "Interrupción temporal",
+      "title": "El servicio no está disponible temporalmente"
+    }
+  },
+  "Errors": {
+    "auth": {
+      "confirmationFailed": "El enlace de confirmación no es válido o ha caducado. Solicita uno nuevo.",
+      "emailNotConfirmed": "Confirma tu correo antes de iniciar sesión.",
+      "failed": "La autenticación ha fallado. Inténtalo de nuevo.",
+      "invalidCredentials": "El correo o la contraseña no son correctos.",
+      "oauthCallbackFailed": "No se pudo completar el acceso con Google. Inténtalo de nuevo.",
+      "oauthStartFailed": "No se pudo iniciar el acceso con Google. Inténtalo de nuevo.",
+      "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
+      "signoutFailed": "No se pudo cerrar la sesión. Inténtalo de nuevo.",
+      "userAlreadyExists": "Ya existe una cuenta con este correo.",
+      "weakPassword": "Elige una contraseña más segura."
+    },
+    "documents": {
+      "createFailed": "No se pudo crear el documento. Inténtalo de nuevo.",
+      "deleteFailed": "No se pudo eliminar el documento. Inténtalo de nuevo."
+    },
+    "validation": {
+      "contentRequired": "Introduce el texto del documento.",
+      "contentTooLong": "El texto debe tener como máximo {max, number} caracteres.",
+      "emailInvalid": "Introduce un correo electrónico válido.",
+      "formInvalid": "Revisa los campos resaltados.",
+      "languagesSame": "Elige idiomas de origen y destino diferentes.",
+      "passwordOnlySpaces": "La contraseña no puede contener solo espacios.",
+      "passwordTooLong": "La contraseña debe tener como máximo {max, number} caracteres.",
+      "passwordTooShort": "La contraseña debe tener al menos {min, number} caracteres.",
+      "sourceLanguageInvalid": "Elige un idioma de origen compatible.",
+      "targetLanguageInvalid": "Elige un idioma de destino compatible.",
+      "titleRequired": "Introduce un título para el documento.",
+      "titleTooLong": "El título debe tener como máximo {max, number} caracteres."
+    }
+  },
+  "Metadata": {
+    "account": "Cuenta",
+    "defaultDescription": "Lee textos en otros idiomas, traduce frases en contexto y guarda palabras útiles en tu vocabulario personal.",
+    "defaultTitle": "Context Vocab Reader",
+    "document": "Documento",
+    "documents": "Mis documentos",
+    "login": "Iniciar sesión",
+    "loginDescription": "Inicia sesión para sincronizar tus documentos y tarjetas de vocabulario.",
+    "newDocument": "Nuevo documento",
+    "sample": "Lector de ejemplo",
+    "samples": "Textos de ejemplo",
+    "samplesDescription": "Abre un texto seleccionado y explora el lector sin iniciar sesión.",
+    "serviceUnavailable": "Servicio no disponible"
+  }
+}
