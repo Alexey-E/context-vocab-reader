@@ -209,6 +209,9 @@ Install dependencies:
 pnpm install
 ```
 
+The repository pins pnpm and all direct dependency versions. Installations enforce
+the policies documented in [Dependency supply-chain security](docs/dependency-security.md).
+
 Run the development server:
 
 ```bash
