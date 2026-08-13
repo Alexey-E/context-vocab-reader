@@ -123,7 +123,7 @@
     "form": {
       "content": "Texte du document",
       "contentHint": "Jusqu’à {count, number} caractères",
-      "contentPlaceholder": "Collez le texte que vous souhaitez lire…",
+      "contentGuidance": "Collez le texte que vous souhaitez lire.",
       "create": "Créer le document",
       "creating": "Création…",
       "description": "Collez du texte brut et choisissez la paire de langues à utiliser pendant la lecture.",
@@ -138,7 +138,7 @@
       "ariaLabel": "Supprimer {title}",
       "cancel": "Annuler",
       "confirm": "Supprimer définitivement",
-      "description": "« {title} » sera définitivement supprimé. Cette action est irréversible.",
+      "description": "« <documentTitle>{title}</documentTitle> » sera définitivement supprimé. Cette action est irréversible.",
       "eyebrow": "Action définitive",
       "heading": "Supprimer ce document ?",
       "pending": "Suppression…",

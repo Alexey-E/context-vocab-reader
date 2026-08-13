@@ -23,7 +23,6 @@ export function Reader({
 }: ReaderProps) {
   const t = useTranslations("Reader");
   const source = getLanguage(sourceLanguage);
-  const target = getLanguage(targetLanguage);
   const direction = source?.direction ?? "auto";
   const paragraphs = processReaderText(content, sourceLanguage);
 
@@ -37,8 +36,8 @@ export function Reader({
             </span>
           ) : null}
           <LanguagePair
-            sourceLanguage={source?.name ?? sourceLanguage.toUpperCase()}
-            targetLanguage={target?.name ?? targetLanguage.toUpperCase()}
+            sourceLanguageCode={sourceLanguage}
+            targetLanguageCode={targetLanguage}
           />
         </div>
 

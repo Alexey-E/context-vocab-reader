@@ -125,7 +125,7 @@
     "form": {
       "content": "Document text",
       "contentHint": "Up to {count, number} characters",
-      "contentPlaceholder": "Paste the text you want to read…",
+      "contentGuidance": "Paste the text you want to read.",
       "create": "Create document",
       "creating": "Creating…",
       "description": "Paste plain text and choose the language pair you want to use while reading.",
@@ -140,7 +140,7 @@
       "ariaLabel": "Delete {title}",
       "cancel": "Cancel",
       "confirm": "Delete permanently",
-      "description": "“{title}” will be permanently removed. This cannot be undone.",
+      "description": "“<documentTitle>{title}</documentTitle>” will be permanently removed. This cannot be undone.",
       "eyebrow": "Permanent action",
       "heading": "Delete this document?",
       "pending": "Deleting…",

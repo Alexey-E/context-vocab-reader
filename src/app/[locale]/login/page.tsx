@@ -58,7 +58,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           className="absolute -top-32 -left-40 size-[420px] rounded-full bg-primary/10 blur-3xl"
         />
         <header className="relative flex items-center justify-between gap-4">
-          <p className="text-2xl font-bold tracking-[-0.02em]">Smart Reader</p>
+          <p
+            lang="en"
+            dir="ltr"
+            className="text-2xl font-bold tracking-[-0.02em]"
+          >
+            Smart Reader
+          </p>
           <div className="flex items-center gap-2">
             <LanguageSwitcher inverse />
             <ThemeSwitcher inverse />
@@ -93,7 +99,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       <section className="flex min-h-dvh min-w-0 flex-col lg:items-center lg:justify-center lg:px-12 lg:py-20">
         <header className="bg-inverse px-5 pt-[max(1.5rem,env(safe-area-inset-top))] pb-10 text-inverse-text sm:px-8 lg:hidden">
           <div className="flex items-center justify-between gap-4">
-            <p className="text-lg font-bold tracking-tight">Smart Reader</p>
+            <p lang="en" dir="ltr" className="text-lg font-bold tracking-tight">
+              Smart Reader
+            </p>
             <div className="flex items-center gap-2">
               <LanguageSwitcher inverse />
               <ThemeSwitcher inverse />

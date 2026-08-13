@@ -1,13 +1,17 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
 
 import type { DocumentFormState } from "@/features/documents/actions";
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 import type { DocumentFormValues } from "@/features/documents/validation";
 import type { AppErrorPayload } from "@/lib/errors/catalog";
-import { getLanguage, LANGUAGES } from "@/lib/languages";
+import {
+  getLanguage,
+  getLanguageDisplayName,
+  LANGUAGES,
+} from "@/lib/languages";
 import { Link } from "@/i18n/navigation";
 
 const initialState: DocumentFormState = { revision: 0, status: "idle" };
@@ -21,6 +25,7 @@ const initialValues: DocumentFormValues = {
 type LanguageSelectFieldProps = Readonly<{
   error?: AppErrorPayload;
   label: string;
+  locale: string;
   name: "sourceLanguage" | "targetLanguage";
   onChange?: (value: string) => void;
   value: string;
@@ -29,6 +34,7 @@ type LanguageSelectFieldProps = Readonly<{
 function LanguageSelectField({
   error,
   label,
+  locale,
   name,
   onChange,
   value,
@@ -55,7 +61,7 @@ function LanguageSelectField({
       >
         {LANGUAGES.map((language) => (
           <option key={language.code} value={language.code}>
-            {language.name}
+            {getLanguageDisplayName(language.code, locale)}
           </option>
         ))}
       </select>
@@ -76,6 +82,7 @@ type DocumentFormProps = Readonly<{
 }>;
 
 export function DocumentForm({ createAction }: DocumentFormProps) {
+  const locale = useLocale();
   const t = useTranslations("Documents.form");
   const common = useTranslations("Common");
   const [state, formAction, pending] = useActionState(
@@ -88,6 +95,13 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
   const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
   const values = state.status === "error" ? state.values : initialValues;
   const sourceDirection = getLanguage(sourceLanguage)?.direction ?? "auto";
+  const contentDescribedBy = [
+    "content-guidance",
+    "content-hint",
+    fieldErrors?.content ? "content-error" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   // A rejected React form action resets uncontrolled fields. Remount the form
   // so they adopt the submitted values returned by the server action.
@@ -113,6 +127,7 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
           required
           maxLength={DOCUMENT_FIELD_LIMITS.title.maxLength}
           defaultValue={values.title}
+          dir="auto"
           aria-invalid={Boolean(fieldErrors?.title)}
           aria-describedby={fieldErrors?.title ? "title-error" : undefined}
           placeholder={t("titlePlaceholder")}
@@ -129,6 +144,7 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
         <LanguageSelectField
           error={fieldErrors?.sourceLanguage}
           label={t("sourceLanguage")}
+          locale={locale}
           name="sourceLanguage"
           onChange={setSourceLanguage}
           value={values.sourceLanguage}
@@ -136,6 +152,7 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
         <LanguageSelectField
           error={fieldErrors?.targetLanguage}
           label={t("targetLanguage")}
+          locale={locale}
           name="targetLanguage"
           value={values.targetLanguage}
         />
@@ -145,6 +162,9 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
         <label htmlFor="content" className="text-sm font-semibold text-muted">
           {t("content")}
         </label>
+        <p id="content-guidance" className="mt-1.5 text-sm text-muted">
+          {t("contentGuidance")}
+        </p>
         <textarea
           id="content"
           name="content"
@@ -155,9 +175,8 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
           dir={sourceDirection}
           rows={14}
           aria-invalid={Boolean(fieldErrors?.content)}
-          aria-describedby={fieldErrors?.content ? "content-error" : undefined}
-          placeholder={t("contentPlaceholder")}
-          className="mt-2 min-h-72 w-full resize-y rounded-xl border border-border-strong bg-surface px-4 py-3 text-[15px] leading-7 text-text outline-none transition placeholder:text-subtle focus:border-primary focus:ring-3 focus:ring-primary/10"
+          aria-describedby={contentDescribedBy}
+          className="mt-2 min-h-72 w-full resize-y rounded-xl border border-border-strong bg-surface px-4 py-3 text-[15px] leading-7 text-text outline-none transition focus:border-primary focus:ring-3 focus:ring-primary/10"
         />
         <div className="mt-1.5 flex items-start justify-between gap-4">
           {fieldErrors?.content ? (
@@ -167,7 +186,7 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
           ) : (
             <span />
           )}
-          <p className="shrink-0 text-xs text-subtle">
+          <p id="content-hint" className="shrink-0 text-xs text-subtle">
             {t("contentHint", {
               count: DOCUMENT_FIELD_LIMITS.content.maxLength,
             })}

@@ -267,6 +267,7 @@ export function AuthForm({
           type="email"
           inputMode="email"
           autoComplete="email"
+          dir="ltr"
           maxLength={AUTH_FIELD_LIMITS.email.maxLength}
           required
           aria-invalid={Boolean(fieldErrors?.email)}

@@ -7,7 +7,6 @@ import { SiteHeader } from "@/components/site-header";
 import { DeleteDocumentButton } from "@/features/documents/delete-document-button";
 import { deleteDocument } from "@/features/documents/actions";
 import { listDocuments } from "@/features/documents/queries";
-import { getLanguage } from "@/lib/languages";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -51,21 +50,14 @@ export default async function DocumentsPage() {
         {documents.length > 0 ? (
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {documents.map((document) => {
-              const source = getLanguage(document.source_language);
-              const target = getLanguage(document.target_language);
-
               return (
                 <li key={document.id}>
                   <article className="group flex h-full min-h-56 flex-col rounded-3xl border border-border bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-primary hover:shadow-md">
                     <div className="flex items-start gap-2">
                       <LanguagePair
                         className="flex-wrap pt-1"
-                        sourceLanguage={
-                          source?.name ?? document.source_language.toUpperCase()
-                        }
-                        targetLanguage={
-                          target?.name ?? document.target_language.toUpperCase()
-                        }
+                        sourceLanguageCode={document.source_language}
+                        targetLanguageCode={document.target_language}
                       />
                       <div className="ms-auto -mt-1 -me-2">
                         <DeleteDocumentButton
@@ -78,7 +70,10 @@ export default async function DocumentsPage() {
                         />
                       </div>
                     </div>
-                    <h2 className="mt-6 text-xl font-bold tracking-tight">
+                    <h2
+                      dir="auto"
+                      className="mt-6 text-xl font-bold tracking-tight"
+                    >
                       <Link
                         href={`/documents/${document.id}`}
                         className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"

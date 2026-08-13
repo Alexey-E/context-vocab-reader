@@ -8,6 +8,10 @@ import type { DeleteDocumentState } from "@/features/documents/actions";
 
 const initialState: DeleteDocumentState = { status: "idle" };
 
+function isolateBidirectionalText(value: string) {
+  return `\u2068${value}\u2069`;
+}
+
 type DeleteDocumentButtonProps = Readonly<{
   deleteAction: (
     previousState: DeleteDocumentState,
@@ -28,6 +32,7 @@ export function DeleteDocumentButton({
     deleteAction,
     initialState,
   );
+  const isolatedDocumentTitle = isolateBidirectionalText(documentTitle);
 
   useEffect(() => {
     if (state.status === "error" && !dialogRef.current?.open) {
@@ -40,7 +45,7 @@ export function DeleteDocumentButton({
       <button
         type="button"
         onClick={() => dialogRef.current?.showModal()}
-        aria-label={t("ariaLabel", { title: documentTitle })}
+        aria-label={t("ariaLabel", { title: isolatedDocumentTitle })}
         title={t("title")}
         className="inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-subtle transition hover:bg-danger-soft hover:text-danger focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger"
       >
@@ -61,7 +66,10 @@ export function DeleteDocumentButton({
             {t("heading")}
           </h2>
           <p id={descriptionId} className="mt-3 text-sm leading-6 text-muted">
-            {t("description", { title: documentTitle })}
+            {t.rich("description", {
+              documentTitle: (chunks) => <bdi dir="auto">{chunks}</bdi>,
+              title: documentTitle,
+            })}
           </p>
 
           {state.status === "error" ? (

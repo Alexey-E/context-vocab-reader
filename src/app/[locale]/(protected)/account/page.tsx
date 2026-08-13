@@ -36,13 +36,21 @@ export default async function AccountPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-page px-6 py-16">
       <section className="w-full max-w-lg rounded-3xl border border-border bg-surface p-10 shadow-sm">
-        <p className="text-sm font-semibold tracking-[0.08em] text-primary uppercase">
+        <p
+          lang="en"
+          dir="ltr"
+          className="text-sm font-semibold tracking-[0.08em] text-primary uppercase"
+        >
           Context Vocab Reader
         </p>
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-text">
           {t("heading")}
         </h1>
-        {email && <p className="mt-3 text-muted">{email}</p>}
+        {email && (
+          <p dir="ltr" className="mt-3 text-muted">
+            {email}
+          </p>
+        )}
         <p className="mt-8 text-sm leading-6 text-muted">{t("description")}</p>
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
           <Link

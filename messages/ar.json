@@ -123,7 +123,7 @@
     "form": {
       "content": "نص المستند",
       "contentHint": "حتى {count, number} حرف",
-      "contentPlaceholder": "ألصق النص الذي تريد قراءته…",
+      "contentGuidance": "ألصق النص الذي تريد قراءته.",
       "create": "إنشاء المستند",
       "creating": "جارٍ الإنشاء…",
       "description": "ألصق نصًا عاديًا واختر زوج اللغات الذي تريد استخدامه أثناء القراءة.",
@@ -138,7 +138,7 @@
       "ariaLabel": "حذف {title}",
       "cancel": "إلغاء",
       "confirm": "الحذف نهائيًا",
-      "description": "سيُحذف «{title}» نهائيًا، ولا يمكن التراجع عن ذلك.",
+      "description": "سيُحذف «<documentTitle>{title}</documentTitle>» نهائيًا، ولا يمكن التراجع عن ذلك.",
       "eyebrow": "إجراء نهائي",
       "heading": "هل تريد حذف هذا المستند؟",
       "pending": "جارٍ الحذف…",

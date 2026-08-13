@@ -16,7 +16,12 @@ export default async function Home() {
     <main className="min-h-dvh w-full overflow-hidden bg-page text-text">
       <header className="relative z-40 border-b border-border bg-surface/80 backdrop-blur">
         <div className="mx-auto flex h-18 w-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
-          <Link href="/" className="text-lg font-bold tracking-tight">
+          <Link
+            href="/"
+            lang="en"
+            dir="ltr"
+            className="text-lg font-bold tracking-tight"
+          >
             Smart Reader
           </Link>
 
@@ -119,10 +124,7 @@ export default async function Home() {
 
             <div className="grid grid-cols-[minmax(0,1fr)_190px] gap-5 p-6 xl:grid-cols-[minmax(0,1fr)_210px] xl:p-8">
               <article>
-                <LanguagePair
-                  sourceLanguage="English"
-                  targetLanguage="Spanish"
-                />
+                <LanguagePair sourceLanguageCode="en" targetLanguageCode="es" />
 
                 <h2 className="mt-7 text-2xl font-bold tracking-tight text-text">
                   {t("preview.contextTitle")}
@@ -150,7 +152,11 @@ export default async function Home() {
                 <p className="mt-3 text-sm font-bold text-text">
                   {t("preview.meaningfulContext")}
                 </p>
-                <p className="mt-2 text-sm leading-5 text-muted">
+                <p
+                  lang="es"
+                  dir="ltr"
+                  className="mt-2 text-sm leading-5 text-muted"
+                >
                   contexto significativo
                 </p>
                 <span

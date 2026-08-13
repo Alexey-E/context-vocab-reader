@@ -18,6 +18,8 @@ export async function SiteHeader() {
       <div className="mx-auto flex min-h-18 w-full max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
         <Link
           href="/"
+          lang="en"
+          dir="ltr"
           className="font-bold tracking-tight text-text focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
         >
           Smart Reader

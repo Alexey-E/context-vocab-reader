@@ -110,7 +110,7 @@ Data catalogs, environment configuration, and algorithm-specific patterns remain
 
 `next-intl` provides locale-aware routing and message formatting for the application interface. English is the canonical default locale and uses unprefixed URLs. Russian, French, Spanish, and Arabic use `/ru`, `/fr`, `/es`, and `/ar`. Locale selection follows this priority: an explicit URL prefix, the saved `NEXT_LOCALE` device cookie, browser language preferences, then English.
 
-Interface localization and document languages are separate domains. Switching the interface locale translates navigation, forms, validation, route states, metadata, and accessibility labels; it never translates a sample or user document. Translation-provider language discovery is likewise independent and belongs to the translation feature.
+Interface localization and document languages are separate domains. Switching the interface locale translates navigation, forms, validation, route states, metadata, and accessibility labels; it never translates a sample or user document. The supported-language catalog and translation-provider discovery remain independent, while language display names are formatted for the active interface locale with `Intl.DisplayNames`.
 
 The active interface locale sets `<html lang>` and its writing direction. Arabic uses RTL for the application chrome. Reader content sets its own `lang` and `dir` from the source document, so an English document remains LTR inside Arabic UI and an Arabic document remains RTL in every interface locale.
 

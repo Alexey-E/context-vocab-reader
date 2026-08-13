@@ -123,7 +123,7 @@
     "form": {
       "content": "Texto del documento",
       "contentHint": "Hasta {count, number} caracteres",
-      "contentPlaceholder": "Pega el texto que quieras leer…",
+      "contentGuidance": "Pega el texto que quieras leer.",
       "create": "Crear documento",
       "creating": "Creando…",
       "description": "Pega texto sin formato y elige el par de idiomas que usarás durante la lectura.",
@@ -138,7 +138,7 @@
       "ariaLabel": "Eliminar {title}",
       "cancel": "Cancelar",
       "confirm": "Eliminar permanentemente",
-      "description": "«{title}» se eliminará permanentemente. Esta acción no se puede deshacer.",
+      "description": "«<documentTitle>{title}</documentTitle>» se eliminará permanentemente. Esta acción no se puede deshacer.",
       "eyebrow": "Acción permanente",
       "heading": "¿Eliminar este documento?",
       "pending": "Eliminando…",

@@ -6,7 +6,6 @@ import { LanguagePair } from "@/components/language-pair";
 import { SiteHeader } from "@/components/site-header";
 import { listSampleDocuments } from "@/features/documents/queries";
 import { getAuthContext } from "@/lib/auth/require-user";
-import { getLanguage } from "@/lib/languages";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -44,9 +43,6 @@ export default async function SamplesPage() {
         {samples.length > 0 ? (
           <ul className="mt-10 grid gap-4 sm:grid-cols-2">
             {samples.map((sample) => {
-              const source = getLanguage(sample.source_language);
-              const target = getLanguage(sample.target_language);
-
               return (
                 <li key={sample.id}>
                   <Link
@@ -54,14 +50,13 @@ export default async function SamplesPage() {
                     className="group flex h-full min-h-48 flex-col rounded-3xl border border-border bg-surface p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-primary hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:p-7"
                   >
                     <LanguagePair
-                      sourceLanguage={
-                        source?.name ?? sample.source_language.toUpperCase()
-                      }
-                      targetLanguage={
-                        target?.name ?? sample.target_language.toUpperCase()
-                      }
+                      sourceLanguageCode={sample.source_language}
+                      targetLanguageCode={sample.target_language}
                     />
-                    <h2 className="mt-6 text-2xl font-bold tracking-tight group-hover:text-primary">
+                    <h2
+                      dir="auto"
+                      className="mt-6 text-2xl font-bold tracking-tight group-hover:text-primary"
+                    >
                       {sample.title}
                     </h2>
                     <span className="mt-auto inline-flex items-center gap-1 pt-8 text-sm font-semibold text-primary">

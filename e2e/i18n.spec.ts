@@ -143,6 +143,32 @@ test("keeps localized mobile headers inside the viewport", async ({ page }) => {
   expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth);
 });
 
+test("isolates embedded languages inside the Arabic landing page", async ({
+  page,
+}) => {
+  await page.goto("/ar");
+
+  await expect(
+    page.getByRole("link", { name: "Smart Reader" }),
+  ).toHaveAttribute("lang", "en");
+  await expect(page.getByText("contexto significativo")).toHaveAttribute(
+    "lang",
+    "es",
+  );
+  await expect(page.getByText("الإنجليزية", { exact: true })).toBeVisible();
+  await expect(page.getByText("الإسبانية", { exact: true })).toBeVisible();
+});
+
+test("infers public document title direction independently of Arabic UI", async ({
+  page,
+}) => {
+  await page.goto("/ar/samples");
+
+  await expect(
+    page.getByRole("heading", { name: "Learn with context" }),
+  ).toHaveAttribute("dir", "auto");
+});
+
 test("keeps the locale when redirecting away from a protected route", async ({
   page,
 }) => {

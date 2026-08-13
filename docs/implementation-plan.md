@@ -126,7 +126,7 @@ Normal prose is rendered without losing punctuation or spacing, sentences and wo
 - [x] Localize page metadata and set the correct document `lang`.
 - [x] Set the entire interface to RTL for Arabic while keeping reader content direction tied to the document language.
 - [x] Format dates, numbers, and plurals using the active locale.
-- [x] Keep user documents, sample contents, and source/target language names separate from interface localization.
+- [x] Keep user documents and sample contents separate from interface localization; keep language codes and capabilities in an independent catalog while formatting their display names for the active interface locale.
 - [x] Add unit and Playwright coverage for locale validation, routing, switching, and persistence.
 - [ ] Verify the localization flow locally and on Vercel.
 
