@@ -128,7 +128,7 @@ Normal prose is rendered without losing punctuation or spacing, sentences and wo
 - [x] Format dates, numbers, and plurals using the active locale.
 - [x] Keep user documents and sample contents separate from interface localization; keep language codes and capabilities in an independent catalog while formatting their display names for the active interface locale.
 - [x] Add unit and Playwright coverage for locale validation, routing, switching, and persistence.
-- [ ] Verify the localization flow locally and on Vercel.
+- [x] Verify the localization flow locally and on Vercel.
 
 ### Exit criteria
 
