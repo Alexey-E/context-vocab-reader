@@ -21,7 +21,7 @@
     "lint:db": "supabase db lint"
   },
   "dependencies": {
-    "@supabase/ssr": "0.12.3",
+    "@supabase/ssr": "0.12.4",
     "@supabase/supabase-js": "2.110.8",
     "@vercel/analytics": "2.0.1",
     "geist": "1.7.2",
@@ -32,18 +32,18 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@playwright/test": "1.61.1",
-    "@tailwindcss/postcss": "4.3.2",
-    "@types/node": "20.19.43",
+    "@playwright/test": "1.62.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "26.2.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "9.39.5",
+    "eslint": "10.8.1",
     "eslint-config-next": "16.2.10",
-    "prettier": "3.9.5",
+    "prettier": "3.9.6",
     "supabase": "2.113.0",
-    "tailwindcss": "4.3.2",
-    "typescript": "5.9.3",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
     "vitest": "4.1.10"
   }
 }
