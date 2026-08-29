@@ -9,6 +9,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 
 import { ThemeProvider } from "@/features/theme/theme-provider";
 import { APP_THEME_COOKIE, parseAppTheme } from "@/features/theme/theme";
+import { ReactAriaProvider } from "@/i18n/react-aria-provider";
 import { getLocaleDirection, routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -60,10 +61,12 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col font-sans">
         <NextIntlClientProvider messages={messages}>
-          <ThemeProvider initialTheme={theme}>
-            {children}
-            <Analytics />
-          </ThemeProvider>
+          <ReactAriaProvider locale={locale}>
+            <ThemeProvider initialTheme={theme}>
+              {children}
+              <Analytics />
+            </ThemeProvider>
+          </ReactAriaProvider>
         </NextIntlClientProvider>
       </body>
     </html>
