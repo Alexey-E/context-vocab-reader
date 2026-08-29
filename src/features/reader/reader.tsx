@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { LanguagePair } from "@/components/language-pair";
 import { processReaderText } from "@/features/reader/text-processing";
-import { getLanguage } from "@/lib/languages";
+import { getLanguageDirection } from "@/lib/languages";
 
 type ReaderProps = Readonly<{
   content: string;
@@ -22,8 +22,7 @@ export function Reader({
   visibility,
 }: ReaderProps) {
   const t = useTranslations("Reader");
-  const source = getLanguage(sourceLanguage);
-  const direction = source?.direction ?? "auto";
+  const direction = getLanguageDirection(sourceLanguage);
   const paragraphs = processReaderText(content, sourceLanguage);
 
   return (
