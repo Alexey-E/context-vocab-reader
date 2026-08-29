@@ -20,6 +20,16 @@ import { getLanguageDirection } from "@/lib/languages";
 const GOOGLE_TRANSLATE_URL =
   "https://translation.googleapis.com/language/translate/v2";
 const GOOGLE_LANGUAGES_URL = `${GOOGLE_TRANSLATE_URL}/languages`;
+const GOOGLE_HTML_ENTITY_PATTERN =
+  /&(?:#(\d+)|#x([\da-f]+)|(amp|apos|gt|lt|quot));/giu;
+
+const GOOGLE_NAMED_HTML_ENTITIES = {
+  amp: "&",
+  apos: "'",
+  gt: ">",
+  lt: "<",
+  quot: '"',
+} as const;
 
 type Fetch = typeof fetch;
 
@@ -48,6 +58,37 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
+function decodeGoogleTranslatedText(value: string) {
+  return value.replace(
+    GOOGLE_HTML_ENTITY_PATTERN,
+    (
+      entity,
+      decimal: string | undefined,
+      hex: string | undefined,
+      named: string | undefined,
+    ) => {
+      if (typeof named === "string") {
+        return GOOGLE_NAMED_HTML_ENTITIES[
+          named.toLowerCase() as keyof typeof GOOGLE_NAMED_HTML_ENTITIES
+        ];
+      }
+
+      const codePoint = Number.parseInt(
+        decimal ?? hex ?? "",
+        decimal ? 10 : 16,
+      );
+
+      try {
+        return Number.isInteger(codePoint) && codePoint > 0
+          ? String.fromCodePoint(codePoint)
+          : entity;
+      } catch {
+        return entity;
+      }
+    },
+  );
+}
+
 function parseTranslatedText(value: unknown) {
   if (!isRecord(value) || !isRecord(value.data)) {
     throw new TranslationProviderError("invalid_response");
@@ -67,7 +108,7 @@ function parseTranslatedText(value: unknown) {
     throw new TranslationProviderError("invalid_response");
   }
 
-  return translation.translatedText;
+  return decodeGoogleTranslatedText(translation.translatedText);
 }
 
 function parseLanguagesResponse(value: unknown): GoogleLanguagesResponse {
@@ -168,7 +209,10 @@ export class GoogleTranslationProvider implements TranslationProvider {
     try {
       return await response.json();
     } catch (error) {
-      throw new TranslationProviderError("invalid_response", { cause: error });
+      throw new TranslationProviderError(
+        isAbortError(error) ? "timeout" : "invalid_response",
+        { cause: error },
+      );
     }
   }
 

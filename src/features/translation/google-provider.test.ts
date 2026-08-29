@@ -67,6 +67,35 @@ describe("GoogleTranslationProvider", () => {
     expect(url.toString()).not.toContain(API_KEY);
   });
 
+  it("decodes HTML entities in translated plain text", async () => {
+    const provider = new GoogleTranslationProvider({
+      apiKey: API_KEY,
+      fetch: vi.fn<typeof fetch>().mockResolvedValue(
+        jsonResponse({
+          data: {
+            translations: [
+              {
+                translatedText:
+                  "It&#39;s Tom &amp; Jerry&#x27;s &quot;show&quot; &lt;3",
+              },
+            ],
+          },
+        }),
+      ),
+    });
+
+    await expect(
+      provider.translate({
+        sourceLanguage: "en",
+        targetLanguage: "es",
+        text: "Test",
+      }),
+    ).resolves.toEqual({
+      provider: "google",
+      translatedText: `It's Tom & Jerry's "show" <3`,
+    });
+  });
+
   it("discovers supported languages with localized names and direction", async () => {
     const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       jsonResponse({
@@ -182,6 +211,39 @@ describe("GoogleTranslationProvider", () => {
           reject(init.signal?.reason);
         });
       });
+    });
+    const provider = new GoogleTranslationProvider({
+      apiKey: API_KEY,
+      fetch: fetchMock,
+      timeoutMs: 5,
+    });
+
+    await expectProviderError(
+      provider.translate({
+        sourceLanguage: "en",
+        targetLanguage: "es",
+        text: "Hello",
+      }),
+      "timeout",
+    );
+  });
+
+  it("preserves the timeout category when the response body stalls", async () => {
+    const fetchMock = vi.fn<typeof fetch>((_url, init) => {
+      const body = new ReadableStream({
+        start(controller) {
+          init?.signal?.addEventListener("abort", () => {
+            controller.error(init.signal?.reason);
+          });
+        },
+      });
+
+      return Promise.resolve(
+        new Response(body, {
+          headers: { "Content-Type": "application/json" },
+          status: 200,
+        }),
+      );
     });
     const provider = new GoogleTranslationProvider({
       apiKey: API_KEY,
