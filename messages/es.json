@@ -129,6 +129,10 @@
       "description": "Pega texto sin formato y elige el par de idiomas que usarás durante la lectura.",
       "eyebrow": "Nuevo documento",
       "heading": "Añade un texto a tu biblioteca",
+      "languageNoResults": "No hay idiomas coincidentes",
+      "languageSearchPlaceholder": "Buscar idiomas",
+      "openSourceLanguages": "Abrir las opciones de idioma de origen",
+      "openTargetLanguages": "Abrir las opciones de idioma de destino",
       "sourceLanguage": "Idioma de origen",
       "targetLanguage": "Traducir a",
       "title": "Título",
@@ -188,6 +192,13 @@
     "documents": {
       "createFailed": "No se pudo crear el documento. Inténtalo de nuevo.",
       "deleteFailed": "No se pudo eliminar el documento. Inténtalo de nuevo."
+    },
+    "translation": {
+      "failed": "No se pudo completar la traducción. Inténtalo de nuevo.",
+      "invalidRequest": "Revisa el texto y el par de idiomas e inténtalo de nuevo.",
+      "rateLimited": "La traducción está limitada temporalmente. Espera un momento e inténtalo de nuevo.",
+      "timeout": "La traducción tardó demasiado. Inténtalo de nuevo.",
+      "unavailable": "La traducción no está disponible temporalmente. Inténtalo más tarde."
     },
     "validation": {
       "contentRequired": "Introduce el texto del documento.",

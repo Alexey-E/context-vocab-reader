@@ -179,17 +179,26 @@ NEXT_PUBLIC_APP_URL=http://127.0.0.1:3000
 
 ### Translation provider
 
-Use mock translations by default:
+The application uses deterministic mock translations by default. This mode does
+not require an external account, credentials, billing, or network requests:
 
 ```env
 TRANSLATION_PROVIDER=mock
 ```
 
-Use Google Translation API only when needed:
+The Google Cloud Translation Basic v2 adapter is implemented against Google's
+documented HTTP contract and covered with mocked contract tests. It has not been
+verified against a live Google Cloud project yet. Enabling it requires the API,
+billing, and a server-side API key restricted to Cloud Translation:
 
 ```env
 TRANSLATION_PROVIDER=google
+GOOGLE_TRANSLATE_API_KEY=your-restricted-server-side-key
 ```
+
+Do not enable Google for a public deployment until quotas, abuse protection,
+sanitized logging, and a live smoke test have been configured. The API key must
+never use a `NEXT_PUBLIC_` prefix or be exposed to browser code.
 
 ## Local development
 

@@ -6,6 +6,7 @@ import type {
   DocumentField,
   DocumentFormValues,
 } from "@/features/documents/validation";
+import { getDocumentLanguages } from "@/features/documents/languages.server";
 import { validateDocumentForm } from "@/features/documents/validation";
 import { requireUser } from "@/lib/auth/require-user";
 import { getPathname, redirect } from "@/i18n/navigation";
@@ -36,8 +37,13 @@ export async function createDocument(
   formData: FormData,
 ): Promise<DocumentFormState> {
   const locale = parseAppLocale(actionLocale);
-  const result = validateDocumentForm(formData);
   const revision = previousState.revision + 1;
+  const { supabase, userId } = await requireUser(locale);
+  const languages = await getDocumentLanguages(locale);
+  const result = validateDocumentForm(
+    formData,
+    new Set(languages.map((language) => language.code)),
+  );
 
   if (!result.valid) {
     return {
@@ -49,7 +55,6 @@ export async function createDocument(
     };
   }
 
-  const { supabase, userId } = await requireUser(locale);
   const { data, error } = await supabase
     .from("documents")
     .insert({

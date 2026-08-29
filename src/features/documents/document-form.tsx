@@ -1,100 +1,55 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
 
 import type { DocumentFormState } from "@/features/documents/actions";
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
+import { LanguageComboBox } from "@/features/documents/language-combobox";
 import type { DocumentFormValues } from "@/features/documents/validation";
-import type { AppErrorPayload } from "@/lib/errors/catalog";
-import {
-  getLanguage,
-  getLanguageDisplayName,
-  LANGUAGES,
-} from "@/lib/languages";
+import type { SupportedLanguage } from "@/features/translation/contract";
+import { getLanguageDirection } from "@/lib/languages";
 import { Link } from "@/i18n/navigation";
 
 const initialState: DocumentFormState = { revision: 0, status: "idle" };
-const initialValues: DocumentFormValues = {
-  content: "",
-  sourceLanguage: "en",
-  targetLanguage: "es",
-  title: "",
-};
-
-type LanguageSelectFieldProps = Readonly<{
-  error?: AppErrorPayload;
-  label: string;
-  locale: string;
-  name: "sourceLanguage" | "targetLanguage";
-  onChange?: (value: string) => void;
-  value: string;
-}>;
-
-function LanguageSelectField({
-  error,
-  label,
-  locale,
-  name,
-  onChange,
-  value,
-}: LanguageSelectFieldProps) {
-  const errorId =
-    name === "sourceLanguage"
-      ? "source-language-error"
-      : "target-language-error";
-
-  return (
-    <div>
-      <label htmlFor={name} className="text-sm font-semibold text-muted">
-        {label}
-      </label>
-      <select
-        id={name}
-        name={name}
-        required
-        defaultValue={value}
-        onChange={(event) => onChange?.(event.target.value)}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? errorId : undefined}
-        className="mt-2 h-12 w-full rounded-xl border border-border-strong bg-surface px-4 text-[15px] text-text outline-none transition focus:border-primary focus:ring-3 focus:ring-primary/10"
-      >
-        {LANGUAGES.map((language) => (
-          <option key={language.code} value={language.code}>
-            {getLanguageDisplayName(language.code, locale)}
-          </option>
-        ))}
-      </select>
-      {error ? (
-        <p id={errorId} className="mt-1.5 text-sm text-danger">
-          {error.message}
-        </p>
-      ) : null}
-    </div>
-  );
-}
 
 type DocumentFormProps = Readonly<{
   createAction: (
     previousState: DocumentFormState,
     formData: FormData,
   ) => Promise<DocumentFormState>;
+  initialLanguagePair: Readonly<{
+    sourceLanguage: string;
+    targetLanguage: string;
+  }>;
+  languages: readonly SupportedLanguage[];
 }>;
 
-export function DocumentForm({ createAction }: DocumentFormProps) {
-  const locale = useLocale();
+export function DocumentForm({
+  createAction,
+  initialLanguagePair,
+  languages,
+}: DocumentFormProps) {
   const t = useTranslations("Documents.form");
   const common = useTranslations("Common");
+  const initialValues: DocumentFormValues = {
+    content: "",
+    ...initialLanguagePair,
+    title: "",
+  };
   const [state, formAction, pending] = useActionState(
     createAction,
     initialState,
   );
   const [sourceLanguage, setSourceLanguage] = useState(
-    initialValues.sourceLanguage,
+    initialLanguagePair.sourceLanguage,
+  );
+  const [targetLanguage, setTargetLanguage] = useState(
+    initialLanguagePair.targetLanguage,
   );
   const fieldErrors = state.status === "error" ? state.fieldErrors : undefined;
   const values = state.status === "error" ? state.values : initialValues;
-  const sourceDirection = getLanguage(sourceLanguage)?.direction ?? "auto";
+  const sourceDirection = getLanguageDirection(sourceLanguage);
   const contentDescribedBy = [
     "content-guidance",
     "content-hint",
@@ -141,20 +96,27 @@ export function DocumentForm({ createAction }: DocumentFormProps) {
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <LanguageSelectField
+        <LanguageComboBox
+          emptyMessage={t("languageNoResults")}
           error={fieldErrors?.sourceLanguage}
           label={t("sourceLanguage")}
-          locale={locale}
+          languages={languages}
           name="sourceLanguage"
           onChange={setSourceLanguage}
-          value={values.sourceLanguage}
+          openLabel={t("openSourceLanguages")}
+          placeholder={t("languageSearchPlaceholder")}
+          value={sourceLanguage}
         />
-        <LanguageSelectField
+        <LanguageComboBox
+          emptyMessage={t("languageNoResults")}
           error={fieldErrors?.targetLanguage}
           label={t("targetLanguage")}
-          locale={locale}
+          languages={languages}
           name="targetLanguage"
-          value={values.targetLanguage}
+          onChange={setTargetLanguage}
+          openLabel={t("openTargetLanguages")}
+          placeholder={t("languageSearchPlaceholder")}
+          value={targetLanguage}
         />
       </div>
 

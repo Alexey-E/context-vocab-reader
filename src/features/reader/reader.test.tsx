@@ -56,6 +56,18 @@ describe("Reader", () => {
     expect(markup).toContain('dir="rtl"');
   });
 
+  it("uses the source language direction outside the static language catalog", () => {
+    const markup = renderReader({
+      content: "Version 2. שלום!",
+      sourceLanguage: "he",
+      targetLanguage: "en",
+      title: "Hebrew sample",
+      visibility: "public",
+    });
+
+    expect(markup).toMatch(/<div[^>]*lang="he"[^>]*dir="rtl"/);
+  });
+
   it("renders leading, repeated, and trailing paragraph separators", () => {
     const content = "\n\nFirst paragraph.\n\n\nSecond paragraph.\n\n";
     const markup = renderReader({

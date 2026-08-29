@@ -1,5 +1,4 @@
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
-import { isLanguageCode, type LanguageCode } from "@/lib/languages";
 import type { AppErrorCode } from "@/lib/errors/catalog";
 
 export type DocumentField =
@@ -9,8 +8,8 @@ export type DocumentFieldErrors = Partial<Record<DocumentField, AppErrorCode>>;
 
 export type ValidDocumentInput = {
   content: string;
-  sourceLanguage: LanguageCode;
-  targetLanguage: LanguageCode;
+  sourceLanguage: string;
+  targetLanguage: string;
   title: string;
 };
 
@@ -41,6 +40,7 @@ function readText(formData: FormData, name: string) {
 
 export function validateDocumentForm(
   formData: FormData,
+  supportedLanguageCodes: ReadonlySet<string>,
 ): DocumentValidationResult {
   const values = {
     content: readText(formData, "content"),
@@ -66,11 +66,11 @@ export function validateDocumentForm(
     errors.content = "validation.document.content.too_long";
   }
 
-  if (!isLanguageCode(sourceLanguage)) {
+  if (!supportedLanguageCodes.has(sourceLanguage)) {
     errors.sourceLanguage = "validation.document.source_language.invalid";
   }
 
-  if (!isLanguageCode(targetLanguage)) {
+  if (!supportedLanguageCodes.has(targetLanguage)) {
     errors.targetLanguage = "validation.document.target_language.invalid";
   } else if (sourceLanguage === targetLanguage) {
     errors.targetLanguage = "validation.document.languages_same";
@@ -83,8 +83,8 @@ export function validateDocumentForm(
   return {
     input: {
       content,
-      sourceLanguage: sourceLanguage as LanguageCode,
-      targetLanguage: targetLanguage as LanguageCode,
+      sourceLanguage,
+      targetLanguage,
       title,
     },
     valid: true,

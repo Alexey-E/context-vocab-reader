@@ -5,6 +5,10 @@ import { BackLink } from "@/components/back-link";
 import { SiteHeader } from "@/components/site-header";
 import { createDocument } from "@/features/documents/actions";
 import { DocumentForm } from "@/features/documents/document-form";
+import {
+  getDefaultDocumentLanguagePair,
+  getDocumentLanguages,
+} from "@/features/documents/languages.server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata");
@@ -18,6 +22,8 @@ export default async function NewDocumentPage() {
     getLocale(),
   ]);
   const createAction = createDocument.bind(null, locale);
+  const languages = await getDocumentLanguages(locale);
+  const initialLanguagePair = getDefaultDocumentLanguagePair(languages);
 
   return (
     <main className="min-h-dvh bg-page text-text">
@@ -34,7 +40,11 @@ export default async function NewDocumentPage() {
           <p className="mt-3 text-sm leading-6 text-muted">
             {t("description")}
           </p>
-          <DocumentForm createAction={createAction} />
+          <DocumentForm
+            createAction={createAction}
+            initialLanguagePair={initialLanguagePair}
+            languages={languages}
+          />
         </div>
       </section>
     </main>

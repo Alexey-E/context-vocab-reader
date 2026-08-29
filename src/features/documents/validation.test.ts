@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
 import { validateDocumentForm } from "@/features/documents/validation";
 
+const SUPPORTED_LANGUAGE_CODES = new Set(["de", "en", "es", "fr"]);
+
 function createDocumentFormData(
   overrides: Partial<Record<string, string>> = {},
 ) {
@@ -30,6 +32,7 @@ describe("validateDocumentForm", () => {
           sourceLanguage: " en ",
           targetLanguage: " es ",
         }),
+        SUPPORTED_LANGUAGE_CODES,
       ),
     ).toEqual({
       input: {
@@ -51,6 +54,7 @@ describe("validateDocumentForm", () => {
   it("rejects blank required fields", () => {
     const result = validateDocumentForm(
       createDocumentFormData({ content: " \n ", title: "   " }),
+      SUPPORTED_LANGUAGE_CODES,
     );
 
     expect(result).toEqual({
@@ -73,7 +77,10 @@ describe("validateDocumentForm", () => {
     const title = "a".repeat(DOCUMENT_FIELD_LIMITS.title.maxLength);
 
     expect(
-      validateDocumentForm(createDocumentFormData({ content, title })),
+      validateDocumentForm(
+        createDocumentFormData({ content, title }),
+        SUPPORTED_LANGUAGE_CODES,
+      ),
     ).toEqual({
       input: {
         content,
@@ -97,6 +104,7 @@ describe("validateDocumentForm", () => {
         content: "a".repeat(DOCUMENT_FIELD_LIMITS.content.maxLength + 1),
         title: "a".repeat(DOCUMENT_FIELD_LIMITS.title.maxLength + 1),
       }),
+      SUPPORTED_LANGUAGE_CODES,
     );
 
     expect(result).toEqual({
@@ -120,6 +128,7 @@ describe("validateDocumentForm", () => {
         sourceLanguage: "__invalid_source__",
         targetLanguage: "__invalid_target__",
       }),
+      SUPPORTED_LANGUAGE_CODES,
     );
 
     expect(result).toEqual({
@@ -140,6 +149,7 @@ describe("validateDocumentForm", () => {
   it("rejects an identical language pair", () => {
     const result = validateDocumentForm(
       createDocumentFormData({ sourceLanguage: "fr", targetLanguage: "fr" }),
+      SUPPORTED_LANGUAGE_CODES,
     );
 
     expect(result).toEqual({
@@ -154,5 +164,15 @@ describe("validateDocumentForm", () => {
         title: "  A useful text  ",
       },
     });
+  });
+
+  it("accepts a language discovered by the active provider", () => {
+    const result = validateDocumentForm(
+      createDocumentFormData({ sourceLanguage: "de" }),
+      SUPPORTED_LANGUAGE_CODES,
+    );
+
+    expect(result.valid).toBe(true);
+    if (result.valid) expect(result.input.sourceLanguage).toBe("de");
   });
 });

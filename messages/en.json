@@ -131,6 +131,10 @@
       "description": "Paste plain text and choose the language pair you want to use while reading.",
       "eyebrow": "New document",
       "heading": "Add a text to your library",
+      "languageNoResults": "No matching languages",
+      "languageSearchPlaceholder": "Search languages",
+      "openSourceLanguages": "Open source language options",
+      "openTargetLanguages": "Open target language options",
       "sourceLanguage": "Source language",
       "targetLanguage": "Translate into",
       "title": "Title",
@@ -192,6 +196,13 @@
     "documents": {
       "createFailed": "The document could not be created. Please try again.",
       "deleteFailed": "The document could not be deleted. Please try again."
+    },
+    "translation": {
+      "failed": "Translation could not be completed. Please try again.",
+      "invalidRequest": "Check the text and language pair and try again.",
+      "rateLimited": "Translation is temporarily limited. Please wait a moment and try again.",
+      "timeout": "Translation took too long. Please try again.",
+      "unavailable": "Translation is temporarily unavailable. Please try again later."
     },
     "validation": {
       "contentRequired": "Enter the document text.",
