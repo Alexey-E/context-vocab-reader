@@ -129,6 +129,10 @@
       "description": "Collez du texte brut et choisissez la paire de langues à utiliser pendant la lecture.",
       "eyebrow": "Nouveau document",
       "heading": "Ajoutez un texte à votre bibliothèque",
+      "languageNoResults": "Aucune langue correspondante",
+      "languageSearchPlaceholder": "Rechercher une langue",
+      "openSourceLanguages": "Ouvrir les options de langue source",
+      "openTargetLanguages": "Ouvrir les options de langue cible",
       "sourceLanguage": "Langue source",
       "targetLanguage": "Traduire vers",
       "title": "Titre",
@@ -188,6 +192,13 @@
     "documents": {
       "createFailed": "Le document n’a pas pu être créé. Veuillez réessayer.",
       "deleteFailed": "Le document n’a pas pu être supprimé. Veuillez réessayer."
+    },
+    "translation": {
+      "failed": "La traduction n’a pas pu être effectuée. Veuillez réessayer.",
+      "invalidRequest": "Vérifiez le texte et la paire de langues, puis réessayez.",
+      "rateLimited": "La traduction est temporairement limitée. Patientez un instant, puis réessayez.",
+      "timeout": "La traduction a pris trop de temps. Veuillez réessayer.",
+      "unavailable": "La traduction est temporairement indisponible. Veuillez réessayer plus tard."
     },
     "validation": {
       "contentRequired": "Saisissez le texte du document.",

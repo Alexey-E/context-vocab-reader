@@ -156,23 +156,26 @@ A clean install resolves only the reviewed dependency graph from the committed l
 
 ## Stage 9 — Translation provider abstraction
 
-- [ ] Define the translation-provider contract.
-- [ ] Implement a deterministic mock provider.
-- [ ] Implement the Google Cloud Translation provider.
-- [ ] Add supported-language discovery to the provider contract.
-- [ ] Support every source and target language reported by Google Cloud Translation, including display names and text direction metadata.
-- [ ] Keep the four-language Stage 5 catalog as the deterministic fallback for local development and the mock provider.
-- [ ] Select the provider through environment configuration.
-- [ ] Keep provider credentials server-side.
-- [ ] Add input validation, timeouts, and controlled error mapping.
+- [x] Define the translation-provider contract.
+- [x] Implement a deterministic mock provider.
+- [x] Implement the Google Cloud Translation Basic v2 provider against the documented HTTP contract without live credentials.
+- [x] Add supported-language discovery to the provider contract.
+- [x] Support every source and target language reported by the active provider, including localized display names and text direction metadata.
+- [x] Use the provider-backed language catalog in document creation with server-side allow-list validation.
+- [x] Replace native language selects with accessible searchable React Aria comboboxes localized to the interface locale.
+- [x] Keep the four-language Stage 5 catalog as the deterministic fallback for local development and the mock provider.
+- [x] Select the provider through environment configuration, defaulting to `mock`.
+- [x] Keep provider credentials server-side and send the Google API key through `X-goog-api-key` rather than the URL.
+- [x] Add input validation, a 5,000-code-point limit, a 10-second timeout, no automatic retry, and controlled error mapping.
 
 ### Exit criteria
 
-Feature code can request a translation without knowing which provider is active, and the Google-backed application can select any language supported by Google Cloud Translation.
+Feature code can request translations and supported languages without knowing which provider is active. Document creation uses the active provider catalog through localized searchable controls and validates the selected codes again on the server. The mock provider is operational without external services, and the dormant Google adapter conforms to mocked Basic v2 HTTP contracts. Live Google Cloud configuration remains explicitly unverified until Stage 14.
 
 ## Stage 10 — Reader translation and short-lived cache
 
 - [ ] Add a server action or route handler for translation.
+- [ ] Resolve source and target languages on the server from the stored document or sample; reader requests must not accept client-provided language overrides.
 - [ ] Generate a cache key from normalized text, languages, and provider.
 - [ ] Add a short-lived in-memory cache.
 - [ ] Translate an explicitly submitted native selection as a word or arbitrary fragment without making prose interactive.
@@ -235,6 +238,11 @@ Vocabulary cards can be managed independently of the reader.
 ## Stage 14 — Production behavior and accessibility
 
 - [ ] Add an `Edit` link to personal document cards and implement a prefilled document editing flow with the same validation and ownership checks as creation.
+- [ ] Configure Cloud Translation Basic v2, billing, quotas, abuse protection, and a server-side API key restricted to the Translation API before enabling the Google provider.
+- [ ] Run live smoke tests for Google translation and supported-language discovery locally and on Vercel without recording credentials or provider payloads in logs.
+- [ ] Verify rate-limit, timeout, quota, and sanitized-logging behavior against the live Google integration.
+- [ ] Reuse the Stage 9 provider-backed language combobox and validation in the document editing flow; the reader continues using the pair stored on the document or sample.
+- [ ] Decide whether production should remain on the safe mock provider or enable Google based on cost controls and observed behavior.
 - [ ] Add route-level error and not-found states.
 - [ ] Handle expired authentication.
 - [ ] Handle provider timeouts and rate limits.

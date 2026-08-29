@@ -116,7 +116,7 @@ The active interface locale sets `<html lang>` and its writing direction. Arabic
 
 ## Accessible interaction primitives
 
-`react-aria-components` is the default foundation for complex client-side controls whose correctness depends on coordinated keyboard, focus, touch, overlay, and screen-reader behavior. The theme menu is the first implementation. Appropriate future uses include the interface-language switcher, searchable translation-language comboboxes, translation dialogs and popovers, sentence disclosures, and vocabulary search or filters.
+`react-aria-components` is the default foundation for complex client-side controls whose correctness depends on coordinated keyboard, focus, touch, overlay, and screen-reader behavior. Current uses include the theme and interface-language menus and searchable document-language comboboxes. Appropriate future uses include translation dialogs and popovers, sentence disclosures, and vocabulary search or filters.
 
 The library owns interaction semantics: ARIA relationships, keyboard navigation, focus management, overlay dismissal and positioning, and cross-input behavior. Application code continues to own domain state, Server Actions, validation, authentication and authorization, cookies and persistence, translation selection and caching, Tailwind styling, and design tokens.
 
@@ -184,6 +184,8 @@ Application code should depend on a provider contract rather than Google-specifi
 
 ```ts
 interface TranslationProvider {
+  readonly id: "mock" | "google";
+
   translate(input: {
     text: string;
     sourceLanguage: string;
@@ -192,6 +194,14 @@ interface TranslationProvider {
     translatedText: string;
     provider: string;
   }>;
+
+  getSupportedLanguages(input?: { displayLanguage?: string }): Promise<
+    readonly {
+      code: string;
+      direction: "ltr" | "rtl";
+      name: string;
+    }[]
+  >;
 }
 ```
 
@@ -201,6 +211,40 @@ Initial implementations:
 - `GoogleTranslationProvider`
 
 The active implementation is selected through `TRANSLATION_PROVIDER`.
+
+`mock` is the default for local development, CI, and the public deployment. It
+uses the deterministic four-language catalog and makes no network requests. The
+Google adapter targets the documented Cloud Translation Basic v2
+[`translate`](https://docs.cloud.google.com/translate/docs/reference/rest/v2/translate)
+and
+[`languages`](https://docs.cloud.google.com/translate/docs/reference/rest/v2/languages)
+resources through native server-side `fetch`. Its API key is sent through the
+`X-goog-api-key` header and never enters a URL or client bundle.
+
+Both providers share product-level validation: nonblank input, distinct source
+and target languages, a maximum of 5,000 Unicode code points, and a 10-second
+timeout without automatic retry. Provider failures are mapped to internal
+categories rather than exposing upstream messages. At the server/UI boundary,
+those categories become safe `AppErrorCode` values and the existing error
+catalog produces an `AppErrorPayload` in the active interface locale. The Google
+implementation is contract-tested with mocked HTTP responses; live credentials,
+billing, quotas, and production activation are deferred to Stage 14.
+
+Supported-language discovery belongs to document creation and editing. A user
+selects the source and target languages once, and their canonical codes are
+stored with the document. Reader translation requests identify the document or
+public sample and submit text, but do not supply or override its language pair;
+the server reads that pair from the authorized stored record before calling the
+provider. This keeps the reader consistent and prevents a client from bypassing
+the language choices validated when the document was saved.
+
+The document form obtains this catalog on the server and renders localized
+searchable React Aria comboboxes. `Intl.DisplayNames` formats provider language
+names in the active interface locale, while provider names and uppercase codes
+remain fallbacks. The interface locale changes only this presentation: canonical
+language codes and the document content are not translated. The Server Action
+reloads the active catalog after authentication and validates both submitted
+codes against it before persisting the document.
 
 ## Cache strategy
 

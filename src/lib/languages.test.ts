@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   getLanguage,
+  getLanguageDirection,
   getLanguageDisplayName,
   isLanguageCode,
   LANGUAGES,
@@ -41,6 +42,24 @@ describe("the language catalog", () => {
   });
 
   it("uses an isolated-friendly code fallback for unknown languages", () => {
-    expect(getLanguageDisplayName("unknown", "ar")).toBe("UNKNOWN");
+    expect(getLanguageDisplayName("invalid_language", "ar")).toBe(
+      "INVALID_LANGUAGE",
+    );
+  });
+
+  it("formats provider-discovered languages and accepts a provider fallback", () => {
+    expect(getLanguageDisplayName("de", "fr", "allemand fourni")).toBe(
+      "allemand",
+    );
+    expect(
+      getLanguageDisplayName("invalid_language", "en", "Provider name"),
+    ).toBe("Provider name");
+  });
+
+  it("derives writing direction for provider-discovered languages", () => {
+    expect(getLanguageDirection("en")).toBe("ltr");
+    expect(getLanguageDirection("ar")).toBe("rtl");
+    expect(getLanguageDirection("he")).toBe("rtl");
+    expect(getLanguageDirection("invalid_language")).toBe("ltr");
   });
 });

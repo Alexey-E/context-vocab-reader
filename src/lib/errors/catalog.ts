@@ -19,6 +19,11 @@ export const APP_ERROR_DEFINITIONS = {
   "auth.weak_password": { key: "auth.weakPassword" },
   "documents.create_failed": { key: "documents.createFailed" },
   "documents.delete_failed": { key: "documents.deleteFailed" },
+  "translation.failed": { key: "translation.failed" },
+  "translation.invalid_request": { key: "translation.invalidRequest" },
+  "translation.rate_limited": { key: "translation.rateLimited" },
+  "translation.timeout": { key: "translation.timeout" },
+  "translation.unavailable": { key: "translation.unavailable" },
   "validation.document.content.required": {
     key: "validation.contentRequired",
   },

@@ -41,6 +41,19 @@ describe("the application error catalog", () => {
     });
   });
 
+  it.each([
+    ["en", "Translation took too long. Please try again."],
+    ["ru", "Перевод занял слишком много времени. Повторите попытку."],
+    ["fr", "La traduction a pris trop de temps. Veuillez réessayer."],
+    ["es", "La traducción tardó demasiado. Inténtalo de nuevo."],
+    ["ar", "استغرقت الترجمة وقتًا طويلًا. يرجى المحاولة مرة أخرى."],
+  ] as const)("creates a localized %s translation error", (locale, message) => {
+    expect(payload(locale, "translation.timeout")).toEqual({
+      code: "translation.timeout",
+      message,
+    });
+  });
+
   it("formats product limits through ICU numbers", () => {
     expect(
       payload("en", "validation.document.content.too_long").message,
