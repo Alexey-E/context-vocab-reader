@@ -42,10 +42,6 @@ the policy.
 Every exception must select an exact package version, explain why it is needed, and
 have a removal condition. Broad package-name or scope exceptions are not allowed.
 
-The initial release-age exceptions cover versions already reviewed and committed
-before the policy was enabled. Remove the complete `minimumReleaseAgeExclude` list
-after `2026-08-17T13:10:00Z`, then repeat a clean frozen install.
-
 The current trust-policy exceptions are existing transitive dependencies:
 
 | Package                                    | Dependency path                          | Removal condition                                                                                 |
@@ -56,6 +52,18 @@ The current trust-policy exceptions are existing transitive dependencies:
 
 Review these entries whenever a parent dependency changes. A new trust downgrade is
 not added automatically: investigate it as a possible publisher or package takeover.
+
+The following exact overrides keep transitive dependencies on patched versions until
+their parent packages adopt those versions naturally:
+
+| Package                  | Security baseline | Removal condition                                            |
+| ------------------------ | ----------------- | ------------------------------------------------------------ |
+| `brace-expansion@1.1.18` | `>=1.1.18`        | Remove when all version 1 parents resolve `1.1.18` or newer. |
+| `brace-expansion@5.0.9`  | `>=5.0.9`         | Remove when all version 5 parents resolve `5.0.9` or newer.  |
+| `js-yaml@4.3.1`          | `>=4.3.1`         | Remove when ESLint resolves `4.3.1` or newer.                |
+| `nanoid@3.3.18`          | `>=3.3.18`        | Remove when PostCSS resolves `3.3.18` or newer.              |
+| `postcss@8.5.23`         | `>=8.5.23`        | Remove when all parent packages resolve `8.5.23` or newer.   |
+| `sharp@0.35.0`           | `>=0.35.0`        | Remove when Next.js resolves `0.35.0` or newer.              |
 
 ## Vulnerability response
 

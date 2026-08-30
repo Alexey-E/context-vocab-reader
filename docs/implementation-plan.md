@@ -139,15 +139,15 @@ English pages use canonical unprefixed URLs, Russian, French, Spanish, and Arabi
 - [x] Upgrade to a verified pnpm release that supports release-age, trust, integrity, and exotic-source policies.
 - [x] Pin the exact pnpm version in `packageManager` and use the same version locally and in CI.
 - [x] Pin direct dependencies and dev dependencies to exact versions and enable `saveExact` for future additions.
-- [ ] Keep `pnpm-lock.yaml` committed and require `pnpm install --frozen-lockfile` in CI and deployment builds.
+- [x] Keep `pnpm-lock.yaml` committed and require `pnpm install --frozen-lockfile` in CI and deployment builds.
 - [x] Reject tarballs whose integrity differs from the committed lockfile instead of updating checksums automatically.
 - [x] Delay newly published direct and transitive dependency versions by seven days with `minimumReleaseAge`.
 - [x] Enable `trustPolicy: no-downgrade` after validating the existing dependency graph and document any narrowly scoped exceptions.
 - [x] Block exotic transitive dependency sources such as arbitrary Git repositories and tarball URLs.
 - [x] Keep dependency lifecycle scripts disabled by default and explicitly allow only reviewed packages that require a build step.
-- [ ] Add weekly Dependabot updates for the pnpm/npm ecosystem and GitHub Actions.
+- [x] Add weekly Dependabot updates for the pnpm/npm ecosystem and GitHub Actions.
 - [x] Pin third-party GitHub Actions to full commit SHAs while retaining the release tag in a comment for maintenance.
-- [ ] Enable GitHub dependency alerts and define how known vulnerabilities block or expedite an update PR.
+- [x] Enable GitHub dependency alerts and define how known vulnerabilities block or expedite an update PR.
 - [x] Document the dependency-update workflow: review the changelog and provenance, inspect lockfile changes, run CI, and merge through a pull request.
 
 ### Exit criteria
