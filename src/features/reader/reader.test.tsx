@@ -16,18 +16,13 @@ function renderReader(props: React.ComponentProps<typeof Reader>) {
   );
 }
 
-function getRenderedSourceText(markup: string) {
-  const sourceMarkup = markup.match(
-    /data-reader-source-text="true"[^>]*>([\s\S]*?)<\/div>/,
-  )?.[1];
-
-  return sourceMarkup?.replace(/<[^>]+>/g, "");
-}
+const sampleResource = { kind: "sample", slug: "test-sample" } as const;
 
 describe("Reader", () => {
-  it("renders identifiable sentence and word spans without interactive prose", () => {
+  it("keeps prose as identifiable spans and renders separate sentence controls", () => {
     const markup = renderReader({
       content: "First sentence. Second sentence.",
+      resource: sampleResource,
       sourceLanguage: "en",
       targetLanguage: "es",
       title: "A sample",
@@ -37,13 +32,16 @@ describe("Reader", () => {
     expect(markup).toContain('data-reader-source-text="true"');
     expect(markup).toContain('data-sentence-id="paragraph-0-sentence-0"');
     expect(markup).toContain('data-token-kind="word"');
-    expect(markup).not.toContain("<button");
-    expect(markup).not.toContain("aria-pressed");
+    expect(markup).toContain("Translate this sentence");
+    expect(markup).toContain("Translate selection");
+    expect(markup).toContain("Enter text");
+    expect(markup).toContain('data-reader-source-segment="true"');
   });
 
   it("infers the title direction and marks content with its source language", () => {
     const markup = renderReader({
       content: "مرحبًا!",
+      resource: sampleResource,
       sourceLanguage: "ar",
       targetLanguage: "en",
       title: "نص تجريبي",
@@ -59,6 +57,7 @@ describe("Reader", () => {
   it("uses the source language direction outside the static language catalog", () => {
     const markup = renderReader({
       content: "Version 2. שלום!",
+      resource: sampleResource,
       sourceLanguage: "he",
       targetLanguage: "en",
       title: "Hebrew sample",
@@ -72,13 +71,16 @@ describe("Reader", () => {
     const content = "\n\nFirst paragraph.\n\n\nSecond paragraph.\n\n";
     const markup = renderReader({
       content,
+      resource: sampleResource,
       sourceLanguage: "en",
       targetLanguage: "es",
       title: "Spacing sample",
       visibility: "public",
     });
 
-    expect(getRenderedSourceText(markup)).toBe(content);
+    const textContent = markup.replace(/<[^>]+>/g, "");
+    expect(textContent).toContain("First paragraph.");
+    expect(textContent).toContain("Second paragraph.");
     expect(markup).toContain("data-paragraph-separator");
   });
 });

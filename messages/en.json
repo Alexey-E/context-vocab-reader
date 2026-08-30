@@ -103,14 +103,14 @@
     "signOut": "Sign out"
   },
   "Samples": {
-    "description": "Start reading without an account. Translation controls will be added in the next stages.",
+    "description": "Start reading and translate selected text or complete sentences without an account.",
     "emptyDescription": "Curated texts will appear here when they are available.",
     "emptyHeading": "No sample texts yet",
     "eyebrow": "Public library",
     "heading": "Choose a sample text",
     "open": "Open sample",
     "readerBack": "All samples",
-    "readerNotice": "This sample is read-only. Translation controls for selected text and complete sentences will be added in the next implementation stages.",
+    "readerNotice": "This sample is read-only. Its translations are temporary and are not added to a saved history.",
     "signupDescription": "Create an account to keep private documents and vocabulary.",
     "signupHeading": "Want to use your own text?"
   },
@@ -152,7 +152,33 @@
     }
   },
   "Reader": {
-    "publicSample": "Public sample"
+    "custom": {
+      "cancel": "Cancel",
+      "description": "Enter any word or fragment to translate it with this document’s language pair.",
+      "eyebrow": "Custom text",
+      "failed": "The text could not be translated. Check the message in the reader and try again.",
+      "heading": "Translate a fragment",
+      "label": "Text to translate",
+      "open": "Enter text",
+      "pending": "Translating…",
+      "submit": "Translate"
+    },
+    "dismissSelection": "Dismiss selection translation",
+    "errors": {
+      "failed": "Translation could not be completed. Please try again."
+    },
+    "publicSample": "Public sample",
+    "retry": "Try again",
+    "selectionHint": "Select text in the reader, or enter a fragment with the keyboard.",
+    "selectionReady": "Selected text is ready to translate.",
+    "selectionResult": "Selection translation",
+    "sentence": {
+      "hide": "Hide sentence translation",
+      "show": "Translate this sentence"
+    },
+    "toolsHeading": "Translation tools",
+    "translateSelection": "Translate selection",
+    "translating": "Translating…"
   },
   "RouteStates": {
     "documentsError": {

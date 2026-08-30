@@ -116,7 +116,7 @@ The active interface locale sets `<html lang>` and its writing direction. Arabic
 
 ## Accessible interaction primitives
 
-`react-aria-components` is the default foundation for complex client-side controls whose correctness depends on coordinated keyboard, focus, touch, overlay, and screen-reader behavior. Current uses include the theme and interface-language menus and searchable document-language comboboxes. Appropriate future uses include translation dialogs and popovers, sentence disclosures, and vocabulary search or filters.
+`react-aria-components` is the default foundation for complex client-side controls whose correctness depends on coordinated keyboard, focus, touch, overlay, and screen-reader behavior. Current uses include the theme and interface-language menus, searchable document-language comboboxes, the custom-text translation dialog, and sentence disclosures. Appropriate future uses include translation popovers and vocabulary search or filters.
 
 The library owns interaction semantics: ARIA relationships, keyboard navigation, focus management, overlay dismissal and positioning, and cross-input behavior. Application code continues to own domain state, Server Actions, validation, authentication and authorization, cookies and persistence, translation selection and caching, Tailwind styling, and design tokens.
 
@@ -142,9 +142,8 @@ Toasts are reserved for results without a natural persistent location, such as s
 
 ```text
 Visitor opens the public demo
-→ application reads a curated sample through the anon role
-→ visitor chooses a target language
-→ visitor translates sentences, paragraphs, or words with the safe demo provider
+→ application reads a curated sample and its language pair through the anon role
+→ visitor translates sentences, fragments, or words with the safe demo provider
 → an action that requires persistence prompts the visitor to sign in
 ```
 
@@ -165,9 +164,9 @@ environment variables, application redirects, or OAuth configuration.
 ## Translation flow
 
 ```text
-User selects text in a private or curated sample document
-→ client sends text and language pair to server
-→ server validates input and the applicable demo or authenticated access mode
+User selects text or expands a sentence in a private or curated sample document
+→ client sends text and only the document ID or sample slug to the translation route
+→ server validates input, authorizes private access, and reloads the stored language pair
 → server creates a normalized cache key
 → server checks short-lived cache
 → cache hit: return cached translation
@@ -255,7 +254,7 @@ The short-lived cache exists to:
 - remove repeated network latency
 - improve responsiveness during an active reading session
 
-The first implementation may use in-memory server storage. This has an accepted limitation: Vercel serverless instances do not share a global in-memory cache and may be recreated at any time.
+The implementation keeps at most 500 entries for 60 seconds in module-local server memory. Concurrent requests for the same key share one provider promise. Vercel serverless instances do not share this memory, may be recreated at any time, and may therefore repeat a provider call that another instance already completed. The cache is an optimization rather than a correctness or persistence boundary.
 
 A distributed cache should be introduced only if real usage proves it necessary.
 
@@ -278,7 +277,7 @@ The initial reader uses `Intl.Segmenter` with the document's source language for
 
 Paragraph separators and raw token text remain available so the original content can be reconstructed exactly. Word normalization applies Unicode compatibility normalization, locale-aware lowercase conversion, canonical apostrophes, and removal of surrounding punctuation while preserving internal punctuation and diacritics.
 
-Reader prose remains semantic selectable text: paragraphs, sentences, and tokens are identifiable spans rather than controls. Native pointer selection can later prepare an exact word or arbitrary fragment for translation, but selecting text alone must not create a provider request.
+Reader prose remains semantic selectable text: paragraphs, sentences, and tokens are identifiable text rather than controls. Native pointer or keyboard selection prepares an exact word or arbitrary fragment, but selecting text alone does not create a provider request.
 
 Complete sentence translation uses a separate disclosure button with its result rendered directly below the source sentence. This avoids nested controls and preserves ordinary screen-reader document navigation. An accessible custom-text dialog provides the keyboard and screen-reader path for arbitrary fragments without implementing a custom range-selection widget. Word controls are introduced only for saved vocabulary and remain separate from sentence disclosure controls.
 

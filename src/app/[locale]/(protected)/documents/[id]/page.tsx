@@ -40,6 +40,7 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
 
         <Reader
           content={document.content}
+          resource={{ id: document.id, kind: "document" }}
           sourceLanguage={document.source_language}
           targetLanguage={document.target_language}
           title={document.title}

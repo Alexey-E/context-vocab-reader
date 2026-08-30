@@ -69,5 +69,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!auth|_next|_vercel|favicon.ico|service-unavailable).*)"],
+  matcher: ["/((?!api|auth|_next|_vercel|favicon.ico|service-unavailable).*)"],
 };

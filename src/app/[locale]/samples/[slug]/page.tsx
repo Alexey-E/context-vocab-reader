@@ -32,6 +32,7 @@ export default async function SamplePage({ params }: SamplePageProps) {
 
         <Reader
           content={sample.content}
+          resource={{ kind: "sample", slug: sample.slug }}
           sourceLanguage={sample.source_language}
           targetLanguage={sample.target_language}
           title={sample.title}
