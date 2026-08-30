@@ -174,18 +174,18 @@ Feature code can request translations and supported languages without knowing wh
 
 ## Stage 10 — Reader translation and short-lived cache
 
-- [ ] Add a server action or route handler for translation.
-- [ ] Resolve source and target languages on the server from the stored document or sample; reader requests must not accept client-provided language overrides.
-- [ ] Generate a cache key from normalized text, languages, and provider.
-- [ ] Add a short-lived in-memory cache.
-- [ ] Translate an explicitly submitted native selection as a word or arbitrary fragment without making prose interactive.
-- [ ] Add an accessible custom-text dialog as the keyboard and screen-reader path for arbitrary fragments.
-- [ ] Add a separate disclosure button for each sentence and render its translation directly below the source sentence.
-- [ ] Allow multiple sentence translations to remain expanded independently.
-- [ ] Show selection translations in one dismissible responsive context card.
-- [ ] Add idle, loading, success, error, retry, and accessible live states.
-- [ ] Avoid duplicate provider requests during the cache lifetime.
-- [ ] Document the limits of instance-local serverless memory.
+- [x] Add a server action or route handler for translation.
+- [x] Resolve source and target languages on the server from the stored document or sample; reader requests must not accept client-provided language overrides.
+- [x] Generate a cache key from normalized text, languages, and provider.
+- [x] Add a short-lived in-memory cache.
+- [x] Translate an explicitly submitted native selection as a word or arbitrary fragment without making prose interactive.
+- [x] Add an accessible custom-text dialog as the keyboard and screen-reader path for arbitrary fragments.
+- [x] Add a separate disclosure button for each sentence and render its translation directly below the source sentence.
+- [x] Allow multiple sentence translations to remain expanded independently.
+- [x] Show selection translations in one dismissible responsive context card.
+- [x] Add idle, loading, success, error, retry, and accessible live states.
+- [x] Avoid duplicate provider requests during the cache lifetime.
+- [x] Document the limits of instance-local serverless memory.
 
 ### Exit criteria
 

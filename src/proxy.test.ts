@@ -49,6 +49,7 @@ describe("proxy matcher", () => {
   });
 
   it.each([
+    "/api/translation",
     "/auth/callback",
     "/_next/static/chunks/app.js",
     "/_vercel/insights",

@@ -3,11 +3,13 @@ import "server-only";
 import { useTranslations } from "next-intl";
 
 import { LanguagePair } from "@/components/language-pair";
+import { ReaderExperience } from "@/features/reader/reader-experience";
 import { processReaderText } from "@/features/reader/text-processing";
-import { getLanguageDirection } from "@/lib/languages";
+import type { ReaderResourceReference } from "@/features/reader/translation-contract";
 
 type ReaderProps = Readonly<{
   content: string;
+  resource: ReaderResourceReference;
   sourceLanguage: string;
   targetLanguage: string;
   title: string;
@@ -16,13 +18,13 @@ type ReaderProps = Readonly<{
 
 export function Reader({
   content,
+  resource,
   sourceLanguage,
   targetLanguage,
   title,
   visibility,
 }: ReaderProps) {
   const t = useTranslations("Reader");
-  const direction = getLanguageDirection(sourceLanguage);
   const paragraphs = processReaderText(content, sourceLanguage);
 
   return (
@@ -48,45 +50,12 @@ export function Reader({
         </h1>
       </header>
 
-      <div className="border-t border-border px-6 py-8 sm:px-10 sm:py-10">
-        <div
-          lang={sourceLanguage}
-          dir={direction}
-          data-reader-source-text
-          className="mx-auto max-w-[68ch] whitespace-pre-wrap text-lg leading-9 text-muted sm:text-xl sm:leading-10"
-        >
-          {paragraphs.map((paragraph) => (
-            <p
-              key={paragraph.id}
-              id={paragraph.id}
-              data-paragraph-id={paragraph.id}
-              className="inline"
-            >
-              {paragraph.sentences.map((sentence) => (
-                <span
-                  key={sentence.id}
-                  id={sentence.id}
-                  data-sentence-id={sentence.id}
-                >
-                  {sentence.tokens.map((token) => (
-                    <span
-                      key={token.id}
-                      id={token.id}
-                      data-token-id={token.id}
-                      data-token-kind={token.kind}
-                    >
-                      {token.text}
-                    </span>
-                  ))}
-                </span>
-              ))}
-              {paragraph.separatorAfter ? (
-                <span data-paragraph-separator>{paragraph.separatorAfter}</span>
-              ) : null}
-            </p>
-          ))}
-        </div>
-      </div>
+      <ReaderExperience
+        paragraphs={paragraphs}
+        resource={resource}
+        sourceLanguage={sourceLanguage}
+        targetLanguage={targetLanguage}
+      />
     </article>
   );
 }

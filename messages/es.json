@@ -101,14 +101,14 @@
     "signOut": "Cerrar sesión"
   },
   "Samples": {
-    "description": "Empieza a leer sin una cuenta. Los controles de traducción se añadirán en las próximas etapas.",
+    "description": "Lee y traduce texto seleccionado o frases completas sin una cuenta.",
     "emptyDescription": "Los textos seleccionados aparecerán aquí cuando estén disponibles.",
     "emptyHeading": "Todavía no hay ejemplos",
     "eyebrow": "Biblioteca pública",
     "heading": "Elige un texto de ejemplo",
     "open": "Abrir ejemplo",
     "readerBack": "Todos los ejemplos",
-    "readerNotice": "Este ejemplo es de solo lectura. La traducción de texto seleccionado y frases completas se añadirá en las próximas etapas.",
+    "readerNotice": "Este ejemplo es de solo lectura. Sus traducciones son temporales y no se guardan en un historial.",
     "signupDescription": "Crea una cuenta para guardar documentos privados y vocabulario.",
     "signupHeading": "¿Quieres usar tu propio texto?"
   },
@@ -149,7 +149,35 @@
       "title": "Eliminar documento"
     }
   },
-  "Reader": { "publicSample": "Ejemplo público" },
+  "Reader": {
+    "custom": {
+      "cancel": "Cancelar",
+      "description": "Introduce cualquier palabra o fragmento para traducirlo con el par de idiomas de este documento.",
+      "eyebrow": "Texto personalizado",
+      "failed": "No se pudo traducir el texto. Revisa el mensaje del lector e inténtalo de nuevo.",
+      "heading": "Traducir un fragmento",
+      "label": "Texto que se traducirá",
+      "open": "Introducir texto",
+      "pending": "Traduciendo…",
+      "submit": "Traducir"
+    },
+    "dismissSelection": "Cerrar la traducción de la selección",
+    "errors": {
+      "failed": "No se pudo completar la traducción. Inténtalo de nuevo."
+    },
+    "publicSample": "Ejemplo público",
+    "retry": "Intentarlo de nuevo",
+    "selectionHint": "Selecciona texto en el lector o introduce un fragmento con el teclado.",
+    "selectionReady": "El texto seleccionado está listo para traducir.",
+    "selectionResult": "Traducción de la selección",
+    "sentence": {
+      "hide": "Ocultar la traducción de la frase",
+      "show": "Traducir esta frase"
+    },
+    "toolsHeading": "Herramientas de traducción",
+    "translateSelection": "Traducir selección",
+    "translating": "Traduciendo…"
+  },
   "RouteStates": {
     "documentsError": {
       "description": "Inténtalo de nuevo. Tus documentos guardados no se han modificado.",

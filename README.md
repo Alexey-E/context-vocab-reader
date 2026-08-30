@@ -41,7 +41,7 @@ Sentence and paragraph translations are requested on demand and are not stored a
 
 This is a deliberate product and architecture decision: the application does not need to build a long-term database of sentence translations in order to support the main learning flow.
 
-To improve responsiveness and reduce unnecessary translation API calls, the app may use a short-lived in-memory cache during the active reading session. This cache is a technical optimization for UX and cost control, not a persistent translation history.
+To improve responsiveness and reduce unnecessary translation API calls, the app uses a short-lived in-memory cache during the active reading session. This cache is a technical optimization for UX and cost control, not a persistent translation history.
 
 ### Vocabulary cards are persistent
 

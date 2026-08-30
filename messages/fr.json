@@ -101,14 +101,14 @@
     "signOut": "Se déconnecter"
   },
   "Samples": {
-    "description": "Commencez à lire sans compte. Les outils de traduction seront ajoutés lors des prochaines étapes.",
+    "description": "Lisez et traduisez du texte sélectionné ou des phrases complètes sans compte.",
     "emptyDescription": "Les textes sélectionnés apparaîtront ici dès qu’ils seront disponibles.",
     "emptyHeading": "Aucun exemple pour le moment",
     "eyebrow": "Bibliothèque publique",
     "heading": "Choisissez un exemple",
     "open": "Ouvrir l’exemple",
     "readerBack": "Tous les exemples",
-    "readerNotice": "Cet exemple est en lecture seule. La traduction du texte sélectionné et des phrases complètes sera ajoutée lors des prochaines étapes.",
+    "readerNotice": "Cet exemple est en lecture seule. Ses traductions sont temporaires et ne sont pas enregistrées dans un historique.",
     "signupDescription": "Créez un compte pour conserver vos documents privés et votre vocabulaire.",
     "signupHeading": "Vous souhaitez utiliser votre propre texte ?"
   },
@@ -149,7 +149,35 @@
       "title": "Supprimer le document"
     }
   },
-  "Reader": { "publicSample": "Exemple public" },
+  "Reader": {
+    "custom": {
+      "cancel": "Annuler",
+      "description": "Saisissez un mot ou un fragment à traduire avec la paire de langues de ce document.",
+      "eyebrow": "Texte personnalisé",
+      "failed": "Le texte n’a pas pu être traduit. Consultez le message dans le lecteur et réessayez.",
+      "heading": "Traduire un fragment",
+      "label": "Texte à traduire",
+      "open": "Saisir du texte",
+      "pending": "Traduction…",
+      "submit": "Traduire"
+    },
+    "dismissSelection": "Fermer la traduction de la sélection",
+    "errors": {
+      "failed": "La traduction n’a pas pu être effectuée. Veuillez réessayer."
+    },
+    "publicSample": "Exemple public",
+    "retry": "Réessayer",
+    "selectionHint": "Sélectionnez du texte dans le lecteur ou saisissez un fragment au clavier.",
+    "selectionReady": "Le texte sélectionné est prêt à être traduit.",
+    "selectionResult": "Traduction de la sélection",
+    "sentence": {
+      "hide": "Masquer la traduction de la phrase",
+      "show": "Traduire cette phrase"
+    },
+    "toolsHeading": "Outils de traduction",
+    "translateSelection": "Traduire la sélection",
+    "translating": "Traduction…"
+  },
   "RouteStates": {
     "documentsError": {
       "description": "Veuillez réessayer. Vos documents enregistrés n’ont pas été modifiés.",
