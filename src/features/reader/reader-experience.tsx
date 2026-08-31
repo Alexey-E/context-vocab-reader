@@ -28,7 +28,10 @@ import {
   invalidateLatestRequest,
   startLatestRequest,
 } from "@/features/reader/latest-request";
-import { isReaderWordActivationKey } from "@/features/reader/word-activation";
+import {
+  isReaderWordActivationKey,
+  shouldActivateReaderWordFromClick,
+} from "@/features/reader/word-activation";
 import { TRANSLATION_POLICY } from "@/features/translation/constants";
 import {
   SaveWordDialog,
@@ -201,6 +204,7 @@ export function ReaderExperience({
     Record<string, SentenceState>
   >({});
   const selectionRequestId = useRef(0);
+  const nativeSelectionUpdateId = useRef(0);
 
   const handleCardSaved = useCallback((card: ReaderVocabularyCard) => {
     setCards((currentCards) => [
@@ -274,6 +278,7 @@ export function ReaderExperience({
     sentence: ReaderSentence,
     token: ReaderWordToken,
   ) {
+    nativeSelectionUpdateId.current += 1;
     const word = {
       normalizedWord: token.normalized,
       sourceText: token.text,
@@ -288,8 +293,12 @@ export function ReaderExperience({
 
   function updateNativeSelection(event: React.SyntheticEvent<HTMLElement>) {
     const container = event.currentTarget;
+    const updateId = nativeSelectionUpdateId.current + 1;
+    nativeSelectionUpdateId.current = updateId;
 
     requestAnimationFrame(() => {
+      if (updateId !== nativeSelectionUpdateId.current) return;
+
       invalidateLatestRequest(selectionRequestId);
       const selection = window.getSelection();
       if (
@@ -516,7 +525,13 @@ export function ReaderExperience({
                               data-token-id={token.id}
                               data-token-kind={token.kind}
                               onClick={(event) => {
-                                if (event.detail === 0) {
+                                const selection = window.getSelection();
+                                if (
+                                  shouldActivateReaderWordFromClick(
+                                    event.detail,
+                                    selection?.isCollapsed ?? true,
+                                  )
+                                ) {
                                   translateReaderWord(sentence, token);
                                 }
                               }}

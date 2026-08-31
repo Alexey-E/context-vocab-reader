@@ -10,6 +10,7 @@ import {
   type VocabularyFormValues,
   validateVocabularyForm,
 } from "@/features/vocabulary/validation";
+import { VOCABULARY_FIELD_LIMITS } from "@/features/vocabulary/constants";
 import { findReaderWord } from "@/features/vocabulary/word-source";
 import { parseAppLocale, type AppLocale } from "@/i18n/routing";
 import { requireUser } from "@/lib/auth/require-user";
@@ -175,7 +176,11 @@ export async function saveVocabularyCard(
       input_translation: validation.input.meanings,
       input_usage_context: existing
         ? validation.input.usageContext
-        : (validation.input.usageContext ?? word.usageContext),
+        : (validation.input.usageContext ??
+          word.usageContext.slice(
+            0,
+            VOCABULARY_FIELD_LIMITS.usageContext.maxLength,
+          )),
       input_word: word.normalizedWord,
     });
 

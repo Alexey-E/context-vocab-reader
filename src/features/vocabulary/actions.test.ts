@@ -54,10 +54,11 @@ function chainResult<T>(result: T) {
 function createSupabase(
   existing: null | { id: string },
   rpcError: null | { code: string } = null,
+  content = "Context helps.",
 ) {
   const source = chainResult({
     data: {
-      content: "Context helps.",
+      content,
       source_language: "en",
       target_language: "es",
     },
@@ -169,6 +170,30 @@ describe("saveVocabularyCard", () => {
         input_image_url: null,
         input_note: null,
         input_usage_context: null,
+      }),
+    );
+  });
+
+  it("bounds a server-derived context to the form limit", async () => {
+    const longSentence = `Context ${"x".repeat(2_100)}`;
+    const { supabase } = createSupabase(null, null, longSentence);
+    mocks.requireUser.mockResolvedValue({ supabase, userId });
+    const formData = createFormData();
+    formData.set("usageContext", "");
+
+    await saveVocabularyCard(
+      "en",
+      { id: documentId, kind: "document" },
+      "paragraph-0-sentence-0-token-0",
+      [],
+      idleState,
+      formData,
+    );
+
+    expect(supabase.rpc).toHaveBeenCalledWith(
+      "save_vocabulary_card",
+      expect.objectContaining({
+        input_usage_context: longSentence.slice(0, 2_000),
       }),
     );
   });
