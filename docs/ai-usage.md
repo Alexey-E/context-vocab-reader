@@ -64,6 +64,12 @@ update code from Codex
 Claude changes
 ```
 
+## Pull request merge policy
+
+Functional pull requests require a human merge decision. AI tools may prepare a branch, create or update the pull request, respond to review feedback, and verify required checks, but they must stop before merging.
+
+An AI tool may merge a functional pull request only when the user explicitly authorizes the merge of that specific pull request. Broad instructions to continue work, complete a stage, or finish a task are not merge authorization.
+
 ## Pull request review prompts
 
 Suggested general review prompt:
