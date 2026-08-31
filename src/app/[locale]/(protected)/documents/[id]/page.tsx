@@ -6,6 +6,7 @@ import { BackLink } from "@/components/back-link";
 import { SiteHeader } from "@/components/site-header";
 import { getDocument, isDocumentId } from "@/features/documents/queries";
 import { Reader } from "@/features/reader/reader";
+import { listReaderVocabularyCards } from "@/features/vocabulary/queries.server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata");
@@ -32,6 +33,11 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
     notFound();
   }
 
+  const vocabularyCards = await listReaderVocabularyCards(
+    document.source_language,
+    document.target_language,
+  );
+
   return (
     <main className="min-h-dvh bg-page text-text">
       <SiteHeader />
@@ -45,6 +51,7 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
           targetLanguage={document.target_language}
           title={document.title}
           visibility="private"
+          vocabularyCards={vocabularyCards}
         />
       </div>
     </main>

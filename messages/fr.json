@@ -176,7 +176,29 @@
     },
     "toolsHeading": "Outils de traduction",
     "translateSelection": "Traduire la sélection",
-    "translating": "Traduction…"
+    "translateWord": "Traduire et enregistrer {word}",
+    "translating": "Traduction…",
+    "vocabulary": {
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "context": "Contexte d’utilisation",
+      "created": "Fiche enregistrée",
+      "description": "Vérifiez le sens et conservez le contexte qui vous aidera à mémoriser ce mot.",
+      "eyebrow": "Vocabulaire personnel",
+      "existing": "Une fiche existe déjà. Vérifiez ses sens et ses détails enregistrés avant de la mettre à jour.",
+      "heading": "Enregistrer « {word} »",
+      "imageBroken": "L’image n’a pas pu être chargée. Vous pouvez tout de même enregistrer la fiche.",
+      "imagePreview": "Aperçu pour {word}",
+      "imageUrl": "URL d’image externe (facultatif)",
+      "meanings": "Sens",
+      "meaningsHint": "Séparez plusieurs sens par des virgules.",
+      "note": "Note (facultatif)",
+      "open": "Enregistrer le mot",
+      "save": "Enregistrer la fiche",
+      "saving": "Enregistrement…",
+      "updated": "Fiche existante mise à jour",
+      "word": "Mot"
+    }
   },
   "RouteStates": {
     "documentsError": {
@@ -228,6 +250,9 @@
       "timeout": "La traduction a pris trop de temps. Veuillez réessayer.",
       "unavailable": "La traduction est temporairement indisponible. Veuillez réessayer plus tard."
     },
+    "vocabulary": {
+      "saveFailed": "La fiche de vocabulaire n’a pas pu être enregistrée. Réessayez."
+    },
     "validation": {
       "contentRequired": "Saisissez le texte du document.",
       "contentTooLong": "Le texte doit contenir au maximum {max, number} caractères.",
@@ -240,7 +265,12 @@
       "sourceLanguageInvalid": "Choisissez une langue source prise en charge.",
       "targetLanguageInvalid": "Choisissez une langue cible prise en charge.",
       "titleRequired": "Saisissez un titre pour le document.",
-      "titleTooLong": "Le titre doit contenir au maximum {max, number} caractères."
+      "titleTooLong": "Le titre doit contenir au maximum {max, number} caractères.",
+      "vocabularyContextTooLong": "Le contexte doit contenir au maximum {max, number} caractères.",
+      "vocabularyImageUrlInvalid": "Saisissez une URL d’image HTTP ou HTTPS valide.",
+      "vocabularyMeaningsInvalid": "Ajoutez au maximum {maxCount, number} sens de {max, number} caractères chacun.",
+      "vocabularyMeaningsRequired": "Saisissez au moins un sens.",
+      "vocabularyNoteTooLong": "La note doit contenir au maximum {max, number} caractères."
     }
   },
   "Metadata": {

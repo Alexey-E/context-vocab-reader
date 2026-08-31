@@ -11,7 +11,7 @@ set local test.card_b_id = 'b0000000-0000-4000-8000-000000000002';
 set local test.new_document_a_id = 'a0000000-0000-4000-8000-000000000003';
 set local test.new_card_a_id = 'a0000000-0000-4000-8000-000000000004';
 
-select plan(19);
+select plan(29);
 
 insert into auth.users (id, email)
 values
@@ -160,6 +160,141 @@ select lives_ok(
     )
   $$,
   'a user can insert their own vocabulary card'
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'atomic',
+      'en',
+      'es',
+      array['uno', 'UNO'],
+      array[]::text[],
+      'First context',
+      'https://example.test/atomic.jpg',
+      'Initial note'
+    )
+  $$,
+  'the atomic save function creates a card for the authenticated user'
+);
+
+select is(
+  (
+    select translation
+    from public.vocabulary_cards
+    where word = 'atomic'
+  ),
+  array['uno']::text[],
+  'the atomic save function deduplicates meanings on initial insert'
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'atomic',
+      'en',
+      'es',
+      array['UNO', 'dos'],
+      array['uno'],
+      'Updated context'
+    )
+  $$,
+  'the atomic save function updates an existing card without a unique conflict'
+);
+
+select is(
+  (
+    select translation
+    from public.vocabulary_cards
+    where word = 'atomic'
+  ),
+  array['UNO', 'dos']::text[],
+  'the atomic save function applies case-only edits without duplicate meanings'
+);
+
+select is(
+  (
+    select image_url is null and note is null
+    from public.vocabulary_cards
+    where word = 'atomic'
+  ),
+  true,
+  'the atomic save function clears optional metadata submitted as null'
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'atomic',
+      'en',
+      'es',
+      array['tres'],
+      array['uno'],
+      'Concurrent context'
+    )
+  $$,
+  'editing meanings removes snapshot values while retaining concurrent additions'
+);
+
+select is(
+  (
+    select translation
+    from public.vocabulary_cards
+    where word = 'atomic'
+  ),
+  array['dos', 'tres']::text[],
+  'an edited meaning set preserves values added after the form snapshot'
+);
+
+insert into public.vocabulary_cards (
+  user_id,
+  word,
+  source_language,
+  target_language,
+  translation
+)
+values (
+  current_setting('test.user_a_id')::uuid,
+  'concurrent-removals',
+  'en',
+  'es',
+  array['a', 'b', 'c']
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'concurrent-removals',
+      'en',
+      'es',
+      array['b', 'c'],
+      array['a', 'b', 'c']
+    )
+  $$,
+  'the first editor can remove a meaning from a shared snapshot'
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'concurrent-removals',
+      'en',
+      'es',
+      array['a', 'c'],
+      array['a', 'b', 'c']
+    )
+  $$,
+  'the second editor can remove a different meaning from the stale snapshot'
+);
+
+select is(
+  (
+    select translation
+    from public.vocabulary_cards
+    where word = 'concurrent-removals'
+  ),
+  array['c']::text[],
+  'reconciliation preserves removals made by both concurrent editors'
 );
 
 -- Verifies that a user cannot create a document owned by another user.

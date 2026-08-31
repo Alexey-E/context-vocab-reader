@@ -1,5 +1,6 @@
 import { AUTH_FIELD_LIMITS } from "@/features/auth/constants";
 import { DOCUMENT_FIELD_LIMITS } from "@/features/documents/constants";
+import { VOCABULARY_FIELD_LIMITS } from "@/features/vocabulary/constants";
 
 type ErrorDefinition = Readonly<{
   key: string;
@@ -24,6 +25,7 @@ export const APP_ERROR_DEFINITIONS = {
   "translation.rate_limited": { key: "translation.rateLimited" },
   "translation.timeout": { key: "translation.timeout" },
   "translation.unavailable": { key: "translation.unavailable" },
+  "vocabulary.save_failed": { key: "vocabulary.saveFailed" },
   "validation.document.content.required": {
     key: "validation.contentRequired",
   },
@@ -46,6 +48,27 @@ export const APP_ERROR_DEFINITIONS = {
   "validation.document.title.too_long": {
     key: "validation.titleTooLong",
     values: { max: DOCUMENT_FIELD_LIMITS.title.maxLength },
+  },
+  "validation.vocabulary.context.too_long": {
+    key: "validation.vocabularyContextTooLong",
+    values: { max: VOCABULARY_FIELD_LIMITS.usageContext.maxLength },
+  },
+  "validation.vocabulary.image_url.invalid": {
+    key: "validation.vocabularyImageUrlInvalid",
+  },
+  "validation.vocabulary.meanings.invalid": {
+    key: "validation.vocabularyMeaningsInvalid",
+    values: {
+      max: VOCABULARY_FIELD_LIMITS.meaning.maxLength,
+      maxCount: VOCABULARY_FIELD_LIMITS.meaning.maxCount,
+    },
+  },
+  "validation.vocabulary.meanings.required": {
+    key: "validation.vocabularyMeaningsRequired",
+  },
+  "validation.vocabulary.note.too_long": {
+    key: "validation.vocabularyNoteTooLong",
+    values: { max: VOCABULARY_FIELD_LIMITS.note.maxLength },
   },
   "validation.email.invalid": { key: "validation.emailInvalid" },
   "validation.form_invalid": { key: "validation.formInvalid" },

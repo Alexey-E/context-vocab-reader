@@ -155,6 +155,19 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      save_vocabulary_card: {
+        Args: {
+          input_image_url?: string | null;
+          input_note?: string | null;
+          input_previous_translation?: string[];
+          input_source_language: string;
+          input_target_language: string;
+          input_translation: string[];
+          input_usage_context?: string | null;
+          input_word: string;
+        };
+        Returns: Database["public"]["Tables"]["vocabulary_cards"]["Row"];
+      };
       text_array_values_are_not_blank: {
         Args: { input_values: string[] };
         Returns: boolean;

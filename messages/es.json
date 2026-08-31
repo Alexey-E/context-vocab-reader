@@ -176,7 +176,29 @@
     },
     "toolsHeading": "Herramientas de traducción",
     "translateSelection": "Traducir selección",
-    "translating": "Traduciendo…"
+    "translateWord": "Traducir y guardar {word}",
+    "translating": "Traduciendo…",
+    "vocabulary": {
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "context": "Contexto de uso",
+      "created": "Tarjeta guardada",
+      "description": "Revisa el significado y conserva el contexto que te ayudará a recordar esta palabra.",
+      "eyebrow": "Vocabulario personal",
+      "existing": "Se encontró una tarjeta existente. Revisa sus significados y detalles guardados antes de actualizarla.",
+      "heading": "Guardar «{word}»",
+      "imageBroken": "No se pudo cargar la imagen. Aun así puedes guardar la tarjeta.",
+      "imagePreview": "Vista previa de {word}",
+      "imageUrl": "URL de imagen externa (opcional)",
+      "meanings": "Significados",
+      "meaningsHint": "Separa varios significados con comas.",
+      "note": "Nota (opcional)",
+      "open": "Guardar palabra",
+      "save": "Guardar tarjeta",
+      "saving": "Guardando…",
+      "updated": "Tarjeta existente actualizada",
+      "word": "Palabra"
+    }
   },
   "RouteStates": {
     "documentsError": {
@@ -228,6 +250,9 @@
       "timeout": "La traducción tardó demasiado. Inténtalo de nuevo.",
       "unavailable": "La traducción no está disponible temporalmente. Inténtalo más tarde."
     },
+    "vocabulary": {
+      "saveFailed": "No se pudo guardar la tarjeta de vocabulario. Inténtalo de nuevo."
+    },
     "validation": {
       "contentRequired": "Introduce el texto del documento.",
       "contentTooLong": "El texto debe tener como máximo {max, number} caracteres.",
@@ -240,7 +265,12 @@
       "sourceLanguageInvalid": "Elige un idioma de origen compatible.",
       "targetLanguageInvalid": "Elige un idioma de destino compatible.",
       "titleRequired": "Introduce un título para el documento.",
-      "titleTooLong": "El título debe tener como máximo {max, number} caracteres."
+      "titleTooLong": "El título debe tener como máximo {max, number} caracteres.",
+      "vocabularyContextTooLong": "El contexto debe tener como máximo {max, number} caracteres.",
+      "vocabularyImageUrlInvalid": "Introduce una URL de imagen HTTP o HTTPS válida.",
+      "vocabularyMeaningsInvalid": "Añade como máximo {maxCount, number} significados de hasta {max, number} caracteres cada uno.",
+      "vocabularyMeaningsRequired": "Introduce al menos un significado.",
+      "vocabularyNoteTooLong": "La nota debe tener como máximo {max, number} caracteres."
     }
   },
   "Metadata": {

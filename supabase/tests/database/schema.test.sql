@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(19);
+select plan(23);
 
 insert into auth.users (id, email)
 values (
@@ -232,6 +232,56 @@ select throws_ok(
   23514,
   null,
   'a whitespace-only translation is rejected'
+);
+
+-- Verifies that the database enforces the application meaning limit.
+select throws_ok(
+  $$
+    insert into public.vocabulary_cards (
+      user_id,
+      word,
+      source_language,
+      target_language,
+      translation
+    ) values (
+      current_setting('test.user_id')::uuid,
+      'too-many-meanings',
+      'en',
+      'es',
+      array['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']
+    )
+  $$,
+  23514,
+  null,
+  'a vocabulary card cannot contain more than ten meanings'
+);
+
+select is(
+  (
+    select convalidated
+    from pg_constraint
+    where conname = 'vocabulary_cards_translation_limit'
+  ),
+  false,
+  'the meaning limit does not invalidate deployment because of legacy rows'
+);
+
+select ok(
+  has_function_privilege(
+    'authenticated',
+    'public.save_vocabulary_card(text,character varying,character varying,text[],text[],text,text,text)',
+    'execute'
+  ),
+  'authenticated users can execute the atomic vocabulary save function'
+);
+
+select ok(
+  not has_function_privilege(
+    'anon',
+    'public.save_vocabulary_card(text,character varying,character varying,text[],text[],text,text,text)',
+    'execute'
+  ),
+  'anonymous users cannot execute the atomic vocabulary save function'
 );
 
 -- Verifies that vocabulary card image URLs use HTTP or HTTPS.

@@ -171,11 +171,12 @@ Initial behavior:
 - accept meanings as a comma-separated value in the UI
 - trim, validate, and convert the entered meanings into a `text[]` value before saving
 - copy the document's normalized source and target language identifiers when saving from the reader
-- query for an existing card with the same normalized word and language pair
-- create a new card when none exists
-- otherwise merge new meanings into the existing card without duplicating identical array values
+- preload an existing card for the reader's language pair so its meanings and optional details can be reviewed before updating
+- call `save_vocabulary_card` to create or atomically update the card
+- reconcile the submitted meanings against the form's original snapshot inside the database transaction, honoring edits while preserving meanings concurrently added elsewhere
+- store explicit nulls when optional card details are cleared
 
-The database should enforce uniqueness on `user_id + source_language + target_language + word`. Meaning comparison and array merging remain application-level responsibilities in the MVP.
+The database enforces uniqueness on `user_id + source_language + target_language + word` and limits new or updated cards to ten meanings. The limit constraint starts as `not valid` so legacy oversized rows cannot block deployment; those rows can be reviewed and remediated before a later migration validates the constraint. The authenticated-only `save_vocabulary_card` function derives ownership from `auth.uid()` and uses `insert ... on conflict do update`, preventing concurrent saves from losing meanings.
 
 ## Deletion behavior
 
@@ -244,6 +245,7 @@ Recommended constraints:
 - non-empty normalized `word`
 - non-empty normalized `source_language` and `target_language`
 - `translation` contains at least one non-empty value
+- `translation` contains at most ten values
 - `image_url` is null or begins with `http://` or `https://`
 
 Application validation is still required even when the database has constraints.

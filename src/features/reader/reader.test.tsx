@@ -27,6 +27,7 @@ describe("Reader", () => {
       targetLanguage: "es",
       title: "A sample",
       visibility: "public",
+      vocabularyCards: [],
     });
 
     expect(markup).toContain('data-reader-source-text="true"');
@@ -34,6 +35,8 @@ describe("Reader", () => {
     expect(markup).toContain('data-token-kind="word"');
     expect(markup).toContain("Translate this sentence");
     expect(markup).toContain("Translate selection");
+    expect(markup).toContain('aria-label="Translate and save First"');
+    expect(markup).toContain('tabindex="0"');
     expect(markup).toContain("Enter text");
     expect(markup).toContain('data-reader-source-segment="true"');
   });
@@ -46,6 +49,7 @@ describe("Reader", () => {
       targetLanguage: "en",
       title: "نص تجريبي",
       visibility: "public",
+      vocabularyCards: [],
     });
 
     expect(markup).toMatch(/<h1[^>]*dir="auto"/);
@@ -62,6 +66,7 @@ describe("Reader", () => {
       targetLanguage: "en",
       title: "Hebrew sample",
       visibility: "public",
+      vocabularyCards: [],
     });
 
     expect(markup).toMatch(/<div[^>]*lang="he"[^>]*dir="rtl"/);
@@ -76,6 +81,7 @@ describe("Reader", () => {
       targetLanguage: "es",
       title: "Spacing sample",
       visibility: "public",
+      vocabularyCards: [],
     });
 
     const textContent = markup.replace(/<[^>]+>/g, "");

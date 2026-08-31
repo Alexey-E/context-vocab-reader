@@ -193,17 +193,17 @@ A word, arbitrary fragment, or complete sentence can be translated through an ex
 
 ## Stage 11 — Save vocabulary cards
 
-- [ ] Allow the user to select or activate a word.
-- [ ] Request or enter a word translation.
-- [ ] Store the document's normalized source and target languages on the card.
-- [ ] Capture optional `usage_context`.
-- [ ] Support an optional note.
-- [ ] Validate an optional external image URL.
-- [ ] Preview the image and handle broken URLs.
-- [ ] Show the existing card when the normalized word and language pair are already saved.
-- [ ] Store multiple meanings in the card's `translation` array without duplicate values.
-- [ ] Save or update the card under the authenticated user.
-- [ ] Offer `Save word` only when the translated selection matches exactly one word token; fragment and sentence translations remain temporary.
+- [x] Allow the user to select or activate a word.
+- [x] Request or enter a word translation.
+- [x] Store the document's normalized source and target languages on the card.
+- [x] Capture optional `usage_context`.
+- [x] Support an optional note.
+- [x] Validate an optional external image URL.
+- [x] Preview the image and handle broken URLs.
+- [x] Show the existing card when the normalized word and language pair are already saved.
+- [x] Store multiple meanings in the card's `translation` array without duplicate values.
+- [x] Save or update the card under the authenticated user.
+- [x] Offer `Save word` only when the translated selection matches exactly one word token; fragment and sentence translations remain temporary.
 
 ### Exit criteria
 

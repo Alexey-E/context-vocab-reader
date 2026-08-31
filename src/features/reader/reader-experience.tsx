@@ -28,7 +28,16 @@ import {
   invalidateLatestRequest,
   startLatestRequest,
 } from "@/features/reader/latest-request";
+import {
+  isReaderWordActivationKey,
+  shouldActivateReaderWordFromClick,
+} from "@/features/reader/word-activation";
 import { TRANSLATION_POLICY } from "@/features/translation/constants";
+import {
+  SaveWordDialog,
+  type SelectedReaderWord,
+} from "@/features/vocabulary/save-word-dialog";
+import type { ReaderVocabularyCard } from "@/features/vocabulary/contract";
 import { getLanguageDirection } from "@/lib/languages";
 
 type TranslationState =
@@ -42,9 +51,15 @@ type SentenceState = Readonly<{
   translation: TranslationState;
 }>;
 
+type ReaderWordToken = Extract<
+  ReaderSentence["tokens"][number],
+  { kind: "word" }
+>;
+
 type SelectionTranslation = Readonly<{
   sourceText: string;
   translatedText: string;
+  word: SelectedReaderWord | null;
 }>;
 
 type ReaderExperienceProps = Readonly<{
@@ -52,6 +67,7 @@ type ReaderExperienceProps = Readonly<{
   resource: ReaderResourceReference;
   sourceLanguage: string;
   targetLanguage: string;
+  vocabularyCards: readonly ReaderVocabularyCard[];
 }>;
 
 function isTranslationResponse(
@@ -107,6 +123,47 @@ function getSelectedSourceText(selection: Selection) {
   return contents.textContent?.trim() ?? "";
 }
 
+function getSelectedWord(
+  selection: Selection,
+  paragraphs: readonly ReaderParagraph[],
+): SelectedReaderWord | null {
+  const anchor = nodeElement(selection.anchorNode)?.closest<HTMLElement>(
+    '[data-token-kind="word"]',
+  );
+  const focus = nodeElement(selection.focusNode)?.closest<HTMLElement>(
+    '[data-token-kind="word"]',
+  );
+
+  if (
+    !anchor ||
+    anchor !== focus ||
+    selection.toString() !== anchor.textContent
+  ) {
+    return null;
+  }
+
+  const tokenId = anchor.dataset.tokenId;
+  if (!tokenId) return null;
+
+  for (const paragraph of paragraphs) {
+    for (const sentence of paragraph.sentences) {
+      const token = sentence.tokens.find(
+        (candidate) => candidate.id === tokenId,
+      );
+      if (token?.kind === "word") {
+        return {
+          normalizedWord: token.normalized,
+          sourceText: anchor.textContent,
+          tokenId,
+          usageContext: sentence.text.trim(),
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
 function TranslateIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4">
@@ -127,12 +184,17 @@ export function ReaderExperience({
   resource,
   sourceLanguage,
   targetLanguage,
+  vocabularyCards,
 }: ReaderExperienceProps) {
   const t = useTranslations("Reader");
   const locale = useLocale();
   const sourceDirection = getLanguageDirection(sourceLanguage);
   const targetDirection = getLanguageDirection(targetLanguage);
   const [selectedText, setSelectedText] = useState("");
+  const [cards, setCards] = useState(vocabularyCards);
+  const [selectedWord, setSelectedWord] = useState<SelectedReaderWord | null>(
+    null,
+  );
   const [selectionState, setSelectionState] = useState<TranslationState>({
     status: "idle",
   });
@@ -142,6 +204,14 @@ export function ReaderExperience({
     Record<string, SentenceState>
   >({});
   const selectionRequestId = useRef(0);
+  const nativeSelectionUpdateId = useRef(0);
+
+  const handleCardSaved = useCallback((card: ReaderVocabularyCard) => {
+    setCards((currentCards) => [
+      ...currentCards.filter((currentCard) => currentCard.word !== card.word),
+      card,
+    ]);
+  }, []);
 
   const requestTranslation = useCallback(
     async (text: string) => {
@@ -173,7 +243,7 @@ export function ReaderExperience({
   );
 
   const translateSelection = useCallback(
-    async (text: string) => {
+    async (text: string, word: SelectedReaderWord | null = null) => {
       const normalizedText = text.trim();
       if (!normalizedText) {
         return { error: t("errors.failed"), status: "error" } as const;
@@ -194,6 +264,7 @@ export function ReaderExperience({
         setSelectionTranslation({
           sourceText: normalizedText,
           translatedText: result.translatedText,
+          word,
         });
         return result;
       }
@@ -203,10 +274,31 @@ export function ReaderExperience({
     [requestTranslation, t],
   );
 
+  function translateReaderWord(
+    sentence: ReaderSentence,
+    token: ReaderWordToken,
+  ) {
+    nativeSelectionUpdateId.current += 1;
+    const word = {
+      normalizedWord: token.normalized,
+      sourceText: token.text,
+      tokenId: token.id,
+      usageContext: sentence.text.trim(),
+    };
+
+    setSelectedText(token.text);
+    setSelectedWord(word);
+    void translateSelection(token.text, word);
+  }
+
   function updateNativeSelection(event: React.SyntheticEvent<HTMLElement>) {
     const container = event.currentTarget;
+    const updateId = nativeSelectionUpdateId.current + 1;
+    nativeSelectionUpdateId.current = updateId;
 
     requestAnimationFrame(() => {
+      if (updateId !== nativeSelectionUpdateId.current) return;
+
       invalidateLatestRequest(selectionRequestId);
       const selection = window.getSelection();
       if (
@@ -215,12 +307,14 @@ export function ReaderExperience({
         !selectionIsWithinSource(selection, container)
       ) {
         setSelectedText("");
+        setSelectedWord(null);
         setSelectionState({ status: "idle" });
         setSelectionTranslation(null);
         return;
       }
 
       setSelectedText(getSelectedSourceText(selection));
+      setSelectedWord(getSelectedWord(selection, paragraphs));
       setSelectionState({ status: "idle" });
       setSelectionTranslation(null);
     });
@@ -268,7 +362,7 @@ export function ReaderExperience({
         <div className="flex flex-wrap gap-2">
           <Button
             isDisabled={!selectedText || selectionState.status === "pending"}
-            onPress={() => void translateSelection(selectedText)}
+            onPress={() => void translateSelection(selectedText, selectedWord)}
             className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-contrast outline-none transition hover:bg-primary-hover data-disabled:cursor-not-allowed data-disabled:opacity-50 data-focus-visible:outline-2 data-focus-visible:outline-offset-2 data-focus-visible:outline-primary"
           >
             <TranslateIcon />
@@ -289,7 +383,7 @@ export function ReaderExperience({
                       close={close}
                       sourceDirection={sourceDirection}
                       sourceLanguage={sourceLanguage}
-                      translate={translateSelection}
+                      translate={(text) => translateSelection(text, null)}
                     />
                   )}
                 </Dialog>
@@ -318,7 +412,9 @@ export function ReaderExperience({
                       {selectionState.error}
                     </p>
                     <Button
-                      onPress={() => void translateSelection(selectedText)}
+                      onPress={() =>
+                        void translateSelection(selectedText, selectedWord)
+                      }
                       className="mt-2 cursor-pointer rounded-lg text-sm font-semibold underline decoration-1 underline-offset-4 outline-none data-focus-visible:outline-2 data-focus-visible:outline-current"
                     >
                       {t("retry")}
@@ -340,6 +436,23 @@ export function ReaderExperience({
                     >
                       {selectionTranslation.translatedText}
                     </p>
+                    {selectionTranslation.word ? (
+                      <SaveWordDialog
+                        existingCard={
+                          cards.find(
+                            (card) =>
+                              card.word ===
+                              selectionTranslation.word?.normalizedWord,
+                          ) ?? null
+                        }
+                        onSaved={handleCardSaved}
+                        resource={resource}
+                        sourceLanguage={sourceLanguage}
+                        targetLanguage={targetLanguage}
+                        translatedText={selectionTranslation.translatedText}
+                        word={selectionTranslation.word}
+                      />
+                    ) : null}
                   </>
                 ) : null}
               </div>
@@ -398,16 +511,62 @@ export function ReaderExperience({
                       data-sentence-id={sentence.id}
                       data-reader-source-segment
                     >
-                      {sentence.tokens.map((token) => (
-                        <span
-                          key={token.id}
-                          id={token.id}
-                          data-token-id={token.id}
-                          data-token-kind={token.kind}
-                        >
-                          {token.text}
-                        </span>
-                      ))}
+                      {sentence.tokens.map((token) => {
+                        if (token.kind === "word") {
+                          return (
+                            <span
+                              key={token.id}
+                              id={token.id}
+                              role="button"
+                              tabIndex={0}
+                              aria-label={t("translateWord", {
+                                word: token.text,
+                              })}
+                              data-token-id={token.id}
+                              data-token-kind={token.kind}
+                              onClick={(event) => {
+                                const selection = window.getSelection();
+                                if (
+                                  shouldActivateReaderWordFromClick(
+                                    event.detail,
+                                    selection?.isCollapsed ?? true,
+                                  )
+                                ) {
+                                  translateReaderWord(sentence, token);
+                                }
+                              }}
+                              onKeyDown={(event) => {
+                                if (!isReaderWordActivationKey(event.key)) {
+                                  return;
+                                }
+
+                                event.preventDefault();
+                                event.stopPropagation();
+                                translateReaderWord(sentence, token);
+                              }}
+                              onKeyUp={(event) => {
+                                if (isReaderWordActivationKey(event.key)) {
+                                  event.stopPropagation();
+                                }
+                              }}
+                              className="cursor-pointer rounded-sm outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                            >
+                              {token.text}
+                            </span>
+                          );
+                        }
+
+                        return (
+                          <span
+                            key={token.id}
+                            id={token.id}
+                            data-token-id={token.id}
+                            data-token-kind={token.kind}
+                          >
+                            {token.text}
+                          </span>
+                        );
+                      })}
                     </span>
                     <Button
                       slot="trigger"
