@@ -176,7 +176,27 @@
     },
     "toolsHeading": "أدوات الترجمة",
     "translateSelection": "ترجمة التحديد",
-    "translating": "جارٍ الترجمة…"
+    "translating": "جارٍ الترجمة…",
+    "vocabulary": {
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "context": "سياق الاستخدام",
+      "created": "تم حفظ البطاقة",
+      "description": "راجع المعنى واحتفظ بالسياق الذي يساعدك على تذكّر هذه الكلمة.",
+      "eyebrow": "المفردات الشخصية",
+      "heading": "حفظ «{word}»",
+      "imageBroken": "تعذّر تحميل الصورة. لا يزال بإمكانك حفظ البطاقة.",
+      "imagePreview": "معاينة للكلمة {word}",
+      "imageUrl": "رابط صورة خارجي (اختياري)",
+      "meanings": "المعاني",
+      "meaningsHint": "افصل بين المعاني المتعددة بفواصل.",
+      "note": "ملاحظة (اختياري)",
+      "open": "حفظ الكلمة",
+      "save": "حفظ البطاقة",
+      "saving": "جارٍ الحفظ…",
+      "updated": "تم تحديث البطاقة الموجودة",
+      "word": "الكلمة"
+    }
   },
   "RouteStates": {
     "documentsError": {
@@ -228,6 +248,9 @@
       "timeout": "استغرقت الترجمة وقتًا طويلًا. يرجى المحاولة مرة أخرى.",
       "unavailable": "الترجمة غير متاحة مؤقتًا. يرجى المحاولة لاحقًا."
     },
+    "vocabulary": {
+      "saveFailed": "تعذّر حفظ بطاقة المفردات. حاول مرة أخرى."
+    },
     "validation": {
       "contentRequired": "أدخل نص المستند.",
       "contentTooLong": "يجب ألا يزيد نص المستند على {max, number} حرف.",
@@ -240,7 +263,12 @@
       "sourceLanguageInvalid": "اختر لغة مصدر مدعومة.",
       "targetLanguageInvalid": "اختر لغة ترجمة مدعومة.",
       "titleRequired": "أدخل عنوانًا للمستند.",
-      "titleTooLong": "يجب ألا يزيد العنوان على {max, number} حرف."
+      "titleTooLong": "يجب ألا يزيد العنوان على {max, number} حرف.",
+      "vocabularyContextTooLong": "يجب ألا يزيد السياق عن {max, number} حرف.",
+      "vocabularyImageUrlInvalid": "أدخل رابط صورة صالحًا يبدأ بـ HTTP أو HTTPS.",
+      "vocabularyMeaningsInvalid": "أضف ما لا يزيد عن {maxCount, number} معانٍ، بحد أقصى {max, number} حرفًا لكل معنى.",
+      "vocabularyMeaningsRequired": "أدخل معنى واحدًا على الأقل.",
+      "vocabularyNoteTooLong": "يجب ألا تزيد الملاحظة عن {max, number} حرف."
     }
   },
   "Metadata": {

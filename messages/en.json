@@ -178,7 +178,27 @@
     },
     "toolsHeading": "Translation tools",
     "translateSelection": "Translate selection",
-    "translating": "Translating…"
+    "translating": "Translating…",
+    "vocabulary": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "context": "Usage context",
+      "created": "Vocabulary card saved",
+      "description": "Review the meaning and keep any context that will help you remember this word.",
+      "eyebrow": "Personal vocabulary",
+      "heading": "Save “{word}”",
+      "imageBroken": "The image could not be loaded. You can still save the card.",
+      "imagePreview": "Preview for {word}",
+      "imageUrl": "External image URL (optional)",
+      "meanings": "Meanings",
+      "meaningsHint": "Separate multiple meanings with commas.",
+      "note": "Note (optional)",
+      "open": "Save word",
+      "save": "Save card",
+      "saving": "Saving…",
+      "updated": "Existing card updated",
+      "word": "Word"
+    }
   },
   "RouteStates": {
     "documentsError": {
@@ -230,6 +250,9 @@
       "timeout": "Translation took too long. Please try again.",
       "unavailable": "Translation is temporarily unavailable. Please try again later."
     },
+    "vocabulary": {
+      "saveFailed": "The vocabulary card could not be saved. Please try again."
+    },
     "validation": {
       "contentRequired": "Enter the document text.",
       "contentTooLong": "Document text must contain at most {max, number} characters.",
@@ -242,7 +265,12 @@
       "sourceLanguageInvalid": "Choose a supported source language.",
       "targetLanguageInvalid": "Choose a supported target language.",
       "titleRequired": "Enter a document title.",
-      "titleTooLong": "Title must contain at most {max, number} characters."
+      "titleTooLong": "Title must contain at most {max, number} characters.",
+      "vocabularyContextTooLong": "Usage context must contain at most {max, number} characters.",
+      "vocabularyImageUrlInvalid": "Enter a valid HTTP or HTTPS image URL.",
+      "vocabularyMeaningsInvalid": "Add at most {maxCount, number} meanings of up to {max, number} characters each.",
+      "vocabularyMeaningsRequired": "Enter at least one meaning.",
+      "vocabularyNoteTooLong": "The note must contain at most {max, number} characters."
     }
   },
   "Metadata": {

@@ -29,6 +29,10 @@ import {
   startLatestRequest,
 } from "@/features/reader/latest-request";
 import { TRANSLATION_POLICY } from "@/features/translation/constants";
+import {
+  SaveWordDialog,
+  type SelectedReaderWord,
+} from "@/features/vocabulary/save-word-dialog";
 import { getLanguageDirection } from "@/lib/languages";
 
 type TranslationState =
@@ -45,6 +49,7 @@ type SentenceState = Readonly<{
 type SelectionTranslation = Readonly<{
   sourceText: string;
   translatedText: string;
+  word: SelectedReaderWord | null;
 }>;
 
 type ReaderExperienceProps = Readonly<{
@@ -107,6 +112,43 @@ function getSelectedSourceText(selection: Selection) {
   return contents.textContent?.trim() ?? "";
 }
 
+function getSelectedWord(
+  selection: Selection,
+  paragraphs: readonly ReaderParagraph[],
+): SelectedReaderWord | null {
+  const anchor = nodeElement(selection.anchorNode)?.closest<HTMLElement>(
+    '[data-token-kind="word"]',
+  );
+  const focus = nodeElement(selection.focusNode)?.closest<HTMLElement>(
+    '[data-token-kind="word"]',
+  );
+
+  if (
+    !anchor ||
+    anchor !== focus ||
+    selection.toString() !== anchor.textContent
+  ) {
+    return null;
+  }
+
+  const tokenId = anchor.dataset.tokenId;
+  if (!tokenId) return null;
+
+  for (const paragraph of paragraphs) {
+    for (const sentence of paragraph.sentences) {
+      if (sentence.tokens.some((token) => token.id === tokenId)) {
+        return {
+          sourceText: anchor.textContent,
+          tokenId,
+          usageContext: sentence.text.trim(),
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
 function TranslateIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4">
@@ -133,6 +175,9 @@ export function ReaderExperience({
   const sourceDirection = getLanguageDirection(sourceLanguage);
   const targetDirection = getLanguageDirection(targetLanguage);
   const [selectedText, setSelectedText] = useState("");
+  const [selectedWord, setSelectedWord] = useState<SelectedReaderWord | null>(
+    null,
+  );
   const [selectionState, setSelectionState] = useState<TranslationState>({
     status: "idle",
   });
@@ -173,7 +218,7 @@ export function ReaderExperience({
   );
 
   const translateSelection = useCallback(
-    async (text: string) => {
+    async (text: string, word: SelectedReaderWord | null = null) => {
       const normalizedText = text.trim();
       if (!normalizedText) {
         return { error: t("errors.failed"), status: "error" } as const;
@@ -194,6 +239,7 @@ export function ReaderExperience({
         setSelectionTranslation({
           sourceText: normalizedText,
           translatedText: result.translatedText,
+          word,
         });
         return result;
       }
@@ -215,12 +261,14 @@ export function ReaderExperience({
         !selectionIsWithinSource(selection, container)
       ) {
         setSelectedText("");
+        setSelectedWord(null);
         setSelectionState({ status: "idle" });
         setSelectionTranslation(null);
         return;
       }
 
       setSelectedText(getSelectedSourceText(selection));
+      setSelectedWord(getSelectedWord(selection, paragraphs));
       setSelectionState({ status: "idle" });
       setSelectionTranslation(null);
     });
@@ -268,7 +316,7 @@ export function ReaderExperience({
         <div className="flex flex-wrap gap-2">
           <Button
             isDisabled={!selectedText || selectionState.status === "pending"}
-            onPress={() => void translateSelection(selectedText)}
+            onPress={() => void translateSelection(selectedText, selectedWord)}
             className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-contrast outline-none transition hover:bg-primary-hover data-disabled:cursor-not-allowed data-disabled:opacity-50 data-focus-visible:outline-2 data-focus-visible:outline-offset-2 data-focus-visible:outline-primary"
           >
             <TranslateIcon />
@@ -289,7 +337,7 @@ export function ReaderExperience({
                       close={close}
                       sourceDirection={sourceDirection}
                       sourceLanguage={sourceLanguage}
-                      translate={translateSelection}
+                      translate={(text) => translateSelection(text, null)}
                     />
                   )}
                 </Dialog>
@@ -318,7 +366,9 @@ export function ReaderExperience({
                       {selectionState.error}
                     </p>
                     <Button
-                      onPress={() => void translateSelection(selectedText)}
+                      onPress={() =>
+                        void translateSelection(selectedText, selectedWord)
+                      }
                       className="mt-2 cursor-pointer rounded-lg text-sm font-semibold underline decoration-1 underline-offset-4 outline-none data-focus-visible:outline-2 data-focus-visible:outline-current"
                     >
                       {t("retry")}
@@ -340,6 +390,15 @@ export function ReaderExperience({
                     >
                       {selectionTranslation.translatedText}
                     </p>
+                    {selectionTranslation.word ? (
+                      <SaveWordDialog
+                        resource={resource}
+                        sourceLanguage={sourceLanguage}
+                        targetLanguage={targetLanguage}
+                        translatedText={selectionTranslation.translatedText}
+                        word={selectionTranslation.word}
+                      />
+                    ) : null}
                   </>
                 ) : null}
               </div>

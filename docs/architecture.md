@@ -281,6 +281,8 @@ Reader prose remains semantic selectable text: paragraphs, sentences, and tokens
 
 Complete sentence translation uses a separate disclosure button with its result rendered directly below the source sentence. This avoids nested controls and preserves ordinary screen-reader document navigation. An accessible custom-text dialog provides the keyboard and screen-reader path for arbitrary fragments without implementing a custom range-selection widget. Word controls are introduced only for saved vocabulary and remain separate from sentence disclosure controls.
 
+Vocabulary saving is offered only when a native selection matches one complete derived word token. The client sends the resource reference and deterministic token identifier to a Server Action, which authenticates the user, reloads the owned document or public sample, derives the token and language pair again, and then creates or updates the private card. Client-provided word text, language identifiers, and ownership are never trusted. Repeated saves merge new meanings into the existing card without duplicate localized values; optional context, note, and external HTTP(S) image metadata remain attached to the persistent card.
+
 The System, Light, or Dark preference applies to the entire application. The root layout reads a validated `app-theme` cookie before rendering, sets `data-theme` on the document element, and supplies the initial value to the client theme provider. System mode follows `prefers-color-scheme` in CSS, so the first server-rendered frame uses the correct palette without a hydration flash. The preference is device-local and is not synchronized through the user profile.
 
 ## Security principles
