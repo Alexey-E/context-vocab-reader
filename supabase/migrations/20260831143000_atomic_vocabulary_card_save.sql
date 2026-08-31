@@ -100,6 +100,19 @@ begin
             true as is_submitted
           from pg_catalog.unnest(excluded.translation)
             with ordinality as submitted_values(value, position)
+          where
+            not exists (
+              select 1
+              from pg_catalog.unnest(input_previous_translation) as previous_values(value)
+              where pg_catalog.lower(pg_catalog.btrim(previous_values.value)) =
+                pg_catalog.lower(pg_catalog.btrim(submitted_values.value))
+            )
+            or exists (
+              select 1
+              from pg_catalog.unnest(vocabulary_cards.translation) as current_values(value)
+              where pg_catalog.lower(pg_catalog.btrim(current_values.value)) =
+                pg_catalog.lower(pg_catalog.btrim(submitted_values.value))
+            )
         ) as items
         where pg_catalog.btrim(items.value) <> ''
         group by pg_catalog.lower(pg_catalog.btrim(items.value))

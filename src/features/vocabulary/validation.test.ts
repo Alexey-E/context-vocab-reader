@@ -53,6 +53,17 @@ describe("validateVocabularyForm", () => {
     }
   });
 
+  it("normalizes shorthand HTTP image URLs for the database constraint", () => {
+    const result = validateVocabularyForm(
+      formData({ imageUrl: "http:example.com/image.jpg" }),
+    );
+
+    expect(result.valid).toBe(true);
+    if (result.valid) {
+      expect(result.input.imageUrl).toBe("http://example.com/image.jpg");
+    }
+  });
+
   it("enforces optional field limits", () => {
     const result = validateVocabularyForm(
       formData({

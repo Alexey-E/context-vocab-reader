@@ -11,7 +11,7 @@ set local test.card_b_id = 'b0000000-0000-4000-8000-000000000002';
 set local test.new_document_a_id = 'a0000000-0000-4000-8000-000000000003';
 set local test.new_card_a_id = 'a0000000-0000-4000-8000-000000000004';
 
-select plan(26);
+select plan(29);
 
 insert into auth.users (id, email)
 values
@@ -244,6 +244,57 @@ select is(
   ),
   array['dos', 'tres']::text[],
   'an edited meaning set preserves values added after the form snapshot'
+);
+
+insert into public.vocabulary_cards (
+  user_id,
+  word,
+  source_language,
+  target_language,
+  translation
+)
+values (
+  current_setting('test.user_a_id')::uuid,
+  'concurrent-removals',
+  'en',
+  'es',
+  array['a', 'b', 'c']
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'concurrent-removals',
+      'en',
+      'es',
+      array['b', 'c'],
+      array['a', 'b', 'c']
+    )
+  $$,
+  'the first editor can remove a meaning from a shared snapshot'
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'concurrent-removals',
+      'en',
+      'es',
+      array['a', 'c'],
+      array['a', 'b', 'c']
+    )
+  $$,
+  'the second editor can remove a different meaning from the stale snapshot'
+);
+
+select is(
+  (
+    select translation
+    from public.vocabulary_cards
+    where word = 'concurrent-removals'
+  ),
+  array['c']::text[],
+  'reconciliation preserves removals made by both concurrent editors'
 );
 
 -- Verifies that a user cannot create a document owned by another user.

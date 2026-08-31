@@ -34,12 +34,14 @@ function readText(formData: FormData, name: string) {
   return typeof value === "string" ? value : "";
 }
 
-function isHttpUrl(value: string) {
+function normalizeHttpUrl(value: string) {
   try {
     const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
+    return url.protocol === "http:" || url.protocol === "https:"
+      ? url.href
+      : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -57,6 +59,7 @@ export function validateVocabularyForm(
     .map((meaning) => meaning.normalize("NFC").trim())
     .filter(Boolean);
   const imageUrl = values.imageUrl.trim();
+  const normalizedImageUrl = imageUrl ? normalizeHttpUrl(imageUrl) : null;
   const note = values.note.trim();
   const usageContext = values.usageContext.trim();
   const errors: Partial<Record<VocabularyField, AppErrorCode>> = {};
@@ -82,8 +85,8 @@ export function validateVocabularyForm(
 
   if (
     imageUrl &&
-    (imageUrl.length > VOCABULARY_FIELD_LIMITS.imageUrl.maxLength ||
-      !isHttpUrl(imageUrl))
+    (!normalizedImageUrl ||
+      normalizedImageUrl.length > VOCABULARY_FIELD_LIMITS.imageUrl.maxLength)
   ) {
     errors.imageUrl = "validation.vocabulary.image_url.invalid";
   }
@@ -94,7 +97,7 @@ export function validateVocabularyForm(
 
   return {
     input: {
-      imageUrl: imageUrl || null,
+      imageUrl: normalizedImageUrl,
       meanings,
       note: note || null,
       usageContext: usageContext || null,
