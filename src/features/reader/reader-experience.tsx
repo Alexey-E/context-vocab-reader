@@ -24,6 +24,10 @@ import type {
   ReaderResourceReference,
   ReaderTranslationResponse,
 } from "@/features/reader/translation-contract";
+import {
+  invalidateLatestRequest,
+  startLatestRequest,
+} from "@/features/reader/latest-request";
 import { TRANSLATION_POLICY } from "@/features/translation/constants";
 import { getLanguageDirection } from "@/lib/languages";
 
@@ -175,12 +179,12 @@ export function ReaderExperience({
         return { error: t("errors.failed"), status: "error" } as const;
       }
 
-      const requestId = ++selectionRequestId.current;
+      const isLatestRequest = startLatestRequest(selectionRequestId);
       setSelectionState({ status: "pending" });
       setSelectionTranslation(null);
       const result = await requestTranslation(normalizedText);
 
-      if (requestId !== selectionRequestId.current) {
+      if (!isLatestRequest()) {
         return { status: "idle" } as const;
       }
 
@@ -203,7 +207,7 @@ export function ReaderExperience({
     const container = event.currentTarget;
 
     requestAnimationFrame(() => {
-      selectionRequestId.current += 1;
+      invalidateLatestRequest(selectionRequestId);
       const selection = window.getSelection();
       if (
         !selection ||
@@ -342,7 +346,7 @@ export function ReaderExperience({
               <Button
                 aria-label={t("dismissSelection")}
                 onPress={() => {
-                  selectionRequestId.current += 1;
+                  invalidateLatestRequest(selectionRequestId);
                   setSelectionState({ status: "idle" });
                   setSelectionTranslation(null);
                 }}
