@@ -20,7 +20,23 @@ set search_path = ''
 as $$
 declare
   saved_card public.vocabulary_cards;
+  submitted_translation text[];
 begin
+  select pg_catalog.array_agg(
+    values_by_key.display_value
+    order by values_by_key.first_position
+  )
+  into submitted_translation
+  from (
+    select
+      (pg_catalog.array_agg(pg_catalog.btrim(items.value) order by items.position))[1] as display_value,
+      pg_catalog.min(items.position) as first_position
+    from pg_catalog.unnest(input_translation)
+      with ordinality as items(value, position)
+    where pg_catalog.btrim(items.value) <> ''
+    group by pg_catalog.lower(pg_catalog.btrim(items.value))
+  ) as values_by_key;
+
   insert into public.vocabulary_cards (
     user_id,
     word,
@@ -36,7 +52,7 @@ begin
     input_word,
     input_source_language,
     input_target_language,
-    input_translation,
+    submitted_translation,
     input_usage_context,
     input_image_url,
     input_note

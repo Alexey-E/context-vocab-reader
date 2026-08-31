@@ -35,6 +35,8 @@ describe("Reader", () => {
     expect(markup).toContain('data-token-kind="word"');
     expect(markup).toContain("Translate this sentence");
     expect(markup).toContain("Translate selection");
+    expect(markup).toContain('aria-label="Translate and save First"');
+    expect(markup).toContain('tabindex="0"');
     expect(markup).toContain("Enter text");
     expect(markup).toContain('data-reader-source-segment="true"');
   });

@@ -176,6 +176,7 @@
     },
     "toolsHeading": "أدوات الترجمة",
     "translateSelection": "ترجمة التحديد",
+    "translateWord": "ترجمة وحفظ {word}",
     "translating": "جارٍ الترجمة…",
     "vocabulary": {
       "cancel": "إلغاء",

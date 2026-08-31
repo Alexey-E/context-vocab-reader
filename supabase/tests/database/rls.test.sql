@@ -11,7 +11,7 @@ set local test.card_b_id = 'b0000000-0000-4000-8000-000000000002';
 set local test.new_document_a_id = 'a0000000-0000-4000-8000-000000000003';
 set local test.new_card_a_id = 'a0000000-0000-4000-8000-000000000004';
 
-select plan(25);
+select plan(26);
 
 insert into auth.users (id, email)
 values
@@ -168,7 +168,7 @@ select lives_ok(
       'atomic',
       'en',
       'es',
-      array['uno'],
+      array['uno', 'UNO'],
       array[]::text[],
       'First context',
       'https://example.test/atomic.jpg',
@@ -176,6 +176,16 @@ select lives_ok(
     )
   $$,
   'the atomic save function creates a card for the authenticated user'
+);
+
+select is(
+  (
+    select translation
+    from public.vocabulary_cards
+    where word = 'atomic'
+  ),
+  array['uno']::text[],
+  'the atomic save function deduplicates meanings on initial insert'
 );
 
 select lives_ok(

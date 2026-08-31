@@ -176,6 +176,7 @@
     },
     "toolsHeading": "Инструменты перевода",
     "translateSelection": "Перевести выделение",
+    "translateWord": "Перевести и сохранить слово {word}",
     "translating": "Перевод…",
     "vocabulary": {
       "cancel": "Отмена",

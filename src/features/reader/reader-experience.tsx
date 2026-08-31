@@ -47,6 +47,11 @@ type SentenceState = Readonly<{
   translation: TranslationState;
 }>;
 
+type ReaderWordToken = Extract<
+  ReaderSentence["tokens"][number],
+  { kind: "word" }
+>;
+
 type SelectionTranslation = Readonly<{
   sourceText: string;
   translatedText: string;
@@ -264,6 +269,22 @@ export function ReaderExperience({
     [requestTranslation, t],
   );
 
+  function translateReaderWord(
+    sentence: ReaderSentence,
+    token: ReaderWordToken,
+  ) {
+    const word = {
+      normalizedWord: token.normalized,
+      sourceText: token.text,
+      tokenId: token.id,
+      usageContext: sentence.text.trim(),
+    };
+
+    setSelectedText(token.text);
+    setSelectedWord(word);
+    void translateSelection(token.text, word);
+  }
+
   function updateNativeSelection(event: React.SyntheticEvent<HTMLElement>) {
     const container = event.currentTarget;
 
@@ -480,16 +501,62 @@ export function ReaderExperience({
                       data-sentence-id={sentence.id}
                       data-reader-source-segment
                     >
-                      {sentence.tokens.map((token) => (
-                        <span
-                          key={token.id}
-                          id={token.id}
-                          data-token-id={token.id}
-                          data-token-kind={token.kind}
-                        >
-                          {token.text}
-                        </span>
-                      ))}
+                      {sentence.tokens.map((token) => {
+                        if (token.kind === "word") {
+                          return (
+                            <span
+                              key={token.id}
+                              id={token.id}
+                              role="button"
+                              tabIndex={0}
+                              aria-label={t("translateWord", {
+                                word: token.text,
+                              })}
+                              data-token-id={token.id}
+                              data-token-kind={token.kind}
+                              onClick={(event) => {
+                                if (event.detail === 0) {
+                                  translateReaderWord(sentence, token);
+                                }
+                              }}
+                              onKeyDown={(event) => {
+                                if (
+                                  event.key !== "Enter" &&
+                                  event.key !== " "
+                                ) {
+                                  return;
+                                }
+
+                                event.preventDefault();
+                                event.stopPropagation();
+                                translateReaderWord(sentence, token);
+                              }}
+                              onKeyUp={(event) => {
+                                if (
+                                  event.key === "Enter" ||
+                                  event.key === " "
+                                ) {
+                                  event.stopPropagation();
+                                }
+                              }}
+                              className="cursor-pointer rounded-sm outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                            >
+                              {token.text}
+                            </span>
+                          );
+                        }
+
+                        return (
+                          <span
+                            key={token.id}
+                            id={token.id}
+                            data-token-id={token.id}
+                            data-token-kind={token.kind}
+                          >
+                            {token.text}
+                          </span>
+                        );
+                      })}
                     </span>
                     <Button
                       slot="trigger"

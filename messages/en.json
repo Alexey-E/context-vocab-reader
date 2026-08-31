@@ -178,6 +178,7 @@
     },
     "toolsHeading": "Translation tools",
     "translateSelection": "Translate selection",
+    "translateWord": "Translate and save {word}",
     "translating": "Translating…",
     "vocabulary": {
       "cancel": "Cancel",

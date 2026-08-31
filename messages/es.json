@@ -176,6 +176,7 @@
     },
     "toolsHeading": "Herramientas de traducción",
     "translateSelection": "Traducir selección",
+    "translateWord": "Traducir y guardar {word}",
     "translating": "Traduciendo…",
     "vocabulary": {
       "cancel": "Cancelar",
