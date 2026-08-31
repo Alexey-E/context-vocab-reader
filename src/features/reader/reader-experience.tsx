@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   Button,
   Dialog,
@@ -137,6 +137,7 @@ export function ReaderExperience({
   const [sentenceStates, setSentenceStates] = useState<
     Record<string, SentenceState>
   >({});
+  const selectionRequestId = useRef(0);
 
   const requestTranslation = useCallback(
     async (text: string) => {
@@ -174,9 +175,15 @@ export function ReaderExperience({
         return { error: t("errors.failed"), status: "error" } as const;
       }
 
+      const requestId = ++selectionRequestId.current;
       setSelectionState({ status: "pending" });
       setSelectionTranslation(null);
       const result = await requestTranslation(normalizedText);
+
+      if (requestId !== selectionRequestId.current) {
+        return { status: "idle" } as const;
+      }
+
       setSelectionState(result);
 
       if (result.status === "success") {
@@ -196,6 +203,7 @@ export function ReaderExperience({
     const container = event.currentTarget;
 
     requestAnimationFrame(() => {
+      selectionRequestId.current += 1;
       const selection = window.getSelection();
       if (
         !selection ||
@@ -203,6 +211,8 @@ export function ReaderExperience({
         !selectionIsWithinSource(selection, container)
       ) {
         setSelectedText("");
+        setSelectionState({ status: "idle" });
+        setSelectionTranslation(null);
         return;
       }
 
@@ -332,6 +342,7 @@ export function ReaderExperience({
               <Button
                 aria-label={t("dismissSelection")}
                 onPress={() => {
+                  selectionRequestId.current += 1;
                   setSelectionState({ status: "idle" });
                   setSelectionTranslation(null);
                 }}
