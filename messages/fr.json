@@ -184,6 +184,7 @@
       "created": "Fiche enregistrée",
       "description": "Vérifiez le sens et conservez le contexte qui vous aidera à mémoriser ce mot.",
       "eyebrow": "Vocabulaire personnel",
+      "existing": "Une fiche existe déjà. Vérifiez ses sens et ses détails enregistrés avant de la mettre à jour.",
       "heading": "Enregistrer « {word} »",
       "imageBroken": "L’image n’a pas pu être chargée. Vous pouvez tout de même enregistrer la fiche.",
       "imagePreview": "Aperçu pour {word}",

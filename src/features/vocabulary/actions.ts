@@ -6,7 +6,6 @@ import { isDocumentId } from "@/features/documents/queries";
 import { processReaderText } from "@/features/reader/text-processing";
 import type { ReaderResourceReference } from "@/features/reader/translation-contract";
 import {
-  mergeMeanings,
   type VocabularyField,
   type VocabularyFormValues,
   validateVocabularyForm,
@@ -157,7 +156,7 @@ export async function saveVocabularyCard(
 
     const { data: existing, error: readError } = await supabase
       .from("vocabulary_cards")
-      .select("id, image_url, note, translation, usage_context")
+      .select("id")
       .eq("user_id", userId)
       .eq("source_language", source.sourceLanguage)
       .eq("target_language", source.targetLanguage)
@@ -166,39 +165,30 @@ export async function saveVocabularyCard(
 
     if (readError) throw readError;
 
-    const meanings = mergeMeanings(
-      existing?.translation ?? [],
-      validation.input.meanings,
-      source.targetLanguage,
-    );
-    const values = {
-      image_url: validation.input.imageUrl ?? existing?.image_url ?? null,
-      note: validation.input.note ?? existing?.note ?? null,
-      translation: meanings,
-      usage_context:
-        validation.input.usageContext ??
-        existing?.usage_context ??
-        word.usageContext,
-    };
-    const result = existing
-      ? await supabase
-          .from("vocabulary_cards")
-          .update(values)
-          .eq("id", existing.id)
-          .eq("user_id", userId)
-          .select("image_url, note, translation, usage_context, word")
-          .single()
-      : await supabase
-          .from("vocabulary_cards")
-          .insert({
-            ...values,
-            source_language: source.sourceLanguage,
-            target_language: source.targetLanguage,
-            user_id: userId,
-            word: word.normalizedWord,
-          })
-          .select("image_url, note, translation, usage_context, word")
-          .single();
+    const result = await supabase.rpc("save_vocabulary_card", {
+      input_image_url: validation.input.imageUrl,
+      input_note: validation.input.note,
+      input_source_language: source.sourceLanguage,
+      input_target_language: source.targetLanguage,
+      input_translation: validation.input.meanings,
+      input_usage_context: validation.input.usageContext ?? word.usageContext,
+      input_word: word.normalizedWord,
+    });
+
+    if (result.error?.code === "23514") {
+      return {
+        error: await createErrorPayload("validation.form_invalid", locale),
+        fieldErrors: {
+          meanings: await createErrorPayload(
+            "validation.vocabulary.meanings.invalid",
+            locale,
+          ),
+        },
+        revision,
+        status: "error",
+        values: validation.values,
+      };
+    }
 
     if (result.error) throw result.error;
 

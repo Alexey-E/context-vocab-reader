@@ -11,7 +11,7 @@ set local test.card_b_id = 'b0000000-0000-4000-8000-000000000002';
 set local test.new_document_a_id = 'a0000000-0000-4000-8000-000000000003';
 set local test.new_card_a_id = 'a0000000-0000-4000-8000-000000000004';
 
-select plan(19);
+select plan(22);
 
 insert into auth.users (id, email)
 values
@@ -160,6 +160,42 @@ select lives_ok(
     )
   $$,
   'a user can insert their own vocabulary card'
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'atomic',
+      'en',
+      'es',
+      array['uno'],
+      'First context'
+    )
+  $$,
+  'the atomic save function creates a card for the authenticated user'
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'atomic',
+      'en',
+      'es',
+      array['UNO', 'dos'],
+      'Updated context'
+    )
+  $$,
+  'the atomic save function updates an existing card without a unique conflict'
+);
+
+select is(
+  (
+    select translation
+    from public.vocabulary_cards
+    where word = 'atomic'
+  ),
+  array['uno', 'dos']::text[],
+  'the atomic save function merges meanings without case-insensitive duplicates'
 );
 
 -- Verifies that a user cannot create a document owned by another user.

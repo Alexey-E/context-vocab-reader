@@ -27,6 +27,7 @@ describe("Reader", () => {
       targetLanguage: "es",
       title: "A sample",
       visibility: "public",
+      vocabularyCards: [],
     });
 
     expect(markup).toContain('data-reader-source-text="true"');
@@ -46,6 +47,7 @@ describe("Reader", () => {
       targetLanguage: "en",
       title: "نص تجريبي",
       visibility: "public",
+      vocabularyCards: [],
     });
 
     expect(markup).toMatch(/<h1[^>]*dir="auto"/);
@@ -62,6 +64,7 @@ describe("Reader", () => {
       targetLanguage: "en",
       title: "Hebrew sample",
       visibility: "public",
+      vocabularyCards: [],
     });
 
     expect(markup).toMatch(/<div[^>]*lang="he"[^>]*dir="rtl"/);
@@ -76,6 +79,7 @@ describe("Reader", () => {
       targetLanguage: "es",
       title: "Spacing sample",
       visibility: "public",
+      vocabularyCards: [],
     });
 
     const textContent = markup.replace(/<[^>]+>/g, "");

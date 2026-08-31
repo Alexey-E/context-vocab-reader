@@ -1,0 +1,94 @@
+alter table public.vocabulary_cards
+add constraint vocabulary_cards_translation_limit
+check (cardinality(translation) <= 10);
+
+create function public.save_vocabulary_card(
+  input_word text,
+  input_source_language varchar(10),
+  input_target_language varchar(10),
+  input_translation text[],
+  input_usage_context text default null,
+  input_image_url text default null,
+  input_note text default null
+)
+returns public.vocabulary_cards
+language plpgsql
+security invoker
+set search_path = ''
+as $$
+declare
+  saved_card public.vocabulary_cards;
+begin
+  insert into public.vocabulary_cards (
+    user_id,
+    word,
+    source_language,
+    target_language,
+    translation,
+    usage_context,
+    image_url,
+    note
+  )
+  values (
+    (select auth.uid()),
+    input_word,
+    input_source_language,
+    input_target_language,
+    input_translation,
+    input_usage_context,
+    input_image_url,
+    input_note
+  )
+  on conflict (user_id, source_language, target_language, word)
+  do update set
+    translation = (
+      select pg_catalog.array_agg(values_by_key.display_value order by values_by_key.first_position)
+      from (
+        select
+          (pg_catalog.array_agg(pg_catalog.btrim(items.value) order by items.position))[1] as display_value,
+          pg_catalog.min(items.position) as first_position
+        from pg_catalog.unnest(
+          vocabulary_cards.translation || excluded.translation
+        ) with ordinality as items(value, position)
+        where pg_catalog.btrim(items.value) <> ''
+        group by pg_catalog.lower(pg_catalog.btrim(items.value))
+      ) as values_by_key
+    ),
+    usage_context = coalesce(
+      excluded.usage_context,
+      vocabulary_cards.usage_context
+    ),
+    image_url = coalesce(
+      excluded.image_url,
+      vocabulary_cards.image_url
+    ),
+    note = coalesce(excluded.note, vocabulary_cards.note)
+  returning * into saved_card;
+
+  return saved_card;
+end;
+$$;
+
+revoke execute
+on function public.save_vocabulary_card(
+  text,
+  varchar,
+  varchar,
+  text[],
+  text,
+  text,
+  text
+)
+from public, anon;
+
+grant execute
+on function public.save_vocabulary_card(
+  text,
+  varchar,
+  varchar,
+  text[],
+  text,
+  text,
+  text
+)
+to authenticated;

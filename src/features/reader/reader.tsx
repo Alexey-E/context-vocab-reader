@@ -6,6 +6,7 @@ import { LanguagePair } from "@/components/language-pair";
 import { ReaderExperience } from "@/features/reader/reader-experience";
 import { processReaderText } from "@/features/reader/text-processing";
 import type { ReaderResourceReference } from "@/features/reader/translation-contract";
+import type { ReaderVocabularyCard } from "@/features/vocabulary/contract";
 
 type ReaderProps = Readonly<{
   content: string;
@@ -14,6 +15,7 @@ type ReaderProps = Readonly<{
   targetLanguage: string;
   title: string;
   visibility: "private" | "public";
+  vocabularyCards: readonly ReaderVocabularyCard[];
 }>;
 
 export function Reader({
@@ -23,6 +25,7 @@ export function Reader({
   targetLanguage,
   title,
   visibility,
+  vocabularyCards,
 }: ReaderProps) {
   const t = useTranslations("Reader");
   const paragraphs = processReaderText(content, sourceLanguage);
@@ -55,6 +58,7 @@ export function Reader({
         resource={resource}
         sourceLanguage={sourceLanguage}
         targetLanguage={targetLanguage}
+        vocabularyCards={vocabularyCards}
       />
     </article>
   );

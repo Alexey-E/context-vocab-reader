@@ -184,6 +184,7 @@
       "created": "Tarjeta guardada",
       "description": "Revisa el significado y conserva el contexto que te ayudará a recordar esta palabra.",
       "eyebrow": "Vocabulario personal",
+      "existing": "Se encontró una tarjeta existente. Revisa sus significados y detalles guardados antes de actualizarla.",
       "heading": "Guardar «{word}»",
       "imageBroken": "No se pudo cargar la imagen. Aun así puedes guardar la tarjeta.",
       "imagePreview": "Vista previa de {word}",

@@ -33,6 +33,7 @@ import {
   SaveWordDialog,
   type SelectedReaderWord,
 } from "@/features/vocabulary/save-word-dialog";
+import type { ReaderVocabularyCard } from "@/features/vocabulary/contract";
 import { getLanguageDirection } from "@/lib/languages";
 
 type TranslationState =
@@ -57,6 +58,7 @@ type ReaderExperienceProps = Readonly<{
   resource: ReaderResourceReference;
   sourceLanguage: string;
   targetLanguage: string;
+  vocabularyCards: readonly ReaderVocabularyCard[];
 }>;
 
 function isTranslationResponse(
@@ -136,8 +138,12 @@ function getSelectedWord(
 
   for (const paragraph of paragraphs) {
     for (const sentence of paragraph.sentences) {
-      if (sentence.tokens.some((token) => token.id === tokenId)) {
+      const token = sentence.tokens.find(
+        (candidate) => candidate.id === tokenId,
+      );
+      if (token?.kind === "word") {
         return {
+          normalizedWord: token.normalized,
           sourceText: anchor.textContent,
           tokenId,
           usageContext: sentence.text.trim(),
@@ -169,12 +175,14 @@ export function ReaderExperience({
   resource,
   sourceLanguage,
   targetLanguage,
+  vocabularyCards,
 }: ReaderExperienceProps) {
   const t = useTranslations("Reader");
   const locale = useLocale();
   const sourceDirection = getLanguageDirection(sourceLanguage);
   const targetDirection = getLanguageDirection(targetLanguage);
   const [selectedText, setSelectedText] = useState("");
+  const [cards, setCards] = useState(vocabularyCards);
   const [selectedWord, setSelectedWord] = useState<SelectedReaderWord | null>(
     null,
   );
@@ -187,6 +195,13 @@ export function ReaderExperience({
     Record<string, SentenceState>
   >({});
   const selectionRequestId = useRef(0);
+
+  const handleCardSaved = useCallback((card: ReaderVocabularyCard) => {
+    setCards((currentCards) => [
+      ...currentCards.filter((currentCard) => currentCard.word !== card.word),
+      card,
+    ]);
+  }, []);
 
   const requestTranslation = useCallback(
     async (text: string) => {
@@ -392,6 +407,14 @@ export function ReaderExperience({
                     </p>
                     {selectionTranslation.word ? (
                       <SaveWordDialog
+                        existingCard={
+                          cards.find(
+                            (card) =>
+                              card.word ===
+                              selectionTranslation.word?.normalizedWord,
+                          ) ?? null
+                        }
+                        onSaved={handleCardSaved}
                         resource={resource}
                         sourceLanguage={sourceLanguage}
                         targetLanguage={targetLanguage}

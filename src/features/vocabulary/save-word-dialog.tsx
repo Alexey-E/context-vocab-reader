@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import {
   Button,
   Dialog,
@@ -17,9 +17,12 @@ import {
   type SaveVocabularyCardState,
 } from "@/features/vocabulary/actions";
 import { VOCABULARY_FIELD_LIMITS } from "@/features/vocabulary/constants";
+import type { ReaderVocabularyCard } from "@/features/vocabulary/contract";
+import { getVocabularyFormValues } from "@/features/vocabulary/form-values";
 import { getLanguageDirection } from "@/lib/languages";
 
 export type SelectedReaderWord = Readonly<{
+  normalizedWord: string;
   sourceText: string;
   tokenId: string;
   usageContext: string;
@@ -31,6 +34,8 @@ const initialState: SaveVocabularyCardState = {
 };
 
 type SaveWordDialogProps = Readonly<{
+  existingCard: ReaderVocabularyCard | null;
+  onSaved: (card: ReaderVocabularyCard) => void;
   resource: ReaderResourceReference;
   sourceLanguage: string;
   targetLanguage: string;
@@ -39,6 +44,8 @@ type SaveWordDialogProps = Readonly<{
 }>;
 
 export function SaveWordDialog({
+  existingCard,
+  onSaved,
   resource,
   sourceLanguage,
   targetLanguage,
@@ -52,6 +59,18 @@ export function SaveWordDialog({
     [locale, resource, word.tokenId],
   );
   const [state, formAction, pending] = useActionState(action, initialState);
+
+  useEffect(() => {
+    if (state.status === "success") {
+      onSaved({
+        imageUrl: state.card.imageUrl,
+        meanings: state.card.meanings,
+        note: state.card.note,
+        usageContext: state.card.usageContext,
+        word: state.card.word,
+      });
+    }
+  }, [onSaved, state]);
 
   return (
     <DialogTrigger>
@@ -68,6 +87,7 @@ export function SaveWordDialog({
                 <VocabularyForm
                   key={state.revision}
                   close={close}
+                  existingCard={existingCard}
                   formAction={formAction}
                   pending={pending}
                   sourceLanguage={sourceLanguage}
@@ -87,6 +107,7 @@ export function SaveWordDialog({
 
 function VocabularyForm({
   close,
+  existingCard,
   formAction,
   pending,
   sourceLanguage,
@@ -96,6 +117,7 @@ function VocabularyForm({
   word,
 }: Readonly<{
   close: () => void;
+  existingCard: ReaderVocabularyCard | null;
   formAction: (formData: FormData) => void;
   pending: boolean;
   sourceLanguage: string;
@@ -108,12 +130,12 @@ function VocabularyForm({
   const values =
     state.status === "error"
       ? state.values
-      : {
-          imageUrl: "",
-          meanings: translatedText,
-          note: "",
-          usageContext: word.usageContext,
-        };
+      : getVocabularyFormValues(
+          existingCard,
+          translatedText,
+          word.usageContext,
+          targetLanguage,
+        );
   const errors = state.status === "error" ? state.fieldErrors : undefined;
   const [imageUrl, setImageUrl] = useState(values.imageUrl);
   const [imageBroken, setImageBroken] = useState(false);
@@ -127,6 +149,12 @@ function VocabularyForm({
         {t("heading", { word: word.sourceText })}
       </Heading>
       <p className="mt-3 text-sm leading-6 text-muted">{t("description")}</p>
+
+      {existingCard && state.status === "idle" ? (
+        <p className="mt-5 rounded-xl border border-primary bg-primary-soft px-4 py-3 text-sm text-primary-soft-text">
+          {t("existing")}
+        </p>
+      ) : null}
 
       {state.status === "error" ? (
         <p

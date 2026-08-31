@@ -186,6 +186,7 @@
       "created": "Vocabulary card saved",
       "description": "Review the meaning and keep any context that will help you remember this word.",
       "eyebrow": "Personal vocabulary",
+      "existing": "An existing card was found. Review its saved meanings and details before updating it.",
       "heading": "Save “{word}”",
       "imageBroken": "The image could not be loaded. You can still save the card.",
       "imagePreview": "Preview for {word}",
