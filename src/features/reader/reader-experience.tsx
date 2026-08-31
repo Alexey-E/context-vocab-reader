@@ -28,6 +28,7 @@ import {
   invalidateLatestRequest,
   startLatestRequest,
 } from "@/features/reader/latest-request";
+import { isReaderWordActivationKey } from "@/features/reader/word-activation";
 import { TRANSLATION_POLICY } from "@/features/translation/constants";
 import {
   SaveWordDialog,
@@ -520,10 +521,7 @@ export function ReaderExperience({
                                 }
                               }}
                               onKeyDown={(event) => {
-                                if (
-                                  event.key !== "Enter" &&
-                                  event.key !== " "
-                                ) {
+                                if (!isReaderWordActivationKey(event.key)) {
                                   return;
                                 }
 
@@ -532,10 +530,7 @@ export function ReaderExperience({
                                 translateReaderWord(sentence, token);
                               }}
                               onKeyUp={(event) => {
-                                if (
-                                  event.key === "Enter" ||
-                                  event.key === " "
-                                ) {
+                                if (isReaderWordActivationKey(event.key)) {
                                   event.stopPropagation();
                                 }
                               }}
