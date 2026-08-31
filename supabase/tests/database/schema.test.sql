@@ -259,7 +259,7 @@ select throws_ok(
 select ok(
   has_function_privilege(
     'authenticated',
-    'public.save_vocabulary_card(text,character varying,character varying,text[],text,text,text)',
+    'public.save_vocabulary_card(text,character varying,character varying,text[],text[],text,text,text)',
     'execute'
   ),
   'authenticated users can execute the atomic vocabulary save function'
@@ -268,7 +268,7 @@ select ok(
 select ok(
   not has_function_privilege(
     'anon',
-    'public.save_vocabulary_card(text,character varying,character varying,text[],text,text,text)',
+    'public.save_vocabulary_card(text,character varying,character varying,text[],text[],text,text,text)',
     'execute'
   ),
   'anonymous users cannot execute the atomic vocabulary save function'

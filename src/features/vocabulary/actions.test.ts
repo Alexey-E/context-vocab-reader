@@ -100,6 +100,7 @@ describe("saveVocabularyCard", () => {
       "en",
       { id: documentId, kind: "document" },
       "paragraph-0-sentence-0-token-0",
+      [],
       idleState,
       createFormData(),
     );
@@ -109,6 +110,7 @@ describe("saveVocabularyCard", () => {
     expect(supabase.rpc).toHaveBeenCalledWith("save_vocabulary_card", {
       input_image_url: "https://example.com/context.jpg",
       input_note: "Remember this",
+      input_previous_translation: [],
       input_source_language: "en",
       input_target_language: "es",
       input_translation: ["context", "setting"],
@@ -127,13 +129,48 @@ describe("saveVocabularyCard", () => {
       "en",
       { id: documentId, kind: "document" },
       "paragraph-0-sentence-0-token-0",
+      ["Contexto"],
       idleState,
       createFormData(),
     );
 
     expect(result.status).toBe("success");
     if (result.status === "success") expect(result.outcome).toBe("updated");
-    expect(supabase.rpc).toHaveBeenCalledOnce();
+    expect(supabase.rpc).toHaveBeenCalledWith(
+      "save_vocabulary_card",
+      expect.objectContaining({
+        input_previous_translation: ["Contexto"],
+      }),
+    );
+  });
+
+  it("sends explicit nulls when optional details are cleared", async () => {
+    const { supabase } = createSupabase({
+      id: "30000000-0000-4000-8000-000000000001",
+    });
+    mocks.requireUser.mockResolvedValue({ supabase, userId });
+    const formData = createFormData();
+    formData.set("imageUrl", "");
+    formData.set("note", "");
+    formData.set("usageContext", "");
+
+    await saveVocabularyCard(
+      "en",
+      { id: documentId, kind: "document" },
+      "paragraph-0-sentence-0-token-0",
+      ["Contexto"],
+      idleState,
+      formData,
+    );
+
+    expect(supabase.rpc).toHaveBeenCalledWith(
+      "save_vocabulary_card",
+      expect.objectContaining({
+        input_image_url: null,
+        input_note: null,
+        input_usage_context: null,
+      }),
+    );
   });
 
   it("rejects a token that is not a word in the stored document", async () => {
@@ -144,6 +181,7 @@ describe("saveVocabularyCard", () => {
       "en",
       { id: documentId, kind: "document" },
       "paragraph-0-sentence-0-token-1",
+      [],
       idleState,
       createFormData(),
     );
@@ -166,6 +204,7 @@ describe("saveVocabularyCard", () => {
       "en",
       { id: documentId, kind: "document" },
       "paragraph-0-sentence-0-token-0",
+      ["Contexto"],
       idleState,
       createFormData(),
     );

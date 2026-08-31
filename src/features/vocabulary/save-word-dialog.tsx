@@ -55,8 +55,15 @@ export function SaveWordDialog({
   const locale = useLocale();
   const t = useTranslations("Reader.vocabulary");
   const action = useMemo(
-    () => saveVocabularyCard.bind(null, locale, resource, word.tokenId),
-    [locale, resource, word.tokenId],
+    () =>
+      saveVocabularyCard.bind(
+        null,
+        locale,
+        resource,
+        word.tokenId,
+        existingCard?.meanings ?? [],
+      ),
+    [existingCard?.meanings, locale, resource, word.tokenId],
   );
   const [state, formAction, pending] = useActionState(action, initialState);
 

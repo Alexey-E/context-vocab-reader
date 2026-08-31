@@ -11,7 +11,7 @@ set local test.card_b_id = 'b0000000-0000-4000-8000-000000000002';
 set local test.new_document_a_id = 'a0000000-0000-4000-8000-000000000003';
 set local test.new_card_a_id = 'a0000000-0000-4000-8000-000000000004';
 
-select plan(22);
+select plan(25);
 
 insert into auth.users (id, email)
 values
@@ -169,7 +169,10 @@ select lives_ok(
       'en',
       'es',
       array['uno'],
-      'First context'
+      array[]::text[],
+      'First context',
+      'https://example.test/atomic.jpg',
+      'Initial note'
     )
   $$,
   'the atomic save function creates a card for the authenticated user'
@@ -182,6 +185,7 @@ select lives_ok(
       'en',
       'es',
       array['UNO', 'dos'],
+      array['uno'],
       'Updated context'
     )
   $$,
@@ -196,6 +200,40 @@ select is(
   ),
   array['uno', 'dos']::text[],
   'the atomic save function merges meanings without case-insensitive duplicates'
+);
+
+select is(
+  (
+    select image_url is null and note is null
+    from public.vocabulary_cards
+    where word = 'atomic'
+  ),
+  true,
+  'the atomic save function clears optional metadata submitted as null'
+);
+
+select lives_ok(
+  $$
+    select public.save_vocabulary_card(
+      'atomic',
+      'en',
+      'es',
+      array['tres'],
+      array['uno'],
+      'Concurrent context'
+    )
+  $$,
+  'editing meanings removes snapshot values while retaining concurrent additions'
+);
+
+select is(
+  (
+    select translation
+    from public.vocabulary_cards
+    where word = 'atomic'
+  ),
+  array['dos', 'tres']::text[],
+  'an edited meaning set preserves values added after the form snapshot'
 );
 
 -- Verifies that a user cannot create a document owned by another user.

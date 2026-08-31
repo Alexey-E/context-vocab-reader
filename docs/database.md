@@ -173,7 +173,8 @@ Initial behavior:
 - copy the document's normalized source and target language identifiers when saving from the reader
 - preload an existing card for the reader's language pair so its meanings and optional details can be reviewed before updating
 - call `save_vocabulary_card` to create or atomically update the card
-- merge new meanings inside the database transaction without case-insensitive duplicates
+- reconcile the submitted meanings against the form's original snapshot inside the database transaction, honoring edits while preserving meanings concurrently added elsewhere
+- store explicit nulls when optional card details are cleared
 
 The database enforces uniqueness on `user_id + source_language + target_language + word` and limits a card to ten meanings. The authenticated-only `save_vocabulary_card` function derives ownership from `auth.uid()` and uses `insert ... on conflict do update`, preventing concurrent saves from losing meanings.
 

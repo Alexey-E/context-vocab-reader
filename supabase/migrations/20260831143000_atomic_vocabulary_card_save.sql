@@ -7,6 +7,7 @@ create function public.save_vocabulary_card(
   input_source_language varchar(10),
   input_target_language varchar(10),
   input_translation text[],
+  input_previous_translation text[] default array[]::text[],
   input_usage_context text default null,
   input_image_url text default null,
   input_note text default null
@@ -48,21 +49,36 @@ begin
           (pg_catalog.array_agg(pg_catalog.btrim(items.value) order by items.position))[1] as display_value,
           pg_catalog.min(items.position) as first_position
         from pg_catalog.unnest(
-          vocabulary_cards.translation || excluded.translation
+          (
+            select coalesce(
+              pg_catalog.array_agg(current_values.value order by current_values.position),
+              array[]::text[]
+            )
+            from pg_catalog.unnest(vocabulary_cards.translation)
+              with ordinality as current_values(value, position)
+            where not (
+              exists (
+                select 1
+                from pg_catalog.unnest(input_previous_translation) as previous_values(value)
+                where pg_catalog.lower(pg_catalog.btrim(previous_values.value)) =
+                  pg_catalog.lower(pg_catalog.btrim(current_values.value))
+              )
+              and not exists (
+                select 1
+                from pg_catalog.unnest(excluded.translation) as submitted_values(value)
+                where pg_catalog.lower(pg_catalog.btrim(submitted_values.value)) =
+                  pg_catalog.lower(pg_catalog.btrim(current_values.value))
+              )
+            )
+          ) || excluded.translation
         ) with ordinality as items(value, position)
         where pg_catalog.btrim(items.value) <> ''
         group by pg_catalog.lower(pg_catalog.btrim(items.value))
       ) as values_by_key
     ),
-    usage_context = coalesce(
-      excluded.usage_context,
-      vocabulary_cards.usage_context
-    ),
-    image_url = coalesce(
-      excluded.image_url,
-      vocabulary_cards.image_url
-    ),
-    note = coalesce(excluded.note, vocabulary_cards.note)
+    usage_context = excluded.usage_context,
+    image_url = excluded.image_url,
+    note = excluded.note
   returning * into saved_card;
 
   return saved_card;
@@ -75,6 +91,7 @@ on function public.save_vocabulary_card(
   varchar,
   varchar,
   text[],
+  text[],
   text,
   text,
   text
@@ -86,6 +103,7 @@ on function public.save_vocabulary_card(
   text,
   varchar,
   varchar,
+  text[],
   text[],
   text,
   text,

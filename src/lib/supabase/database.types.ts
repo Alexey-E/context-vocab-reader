@@ -159,6 +159,7 @@ export type Database = {
         Args: {
           input_image_url?: string | null;
           input_note?: string | null;
+          input_previous_translation?: string[];
           input_source_language: string;
           input_target_language: string;
           input_translation: string[];

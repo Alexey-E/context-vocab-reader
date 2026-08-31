@@ -118,6 +118,7 @@ export async function saveVocabularyCard(
   actionLocale: AppLocale,
   resource: ReaderResourceReference,
   tokenId: string,
+  previousMeanings: readonly string[],
   previousState: SaveVocabularyCardState,
   formData: FormData,
 ): Promise<SaveVocabularyCardState> {
@@ -168,10 +169,13 @@ export async function saveVocabularyCard(
     const result = await supabase.rpc("save_vocabulary_card", {
       input_image_url: validation.input.imageUrl,
       input_note: validation.input.note,
+      input_previous_translation: [...previousMeanings],
       input_source_language: source.sourceLanguage,
       input_target_language: source.targetLanguage,
       input_translation: validation.input.meanings,
-      input_usage_context: validation.input.usageContext ?? word.usageContext,
+      input_usage_context: existing
+        ? validation.input.usageContext
+        : (validation.input.usageContext ?? word.usageContext),
       input_word: word.normalizedWord,
     });
 
