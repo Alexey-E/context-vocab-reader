@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Button,
   Dialog,
@@ -38,6 +38,11 @@ import {
   type SelectedReaderWord,
 } from "@/features/vocabulary/save-word-dialog";
 import type { ReaderVocabularyCard } from "@/features/vocabulary/contract";
+import {
+  createReaderVocabularyCardLookup,
+  findReaderVocabularyCard,
+  upsertReaderVocabularyCard,
+} from "@/features/vocabulary/reader-card-lookup";
 import { getLanguageDirection } from "@/lib/languages";
 
 type TranslationState =
@@ -205,13 +210,25 @@ export function ReaderExperience({
   >({});
   const selectionRequestId = useRef(0);
   const nativeSelectionUpdateId = useRef(0);
+  const cardLookup = useMemo(
+    () =>
+      createReaderVocabularyCardLookup(cards, sourceLanguage, targetLanguage),
+    [cards, sourceLanguage, targetLanguage],
+  );
 
-  const handleCardSaved = useCallback((card: ReaderVocabularyCard) => {
-    setCards((currentCards) => [
-      ...currentCards.filter((currentCard) => currentCard.word !== card.word),
-      card,
-    ]);
-  }, []);
+  const handleCardSaved = useCallback(
+    (card: ReaderVocabularyCard) => {
+      setCards((currentCards) =>
+        upsertReaderVocabularyCard(
+          currentCards,
+          card,
+          sourceLanguage,
+          targetLanguage,
+        ),
+      );
+    },
+    [sourceLanguage, targetLanguage],
+  );
 
   const requestTranslation = useCallback(
     async (text: string) => {
@@ -438,13 +455,12 @@ export function ReaderExperience({
                     </p>
                     {selectionTranslation.word ? (
                       <SaveWordDialog
-                        existingCard={
-                          cards.find(
-                            (card) =>
-                              card.word ===
-                              selectionTranslation.word?.normalizedWord,
-                          ) ?? null
-                        }
+                        existingCard={findReaderVocabularyCard(
+                          cardLookup,
+                          sourceLanguage,
+                          targetLanguage,
+                          selectionTranslation.word.normalizedWord,
+                        )}
                         onSaved={handleCardSaved}
                         resource={resource}
                         sourceLanguage={sourceLanguage}
