@@ -63,32 +63,44 @@ begin
       select pg_catalog.array_agg(values_by_key.display_value order by values_by_key.first_position)
       from (
         select
-          (pg_catalog.array_agg(pg_catalog.btrim(items.value) order by items.position))[1] as display_value,
-          pg_catalog.min(items.position) as first_position
-        from pg_catalog.unnest(
           (
-            select coalesce(
-              pg_catalog.array_agg(current_values.value order by current_values.position),
-              array[]::text[]
+            pg_catalog.array_agg(
+              pg_catalog.btrim(items.value)
+              order by items.is_submitted desc, items.position
             )
-            from pg_catalog.unnest(vocabulary_cards.translation)
-              with ordinality as current_values(value, position)
-            where not (
-              exists (
-                select 1
-                from pg_catalog.unnest(input_previous_translation) as previous_values(value)
-                where pg_catalog.lower(pg_catalog.btrim(previous_values.value)) =
-                  pg_catalog.lower(pg_catalog.btrim(current_values.value))
-              )
-              and not exists (
-                select 1
-                from pg_catalog.unnest(excluded.translation) as submitted_values(value)
-                where pg_catalog.lower(pg_catalog.btrim(submitted_values.value)) =
-                  pg_catalog.lower(pg_catalog.btrim(current_values.value))
-              )
+          )[1] as display_value,
+          pg_catalog.min(items.position) as first_position
+        from (
+          select
+            current_values.value,
+            current_values.position,
+            false as is_submitted
+          from pg_catalog.unnest(vocabulary_cards.translation)
+            with ordinality as current_values(value, position)
+          where not (
+            exists (
+              select 1
+              from pg_catalog.unnest(input_previous_translation) as previous_values(value)
+              where pg_catalog.lower(pg_catalog.btrim(previous_values.value)) =
+                pg_catalog.lower(pg_catalog.btrim(current_values.value))
             )
-          ) || excluded.translation
-        ) with ordinality as items(value, position)
+            and not exists (
+              select 1
+              from pg_catalog.unnest(excluded.translation) as submitted_values(value)
+              where pg_catalog.lower(pg_catalog.btrim(submitted_values.value)) =
+                pg_catalog.lower(pg_catalog.btrim(current_values.value))
+            )
+          )
+
+          union all
+
+          select
+            submitted_values.value,
+            pg_catalog.cardinality(vocabulary_cards.translation) + submitted_values.position,
+            true as is_submitted
+          from pg_catalog.unnest(excluded.translation)
+            with ordinality as submitted_values(value, position)
+        ) as items
         where pg_catalog.btrim(items.value) <> ''
         group by pg_catalog.lower(pg_catalog.btrim(items.value))
       ) as values_by_key

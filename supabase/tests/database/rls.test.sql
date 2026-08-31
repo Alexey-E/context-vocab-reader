@@ -208,8 +208,8 @@ select is(
     from public.vocabulary_cards
     where word = 'atomic'
   ),
-  array['uno', 'dos']::text[],
-  'the atomic save function merges meanings without case-insensitive duplicates'
+  array['UNO', 'dos']::text[],
+  'the atomic save function applies case-only edits without duplicate meanings'
 );
 
 select is(
