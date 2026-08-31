@@ -176,7 +176,7 @@ Initial behavior:
 - reconcile the submitted meanings against the form's original snapshot inside the database transaction, honoring edits while preserving meanings concurrently added elsewhere
 - store explicit nulls when optional card details are cleared
 
-The database enforces uniqueness on `user_id + source_language + target_language + word` and limits a card to ten meanings. The authenticated-only `save_vocabulary_card` function derives ownership from `auth.uid()` and uses `insert ... on conflict do update`, preventing concurrent saves from losing meanings.
+The database enforces uniqueness on `user_id + source_language + target_language + word` and limits new or updated cards to ten meanings. The limit constraint starts as `not valid` so legacy oversized rows cannot block deployment; those rows can be reviewed and remediated before a later migration validates the constraint. The authenticated-only `save_vocabulary_card` function derives ownership from `auth.uid()` and uses `insert ... on conflict do update`, preventing concurrent saves from losing meanings.
 
 ## Deletion behavior
 

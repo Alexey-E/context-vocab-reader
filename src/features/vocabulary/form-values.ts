@@ -15,6 +15,8 @@ export function getVocabularyFormValues(
       targetLanguage,
     ).join(", "),
     note: existingCard?.note ?? "",
-    usageContext: existingCard?.usageContext ?? usageContext,
+    usageContext: existingCard
+      ? (existingCard.usageContext ?? "")
+      : usageContext,
   };
 }

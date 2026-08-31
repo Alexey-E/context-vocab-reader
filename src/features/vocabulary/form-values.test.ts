@@ -25,7 +25,7 @@ describe("getVocabularyFormValues", () => {
     });
   });
 
-  it("does not duplicate a translated meaning already on the card", () => {
+  it("keeps an existing empty context and avoids duplicate meanings", () => {
     expect(
       getVocabularyFormValues(
         {
@@ -38,7 +38,7 @@ describe("getVocabularyFormValues", () => {
         "contexto",
         "Context helps.",
         "es",
-      ).meanings,
-    ).toBe("Contexto");
+      ),
+    ).toMatchObject({ meanings: "Contexto", usageContext: "" });
   });
 });

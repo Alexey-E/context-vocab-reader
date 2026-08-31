@@ -1,6 +1,7 @@
 alter table public.vocabulary_cards
 add constraint vocabulary_cards_translation_limit
-check (cardinality(translation) <= 10);
+check (cardinality(translation) <= 10)
+not valid;
 
 create function public.save_vocabulary_card(
   input_word text,

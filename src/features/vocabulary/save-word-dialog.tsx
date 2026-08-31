@@ -43,15 +43,28 @@ type SaveWordDialogProps = Readonly<{
   word: SelectedReaderWord;
 }>;
 
-export function SaveWordDialog({
+export function SaveWordDialog(props: SaveWordDialogProps) {
+  const [session, setSession] = useState(0);
+
+  return (
+    <SaveWordDialogSession
+      key={session}
+      {...props}
+      reset={() => setSession((currentSession) => currentSession + 1)}
+    />
+  );
+}
+
+function SaveWordDialogSession({
   existingCard,
   onSaved,
+  reset,
   resource,
   sourceLanguage,
   targetLanguage,
   translatedText,
   word,
-}: SaveWordDialogProps) {
+}: SaveWordDialogProps & Readonly<{ reset: () => void }>) {
   const locale = useLocale();
   const t = useTranslations("Reader.vocabulary");
   const action = useMemo(
@@ -87,13 +100,18 @@ export function SaveWordDialog({
       <ModalOverlay className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-overlay p-4">
         <Modal className="my-auto w-full max-w-2xl rounded-3xl border border-border bg-surface text-text shadow-2xl outline-none">
           <Dialog className="p-6 outline-none sm:p-8">
-            {({ close }) =>
-              state.status === "success" ? (
-                <SavedCard state={state} close={close} />
+            {({ close }) => {
+              const closeAndReset = () => {
+                close();
+                reset();
+              };
+
+              return state.status === "success" ? (
+                <SavedCard state={state} close={closeAndReset} />
               ) : (
                 <VocabularyForm
                   key={state.revision}
-                  close={close}
+                  close={closeAndReset}
                   existingCard={existingCard}
                   formAction={formAction}
                   pending={pending}
@@ -103,8 +121,8 @@ export function SaveWordDialog({
                   translatedText={translatedText}
                   word={word}
                 />
-              )
-            }
+              );
+            }}
           </Dialog>
         </Modal>
       </ModalOverlay>

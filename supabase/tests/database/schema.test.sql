@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(22);
+select plan(23);
 
 insert into auth.users (id, email)
 values (
@@ -254,6 +254,16 @@ select throws_ok(
   23514,
   null,
   'a vocabulary card cannot contain more than ten meanings'
+);
+
+select is(
+  (
+    select convalidated
+    from pg_constraint
+    where conname = 'vocabulary_cards_translation_limit'
+  ),
+  false,
+  'the meaning limit does not invalidate deployment because of legacy rows'
 );
 
 select ok(
