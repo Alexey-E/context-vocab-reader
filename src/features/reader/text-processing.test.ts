@@ -100,6 +100,11 @@ describe("normalizeWord", () => {
   it("preserves Arabic diacritics", () => {
     expect(normalizeWord("مَرْحَبًا!", "ar")).toBe("مَرْحَبًا");
   });
+
+  it("uses the source language for locale-sensitive casing", () => {
+    expect(normalizeWord("I", "tr")).toBe("ı");
+    expect(normalizeWord("İ", "tr")).toBe("i");
+  });
 });
 
 describe("processReaderText", () => {

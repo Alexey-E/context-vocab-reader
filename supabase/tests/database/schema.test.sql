@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(23);
+select plan(29);
 
 insert into auth.users (id, email)
 values (
@@ -284,6 +284,33 @@ select ok(
   'anonymous users cannot execute the atomic vocabulary save function'
 );
 
+select is(
+  public.normalize_vocabulary_word('  “ＤON’T!” ', 'en'),
+  'don''t',
+  'the database normalizes case, compatibility characters, and apostrophes'
+);
+
+select is(
+  public.normalize_vocabulary_word('CAFÉ', 'fr'),
+  public.normalize_vocabulary_word('café', 'fr'),
+  'the database treats composed and decomposed accents equally'
+);
+
+select is(
+  public.normalize_vocabulary_word('مَرْحَبًا!', 'ar'),
+  'مَرْحَبًا',
+  'the database preserves Arabic diacritics'
+);
+
+select is(
+  array[
+    public.normalize_vocabulary_word('I', 'tr'),
+    public.normalize_vocabulary_word('İ', 'tr')
+  ],
+  array['ı', 'i']::text[],
+  'the database uses the source language for locale-sensitive casing'
+);
+
 -- Verifies that vocabulary card image URLs use HTTP or HTTPS.
 select throws_ok(
   $$
@@ -336,10 +363,22 @@ insert into public.vocabulary_cards (
 )
 values (
   current_setting('test.user_id')::uuid,
-  'context',
+  '  “ＣONTEXT!” ',
   'en',
   'es',
   array['contexto']
+);
+
+select is(
+  (
+    select word
+    from public.vocabulary_cards
+    where user_id = current_setting('test.user_id')::uuid
+      and source_language = 'en'
+      and target_language = 'es'
+  ),
+  'context',
+  'the vocabulary card trigger stores the canonical word'
 );
 
 -- Verifies that a user cannot save the same word and language pair twice.
@@ -353,7 +392,7 @@ select throws_ok(
       translation
     ) values (
       current_setting('test.user_id')::uuid,
-      'context',
+      'ＣＯＮＴＥＸＴ!',
       'en',
       'es',
       array['significado']
@@ -361,7 +400,7 @@ select throws_ok(
   $$,
   23505,
   null,
-  'the same word and language pair cannot be duplicated per user'
+  'normalized variants cannot be duplicated for one user and language pair'
 );
 
 -- Verifies that the same word can be saved for the reversed language pair.
@@ -382,6 +421,24 @@ select lives_ok(
     )
   $$,
   'the same word can use a different target language'
+);
+
+update public.vocabulary_cards
+set word = '  “ＢＡＮＫ!” '
+where user_id = current_setting('test.user_id')::uuid
+  and source_language = 'es'
+  and target_language = 'en';
+
+select is(
+  (
+    select word
+    from public.vocabulary_cards
+    where user_id = current_setting('test.user_id')::uuid
+      and source_language = 'es'
+      and target_language = 'en'
+  ),
+  'bank',
+  'the vocabulary card trigger canonicalizes direct word updates'
 );
 
 update public.documents

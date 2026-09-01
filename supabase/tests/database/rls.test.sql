@@ -11,7 +11,7 @@ set local test.card_b_id = 'b0000000-0000-4000-8000-000000000002';
 set local test.new_document_a_id = 'a0000000-0000-4000-8000-000000000003';
 set local test.new_card_a_id = 'a0000000-0000-4000-8000-000000000004';
 
-select plan(29);
+select plan(31);
 
 insert into auth.users (id, email)
 values
@@ -71,7 +71,7 @@ values
   (
     current_setting('test.card_a_id')::uuid,
     current_setting('test.user_a_id')::uuid,
-    'private-a',
+    'shared',
     'en',
     'es',
     array['privado-a']
@@ -79,7 +79,7 @@ values
   (
     current_setting('test.card_b_id')::uuid,
     current_setting('test.user_b_id')::uuid,
-    'private-b',
+    'shared',
     'en',
     'es',
     array['privado-b']
@@ -140,7 +140,7 @@ select lives_ok(
   'a user can insert their own document'
 );
 
--- Verifies that an authenticated user can create a vocabulary card they own.
+-- Verifies that direct authenticated writes are normalized before persistence.
 select lives_ok(
   $$
     insert into public.vocabulary_cards (
@@ -153,13 +153,44 @@ select lives_ok(
     ) values (
       current_setting('test.new_card_a_id')::uuid,
       current_setting('test.user_a_id')::uuid,
-      'owned',
+      '  “ＯＷＮＥＤ!” ',
       'en',
       'es',
       array['propio']
     )
   $$,
-  'a user can insert their own vocabulary card'
+  'a user can insert their own normalized vocabulary card'
+);
+
+select is(
+  (
+    select word
+    from public.vocabulary_cards
+    where id = current_setting('test.new_card_a_id')::uuid
+  ),
+  'owned',
+  'a direct authenticated insert stores the canonical word'
+);
+
+select throws_ok(
+  $$
+    insert into public.vocabulary_cards (
+      user_id,
+      word,
+      source_language,
+      target_language,
+      translation
+    ) values (
+      current_setting('test.user_a_id')::uuid,
+      'ＯＷＮＥＤ!',
+      'en',
+      'es',
+      array['perteneciente']
+    )
+  $$,
+  23505,
+  null,
+  'a user cannot insert a normalized duplicate through the Data API'
 );
 
 select lives_ok(
