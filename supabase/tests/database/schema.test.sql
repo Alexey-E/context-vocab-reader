@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(31);
+select plan(32);
 
 insert into auth.users (id, email)
 values (
@@ -309,6 +309,12 @@ select is(
   ],
   array['लड़की', U&'a\1ACF']::text[],
   'the database preserves combining marks at word edges'
+);
+
+select is(
+  public.normalize_vocabulary_word('“a፩!”', 'am'),
+  'a፩',
+  'the database preserves non-decimal Unicode numbers at word edges'
 );
 
 select is(

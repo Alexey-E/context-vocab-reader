@@ -106,6 +106,10 @@ describe("normalizeWord", () => {
     expect(normalizeWord("a\u1acf!", "en")).toBe("a\u1acf");
   });
 
+  it("preserves non-decimal Unicode numbers at word edges", () => {
+    expect(normalizeWord("“a፩!”", "am")).toBe("a፩");
+  });
+
   it("uses the source language for locale-sensitive casing", () => {
     expect(normalizeWord("I", "tr")).toBe("ı");
     expect(normalizeWord("İ", "tr")).toBe("i");
