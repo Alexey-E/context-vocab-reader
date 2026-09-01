@@ -101,6 +101,10 @@ describe("normalizeWord", () => {
     expect(normalizeWord("مَرْحَبًا!", "ar")).toBe("مَرْحَبًا");
   });
 
+  it("preserves combining marks at word edges", () => {
+    expect(normalizeWord("“लड़की!”", "hi")).toBe("लड़की");
+  });
+
   it("uses the source language for locale-sensitive casing", () => {
     expect(normalizeWord("I", "tr")).toBe("ı");
     expect(normalizeWord("İ", "tr")).toBe("i");

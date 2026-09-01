@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(29);
+select plan(30);
 
 insert into auth.users (id, email)
 values (
@@ -300,6 +300,12 @@ select is(
   public.normalize_vocabulary_word('مَرْحَبًا!', 'ar'),
   'مَرْحَبًا',
   'the database preserves Arabic diacritics'
+);
+
+select is(
+  public.normalize_vocabulary_word('“लड़की!”', 'hi'),
+  'लड़की',
+  'the database preserves combining marks at word edges'
 );
 
 select is(
