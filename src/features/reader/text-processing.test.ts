@@ -103,6 +103,7 @@ describe("normalizeWord", () => {
 
   it("preserves combining marks at word edges", () => {
     expect(normalizeWord("“लड़की!”", "hi")).toBe("लड़की");
+    expect(normalizeWord("a\u1acf!", "en")).toBe("a\u1acf");
   });
 
   it("uses the source language for locale-sensitive casing", () => {

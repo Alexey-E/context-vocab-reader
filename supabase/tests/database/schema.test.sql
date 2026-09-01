@@ -303,8 +303,11 @@ select is(
 );
 
 select is(
-  public.normalize_vocabulary_word('“लड़की!”', 'hi'),
-  'लड़की',
+  array[
+    public.normalize_vocabulary_word('“लड़की!”', 'hi'),
+    public.normalize_vocabulary_word(U&'a\1ACF!', 'en')
+  ],
+  array['लड़की', U&'a\1ACF']::text[],
   'the database preserves combining marks at word edges'
 );
 
