@@ -110,6 +110,10 @@ describe("normalizeWord", () => {
     expect(normalizeWord("I", "tr")).toBe("ı");
     expect(normalizeWord("İ", "tr")).toBe("i");
   });
+
+  it("uses Unicode 17 compatibility mappings", () => {
+    expect(normalizeWord("꟱", "en")).toBe("s");
+  });
 });
 
 describe("processReaderText", () => {

@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(30);
+select plan(31);
 
 insert into auth.users (id, email)
 values (
@@ -318,6 +318,18 @@ select is(
   ],
   array['ı', 'i']::text[],
   'the database uses the source language for locale-sensitive casing'
+);
+
+select is(
+  public.normalize_vocabulary_word(
+    U&'\A7F1' || (
+      select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+      from pg_catalog.generate_series(117974, 118009) as code_points(code_point)
+    ),
+    'en'
+  ),
+  'sabcdefghijklmnopqrstuvwxyz0123456789',
+  'the database matches Node 24 compatibility mappings added after Unicode 15.1'
 );
 
 -- Verifies that vocabulary card image URLs use HTTP or HTTPS.

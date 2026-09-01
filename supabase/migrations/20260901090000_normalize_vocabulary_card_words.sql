@@ -348,6 +348,13 @@ declare
   start_index integer := 1;
 begin
   normalized_word := normalize(pg_catalog.btrim(input_word), NFKC);
+  -- PostgreSQL 17 uses Unicode 15.1 normalization data, while Node.js 24 uses
+  -- Unicode 17.0. These are all compatibility mappings added since 15.1.
+  normalized_word := pg_catalog.translate(
+    normalized_word,
+    U&'\A7F1\+01CCD6\+01CCD7\+01CCD8\+01CCD9\+01CCDA\+01CCDB\+01CCDC\+01CCDD\+01CCDE\+01CCDF\+01CCE0\+01CCE1\+01CCE2\+01CCE3\+01CCE4\+01CCE5\+01CCE6\+01CCE7\+01CCE8\+01CCE9\+01CCEA\+01CCEB\+01CCEC\+01CCED\+01CCEE\+01CCEF\+01CCF0\+01CCF1\+01CCF2\+01CCF3\+01CCF4\+01CCF5\+01CCF6\+01CCF7\+01CCF8\+01CCF9',
+    'SABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  );
   normalized_word := pg_catalog.translate(
     normalized_word,
     U&'\2018\2019\02BC',
