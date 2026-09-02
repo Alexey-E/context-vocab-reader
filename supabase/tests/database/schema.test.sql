@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(23);
+select plan(37);
 
 insert into auth.users (id, email)
 values (
@@ -284,6 +284,129 @@ select ok(
   'anonymous users cannot execute the atomic vocabulary save function'
 );
 
+select ok(
+  not has_function_privilege(
+    'anon',
+    'public.normalize_vocabulary_text(text,text,boolean,boolean)',
+    'execute'
+  ),
+  'anonymous users cannot execute the shared vocabulary normalizer'
+);
+
+select is(
+  array[
+    public.normalize_vocabulary_text(' I ', 'tr', false, false),
+    public.normalize_vocabulary_text('ı', 'tr', false, false),
+    public.normalize_vocabulary_text('“I”', 'tr', false, false),
+    public.normalize_vocabulary_text('DON’T', 'en', false, false),
+    public.normalize_vocabulary_text('ＤＯＮ’Ｔ', 'en', false, false),
+    public.normalize_vocabulary_text(U&'\00A0I\3000', 'tr', false, false)
+  ],
+  array['ı', 'ı', '“ı”', 'don’t', 'don’t', 'ı']::text[],
+  'meaning keys match application normalization and target-language casing'
+);
+
+select is(
+  public.normalize_vocabulary_word('  “ＤON’T!” ', 'en'),
+  'don''t',
+  'the database normalizes case, compatibility characters, and apostrophes'
+);
+
+select is(
+  public.normalize_vocabulary_word('CAFÉ', 'fr'),
+  public.normalize_vocabulary_word('café', 'fr'),
+  'the database treats composed and decomposed accents equally'
+);
+
+select is(
+  public.normalize_vocabulary_word('مَرْحَبًا!', 'ar'),
+  'مَرْحَبًا',
+  'the database preserves Arabic diacritics'
+);
+
+select is(
+  array[
+    public.normalize_vocabulary_word('“लड़की!”', 'hi'),
+    public.normalize_vocabulary_word(U&'a\1ACF!', 'en')
+  ],
+  array['लड़की', U&'a\1ACF']::text[],
+  'the database preserves combining marks at word edges'
+);
+
+select is(
+  public.normalize_vocabulary_word('“a፩!”', 'am'),
+  'a፩',
+  'the database preserves non-decimal Unicode numbers at word edges'
+);
+
+select is(
+  public.normalize_vocabulary_word(U&'“a\088F!”', 'ar'),
+  U&'a\088F',
+  'the database preserves Unicode 17 letters at word edges'
+);
+
+select is(
+  array[
+    public.normalize_vocabulary_word('I', 'tr'),
+    public.normalize_vocabulary_word('İ', 'tr')
+  ],
+  array['ı', 'i']::text[],
+  'the database uses the source language for locale-sensitive casing'
+);
+
+select is(
+  public.normalize_vocabulary_word(
+    U&'\A7F1' || (
+      select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+      from pg_catalog.generate_series(117974, 118009) as code_points(code_point)
+    ),
+    'en'
+  ),
+  'sabcdefghijklmnopqrstuvwxyz0123456789',
+  'the database matches Node 24 compatibility mappings added after Unicode 15.1'
+);
+
+select is(
+  public.normalize_vocabulary_word(
+    U&'\1C89\A7CB\A7CC\A7CE\A7D2\A7D4\A7DA\A7DC' ||
+      (
+        select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+        from pg_catalog.generate_series(68944, 68965) as code_points(code_point)
+      ) ||
+      (
+        select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+        from pg_catalog.generate_series(93856, 93880) as code_points(code_point)
+      ),
+    'en'
+  ),
+  U&'\1C8A\0264\A7CD\A7CF\A7D3\A7D5\A7DB\019B' ||
+    (
+      select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+      from pg_catalog.generate_series(68976, 68997) as code_points(code_point)
+    ) ||
+    (
+      select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+      from pg_catalog.generate_series(93883, 93907) as code_points(code_point)
+    ),
+  'the database matches all Node 24 lowercase mappings added after its ICU data'
+);
+
+select is(
+  array[
+    public.normalize_vocabulary_word(U&'\+0105D2\0307', 'en'),
+    public.normalize_vocabulary_word(U&'\+0113C2\+0113C8', 'en'),
+    public.normalize_vocabulary_word(U&'\+01611E\+016123', 'en'),
+    public.normalize_vocabulary_word(U&'\+016D63\+016D68', 'en')
+  ],
+  array[
+    U&'\+0105C9',
+    U&'\+0113C5\+0113C9',
+    U&'\+016126',
+    U&'\+016D6A'
+  ]::text[],
+  'the database matches Unicode 16 and 17 contextual canonical composition'
+);
+
 -- Verifies that vocabulary card image URLs use HTTP or HTTPS.
 select throws_ok(
   $$
@@ -336,10 +459,22 @@ insert into public.vocabulary_cards (
 )
 values (
   current_setting('test.user_id')::uuid,
-  'context',
+  '  “ＣONTEXT!” ',
   'en',
   'es',
   array['contexto']
+);
+
+select is(
+  (
+    select word
+    from public.vocabulary_cards
+    where user_id = current_setting('test.user_id')::uuid
+      and source_language = 'en'
+      and target_language = 'es'
+  ),
+  'context',
+  'the vocabulary card trigger stores the canonical word'
 );
 
 -- Verifies that a user cannot save the same word and language pair twice.
@@ -353,7 +488,7 @@ select throws_ok(
       translation
     ) values (
       current_setting('test.user_id')::uuid,
-      'context',
+      'ＣＯＮＴＥＸＴ!',
       'en',
       'es',
       array['significado']
@@ -361,7 +496,7 @@ select throws_ok(
   $$,
   23505,
   null,
-  'the same word and language pair cannot be duplicated per user'
+  'normalized variants cannot be duplicated for one user and language pair'
 );
 
 -- Verifies that the same word can be saved for the reversed language pair.
@@ -382,6 +517,24 @@ select lives_ok(
     )
   $$,
   'the same word can use a different target language'
+);
+
+update public.vocabulary_cards
+set word = '  “ＢＡＮＫ!” '
+where user_id = current_setting('test.user_id')::uuid
+  and source_language = 'es'
+  and target_language = 'en';
+
+select is(
+  (
+    select word
+    from public.vocabulary_cards
+    where user_id = current_setting('test.user_id')::uuid
+      and source_language = 'es'
+      and target_language = 'en'
+  ),
+  'bank',
+  'the vocabulary card trigger canonicalizes direct word updates'
 );
 
 update public.documents

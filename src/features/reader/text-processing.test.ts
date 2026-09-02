@@ -100,6 +100,40 @@ describe("normalizeWord", () => {
   it("preserves Arabic diacritics", () => {
     expect(normalizeWord("مَرْحَبًا!", "ar")).toBe("مَرْحَبًا");
   });
+
+  it("preserves combining marks at word edges", () => {
+    expect(normalizeWord("“लड़की!”", "hi")).toBe("लड़की");
+    expect(normalizeWord("a\u1acf!", "en")).toBe("a\u1acf");
+  });
+
+  it("preserves non-decimal Unicode numbers at word edges", () => {
+    expect(normalizeWord("“a፩!”", "am")).toBe("a፩");
+  });
+
+  it("preserves Unicode 17 letters at word edges", () => {
+    expect(normalizeWord("“a\u088f!”", "ar")).toBe("a\u088f");
+  });
+
+  it("uses the source language for locale-sensitive casing", () => {
+    expect(normalizeWord("I", "tr")).toBe("ı");
+    expect(normalizeWord("İ", "tr")).toBe("i");
+  });
+
+  it("uses Unicode 17 compatibility mappings", () => {
+    expect(normalizeWord("꟱", "en")).toBe("s");
+  });
+
+  it("uses Unicode 17 lowercase mappings", () => {
+    expect(normalizeWord("\u{10d50}", "en")).toBe("\u{10d70}");
+    expect(normalizeWord("\u{16ea0}", "en")).toBe("\u{16ebb}");
+  });
+
+  it("uses Unicode 17 contextual canonical composition", () => {
+    expect(normalizeWord("\u{113c2}\u{113c8}", "en")).toBe(
+      "\u{113c5}\u{113c9}",
+    );
+    expect(normalizeWord("\u{1611e}\u{16123}", "en")).toBe("\u{16126}");
+  });
 });
 
 describe("processReaderText", () => {
