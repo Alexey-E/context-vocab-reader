@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(33);
+select plan(35);
 
 insert into auth.users (id, email)
 values (
@@ -342,6 +342,47 @@ select is(
   ),
   'sabcdefghijklmnopqrstuvwxyz0123456789',
   'the database matches Node 24 compatibility mappings added after Unicode 15.1'
+);
+
+select is(
+  public.normalize_vocabulary_word(
+    U&'\1C89\A7CB\A7CC\A7CE\A7D2\A7D4\A7DA\A7DC' ||
+      (
+        select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+        from pg_catalog.generate_series(68944, 68965) as code_points(code_point)
+      ) ||
+      (
+        select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+        from pg_catalog.generate_series(93856, 93880) as code_points(code_point)
+      ),
+    'en'
+  ),
+  U&'\1C8A\0264\A7CD\A7CF\A7D3\A7D5\A7DB\019B' ||
+    (
+      select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+      from pg_catalog.generate_series(68976, 68997) as code_points(code_point)
+    ) ||
+    (
+      select pg_catalog.string_agg(pg_catalog.chr(code_point), '')
+      from pg_catalog.generate_series(93883, 93907) as code_points(code_point)
+    ),
+  'the database matches all Node 24 lowercase mappings added after its ICU data'
+);
+
+select is(
+  array[
+    public.normalize_vocabulary_word(U&'\+0105D2\0307', 'en'),
+    public.normalize_vocabulary_word(U&'\+0113C2\+0113C8', 'en'),
+    public.normalize_vocabulary_word(U&'\+01611E\+016123', 'en'),
+    public.normalize_vocabulary_word(U&'\+016D63\+016D68', 'en')
+  ],
+  array[
+    U&'\+0105C9',
+    U&'\+0113C5\+0113C9',
+    U&'\+016126',
+    U&'\+016D6A'
+  ]::text[],
+  'the database matches Unicode 16 and 17 contextual canonical composition'
 );
 
 -- Verifies that vocabulary card image URLs use HTTP or HTTPS.

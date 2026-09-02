@@ -122,6 +122,18 @@ describe("normalizeWord", () => {
   it("uses Unicode 17 compatibility mappings", () => {
     expect(normalizeWord("꟱", "en")).toBe("s");
   });
+
+  it("uses Unicode 17 lowercase mappings", () => {
+    expect(normalizeWord("\u{10d50}", "en")).toBe("\u{10d70}");
+    expect(normalizeWord("\u{16ea0}", "en")).toBe("\u{16ebb}");
+  });
+
+  it("uses Unicode 17 contextual canonical composition", () => {
+    expect(normalizeWord("\u{113c2}\u{113c8}", "en")).toBe(
+      "\u{113c5}\u{113c9}",
+    );
+    expect(normalizeWord("\u{1611e}\u{16123}", "en")).toBe("\u{16126}");
+  });
 });
 
 describe("processReaderText", () => {

@@ -151,14 +151,80 @@ declare
     [131072,173792), [173824,178206), [178208,183982), [183984,191457), [191472,192094), [194560,195102),
     [196608,201547), [201552,210042), [917760,918000)
   }'::int4multirange;
+  -- Canonical decompositions and compositions added in Unicode 16.0.
+  unicode_17_decomposition_sources constant text[] := array[
+    U&'\+0105C9', U&'\+0105E4', U&'\+011383', U&'\+011385',
+    U&'\+01138E', U&'\+011391', U&'\+0113C5', U&'\+0113C7',
+    U&'\+0113C8', U&'\+016121', U&'\+016122', U&'\+016123',
+    U&'\+016124', U&'\+016125', U&'\+016126', U&'\+016127',
+    U&'\+016128', U&'\+016D68', U&'\+016D69', U&'\+016D6A'
+  ];
+  unicode_17_decomposition_targets constant text[] := array[
+    U&'\+0105D2\0307', U&'\+0105DA\0307', U&'\+011382\+0113C9',
+    U&'\+011384\+0113BB', U&'\+01138B\+0113C2', U&'\+011390\+0113C9',
+    U&'\+0113C2\+0113C2', U&'\+0113C2\+0113B8', U&'\+0113C2\+0113C9',
+    U&'\+01611E\+01611E', U&'\+01611E\+016129', U&'\+01611E\+01611F',
+    U&'\+016129\+01611F', U&'\+01611E\+016120',
+    U&'\+01611E\+01611E\+01611F', U&'\+01611E\+016129\+01611F',
+    U&'\+01611E\+01611E\+016120', U&'\+016D67\+016D67',
+    U&'\+016D63\+016D67', U&'\+016D63\+016D67\+016D67'
+  ];
+  unicode_17_composition_sources constant text[] := array[
+    U&'\+016121\+01611F', U&'\+016121\+016120', U&'\+016122\+01611F',
+    U&'\+016D69\+016D67', U&'\+0105D2\0307', U&'\+0105DA\0307',
+    U&'\+011382\+0113C9', U&'\+011384\+0113BB', U&'\+01138B\+0113C2',
+    U&'\+0113C2\+0113C2', U&'\+0113C2\+0113C9', U&'\+0113C2\+0113B8',
+    U&'\+011390\+0113C9', U&'\+01611E\+016123', U&'\+01611E\+016124',
+    U&'\+01611E\+016125', U&'\+01611E\+01611E', U&'\+01611E\+016129',
+    U&'\+01611E\+01611F', U&'\+01611E\+016120', U&'\+016129\+01611F',
+    U&'\+016D67\+016D67', U&'\+016D63\+016D68', U&'\+016D63\+016D67'
+  ];
+  unicode_17_composition_targets constant text[] := array[
+    U&'\+016126', U&'\+016128', U&'\+016127', U&'\+016D6A',
+    U&'\+0105C9', U&'\+0105E4', U&'\+011383', U&'\+011385',
+    U&'\+01138E', U&'\+0113C5', U&'\+0113C8', U&'\+0113C7',
+    U&'\+011391', U&'\+016126', U&'\+016127', U&'\+016128',
+    U&'\+016121', U&'\+016122', U&'\+016123', U&'\+016125',
+    U&'\+016124', U&'\+016D68', U&'\+016D6A', U&'\+016D69'
+  ];
   characters text[];
   collation_name name;
   end_index integer;
   normalized_word text;
+  previous_word text;
   primary_language text;
   start_index integer := 1;
 begin
-  normalized_word := normalize(pg_catalog.btrim(input_word), NFKC);
+  normalized_word := pg_catalog.btrim(input_word);
+
+  for mapping_index in 1..pg_catalog.cardinality(
+    unicode_17_decomposition_sources
+  ) loop
+    normalized_word := pg_catalog.replace(
+      normalized_word,
+      unicode_17_decomposition_sources[mapping_index],
+      unicode_17_decomposition_targets[mapping_index]
+    );
+  end loop;
+
+  normalized_word := normalize(normalized_word, NFKC);
+
+  loop
+    previous_word := normalized_word;
+
+    for mapping_index in 1..pg_catalog.cardinality(
+      unicode_17_composition_sources
+    ) loop
+      normalized_word := pg_catalog.replace(
+        normalized_word,
+        unicode_17_composition_sources[mapping_index],
+        unicode_17_composition_targets[mapping_index]
+      );
+    end loop;
+
+    exit when normalized_word = previous_word;
+  end loop;
+
   -- PostgreSQL 17 uses Unicode 15.1 normalization data, while Node.js 24 uses
   -- Unicode 17.0. These are all compatibility mappings added since 15.1.
   normalized_word := pg_catalog.translate(
@@ -195,6 +261,13 @@ begin
   into normalized_word
   using normalized_word;
 
+  -- ICU shipped with PostgreSQL does not know these Unicode 16/17 case pairs.
+  normalized_word := pg_catalog.translate(
+    normalized_word,
+    U&'\1C89\A7CB\A7CC\A7CE\A7D2\A7D4\A7DA\A7DC\+010D50\+010D51\+010D52\+010D53\+010D54\+010D55\+010D56\+010D57\+010D58\+010D59\+010D5A\+010D5B\+010D5C\+010D5D\+010D5E\+010D5F\+010D60\+010D61\+010D62\+010D63\+010D64\+010D65\+016EA0\+016EA1\+016EA2\+016EA3\+016EA4\+016EA5\+016EA6\+016EA7\+016EA8\+016EA9\+016EAA\+016EAB\+016EAC\+016EAD\+016EAE\+016EAF\+016EB0\+016EB1\+016EB2\+016EB3\+016EB4\+016EB5\+016EB6\+016EB7\+016EB8',
+    U&'\1C8A\0264\A7CD\A7CF\A7D3\A7D5\A7DB\019B\+010D70\+010D71\+010D72\+010D73\+010D74\+010D75\+010D76\+010D77\+010D78\+010D79\+010D7A\+010D7B\+010D7C\+010D7D\+010D7E\+010D7F\+010D80\+010D81\+010D82\+010D83\+010D84\+010D85\+016EBB\+016EBC\+016EBD\+016EBE\+016EBF\+016EC0\+016EC1\+016EC2\+016EC3\+016EC4\+016EC5\+016EC6\+016EC7\+016EC8\+016EC9\+016ECA\+016ECB\+016ECC\+016ECD\+016ECE\+016ECF\+016ED0\+016ED1\+016ED2\+016ED3'
+  );
+
   characters := pg_catalog.string_to_array(normalized_word, null);
   end_index := pg_catalog.cardinality(characters);
 
@@ -219,7 +292,25 @@ begin
     ''
   );
 
-  return normalize(normalized_word, NFC);
+  normalized_word := normalize(normalized_word, NFC);
+
+  loop
+    previous_word := normalized_word;
+
+    for mapping_index in 1..pg_catalog.cardinality(
+      unicode_17_composition_sources
+    ) loop
+      normalized_word := pg_catalog.replace(
+        normalized_word,
+        unicode_17_composition_sources[mapping_index],
+        unicode_17_composition_targets[mapping_index]
+      );
+    end loop;
+
+    exit when normalized_word = previous_word;
+  end loop;
+
+  return normalized_word;
 end;
 $$;
 
