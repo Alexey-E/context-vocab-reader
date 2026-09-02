@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(35);
+select plan(37);
 
 insert into auth.users (id, email)
 values (
@@ -282,6 +282,28 @@ select ok(
     'execute'
   ),
   'anonymous users cannot execute the atomic vocabulary save function'
+);
+
+select ok(
+  not has_function_privilege(
+    'anon',
+    'public.normalize_vocabulary_text(text,text,boolean,boolean)',
+    'execute'
+  ),
+  'anonymous users cannot execute the shared vocabulary normalizer'
+);
+
+select is(
+  array[
+    public.normalize_vocabulary_text(' I ', 'tr', false, false),
+    public.normalize_vocabulary_text('ı', 'tr', false, false),
+    public.normalize_vocabulary_text('“I”', 'tr', false, false),
+    public.normalize_vocabulary_text('DON’T', 'en', false, false),
+    public.normalize_vocabulary_text('ＤＯＮ’Ｔ', 'en', false, false),
+    public.normalize_vocabulary_text(U&'\00A0I\3000', 'tr', false, false)
+  ],
+  array['ı', 'ı', '“ı”', 'don’t', 'don’t', 'ı']::text[],
+  'meaning keys match application normalization and target-language casing'
 );
 
 select is(
