@@ -110,6 +110,10 @@ describe("normalizeWord", () => {
     expect(normalizeWord("“a፩!”", "am")).toBe("a፩");
   });
 
+  it("preserves Unicode 17 letters at word edges", () => {
+    expect(normalizeWord("“a\u088f!”", "ar")).toBe("a\u088f");
+  });
+
   it("uses the source language for locale-sensitive casing", () => {
     expect(normalizeWord("I", "tr")).toBe("ı");
     expect(normalizeWord("İ", "tr")).toBe("i");
