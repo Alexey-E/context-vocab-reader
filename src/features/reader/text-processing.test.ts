@@ -134,6 +134,10 @@ describe("normalizeWord", () => {
     );
     expect(normalizeWord("\u{1611e}\u{16123}", "en")).toBe("\u{16126}");
   });
+
+  it("canonically orders combining marks added after Unicode 15.1", () => {
+    expect(normalizeWord("ا\u0315\u0897", "ar")).toBe("ا\u0897\u0315");
+  });
 });
 
 describe("processReaderText", () => {

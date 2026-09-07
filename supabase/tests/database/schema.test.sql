@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 set local test.user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 set local test.document_id = 'a0000000-0000-4000-8000-000000000001';
 
-select plan(37);
+select plan(41);
 
 insert into auth.users (id, email)
 values (
@@ -293,6 +293,20 @@ select ok(
   'anonymous users cannot execute the shared vocabulary normalizer'
 );
 
+select ok(
+  not has_function_privilege(
+    'anon',
+    'public.normalize_vocabulary_unicode_17(text,boolean)',
+    'execute'
+  )
+  and not has_function_privilege(
+    'anon',
+    'public.vocabulary_unicode_17_combining_class(text)',
+    'execute'
+  ),
+  'anonymous users cannot execute internal Unicode helpers'
+);
+
 select is(
   array[
     public.normalize_vocabulary_text(' I ', 'tr', false, false),
@@ -407,6 +421,12 @@ select is(
   'the database matches Unicode 16 and 17 contextual canonical composition'
 );
 
+select is(
+  public.normalize_vocabulary_word(U&'\0627\0315\0897', 'ar'),
+  U&'\0627\0897\0315',
+  'the database canonically orders combining marks added after Unicode 15.1'
+);
+
 -- Verifies that vocabulary card image URLs use HTTP or HTTPS.
 select throws_ok(
   $$
@@ -475,6 +495,54 @@ select is(
   ),
   'context',
   'the vocabulary card trigger stores the canonical word'
+);
+
+insert into public.vocabulary_cards (
+  user_id,
+  word,
+  source_language,
+  target_language,
+  translation
+)
+values (
+  current_setting('test.user_id')::uuid,
+  U&'\0627\0315\0897',
+  'ar',
+  'en',
+  array['test']
+);
+
+select is(
+  (
+    select word
+    from public.vocabulary_cards
+    where user_id = current_setting('test.user_id')::uuid
+      and source_language = 'ar'
+      and target_language = 'en'
+  ),
+  U&'\0627\0897\0315',
+  'the trigger stores Unicode 17 canonical combining order'
+);
+
+select throws_ok(
+  $$
+    insert into public.vocabulary_cards (
+      user_id,
+      word,
+      source_language,
+      target_language,
+      translation
+    ) values (
+      current_setting('test.user_id')::uuid,
+      U&'\0627\0897\0315',
+      'ar',
+      'en',
+      array['duplicate']
+    )
+  $$,
+  23505,
+  null,
+  'canonically equivalent combining sequences cannot be duplicated'
 );
 
 -- Verifies that a user cannot save the same word and language pair twice.

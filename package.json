@@ -5,6 +5,7 @@
   "packageManager": "pnpm@11.21.0",
   "scripts": {
     "check:supabase": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-local-supabase.mjs",
+    "generate:unicode-normalization-data": "node scripts/generate-unicode-normalization-data.mjs",
     "predev": "pnpm check:supabase",
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",

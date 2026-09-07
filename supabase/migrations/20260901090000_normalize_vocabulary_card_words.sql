@@ -1,3 +1,320 @@
+create function public.vocabulary_unicode_17_combining_class(
+  input_character text
+)
+returns integer
+language plpgsql
+immutable
+strict
+parallel safe
+set search_path = ''
+as $$
+declare
+  -- Generated from Unicode 17.0 DerivedCombiningClass.txt.
+  combining_class_values constant integer[] := array[1, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 84, 91, 103, 107, 118, 122, 129, 130, 132, 202, 214, 216, 218, 220, 222, 224, 226, 228, 230, 232, 233, 234, 240];
+  combining_class_ranges constant int4multirange[] := array[
+    '{[820,825), [7380,7381), [7394,7401), [8402,8404), [8408,8411), [8421,8423), [8426,8428), [68153,68154), [92912,92917), [113822,113823), [119143,119146)}'::int4multirange, -- 1
+    '{[94192,94194)}'::int4multirange, -- 6
+    '{[2364,2365), [2492,2493), [2620,2621), [2748,2749), [2876,2877), [3132,3133), [3260,3261), [4151,4152), [6964,6965), [7142,7143), [7223,7224), [43443,43444), [69818,69819), [70003,70004), [70090,70091), [70198,70199), [70377,70378), [70459,70461), [70726,70727), [70851,70852), [71104,71105), [71351,71352), [71738,71739), [72003,72004), [73026,73027), [125258,125259)}'::int4multirange, -- 7
+    '{[12441,12443)}'::int4multirange, -- 8
+    '{[2381,2382), [2509,2510), [2637,2638), [2765,2766), [2893,2894), [3021,3022), [3149,3150), [3277,3278), [3387,3389), [3405,3406), [3530,3531), [3642,3643), [3770,3771), [3972,3973), [4153,4155), [5908,5909), [5909,5910), [5940,5941), [6098,6099), [6752,6753), [6980,6981), [7082,7083), [7083,7084), [7154,7156), [11647,11648), [43014,43015), [43052,43053), [43204,43205), [43347,43348), [43456,43457), [43766,43767), [44013,44014), [68159,68160), [69702,69703), [69744,69745), [69759,69760), [69817,69818), [69939,69941), [70080,70081), [70197,70198), [70378,70379), [70477,70478), [70606,70607), [70607,70608), [70608,70609), [70722,70723), [70850,70851), [71103,71104), [71231,71232), [71350,71351), [71467,71468), [71737,71738), [71997,71998), [71998,71999), [72160,72161), [72244,72245), [72263,72264), [72345,72346), [72767,72768), [73028,73030), [73111,73112), [73537,73538), [73538,73539), [90415,90416)}'::int4multirange, -- 9
+    '{[1456,1457)}'::int4multirange, -- 10
+    '{[1457,1458)}'::int4multirange, -- 11
+    '{[1458,1459)}'::int4multirange, -- 12
+    '{[1459,1460)}'::int4multirange, -- 13
+    '{[1460,1461)}'::int4multirange, -- 14
+    '{[1461,1462)}'::int4multirange, -- 15
+    '{[1462,1463)}'::int4multirange, -- 16
+    '{[1463,1464)}'::int4multirange, -- 17
+    '{[1464,1465), [1479,1480)}'::int4multirange, -- 18
+    '{[1465,1467)}'::int4multirange, -- 19
+    '{[1467,1468)}'::int4multirange, -- 20
+    '{[1468,1469)}'::int4multirange, -- 21
+    '{[1469,1470)}'::int4multirange, -- 22
+    '{[1471,1472)}'::int4multirange, -- 23
+    '{[1473,1474)}'::int4multirange, -- 24
+    '{[1474,1475)}'::int4multirange, -- 25
+    '{[64286,64287)}'::int4multirange, -- 26
+    '{[1611,1612), [2288,2289)}'::int4multirange, -- 27
+    '{[1612,1613), [2289,2290)}'::int4multirange, -- 28
+    '{[1613,1614), [2290,2291)}'::int4multirange, -- 29
+    '{[1560,1561), [1614,1615)}'::int4multirange, -- 30
+    '{[1561,1562), [1615,1616)}'::int4multirange, -- 31
+    '{[1562,1563), [1616,1617)}'::int4multirange, -- 32
+    '{[1617,1618)}'::int4multirange, -- 33
+    '{[1618,1619)}'::int4multirange, -- 34
+    '{[1648,1649)}'::int4multirange, -- 35
+    '{[1809,1810)}'::int4multirange, -- 36
+    '{[3157,3158)}'::int4multirange, -- 84
+    '{[3158,3159)}'::int4multirange, -- 91
+    '{[3640,3642)}'::int4multirange, -- 103
+    '{[3656,3660)}'::int4multirange, -- 107
+    '{[3768,3770)}'::int4multirange, -- 118
+    '{[3784,3788)}'::int4multirange, -- 122
+    '{[3953,3954)}'::int4multirange, -- 129
+    '{[3954,3955), [3962,3966), [3968,3969)}'::int4multirange, -- 130
+    '{[3956,3957)}'::int4multirange, -- 132
+    '{[801,803), [807,809), [7632,7633)}'::int4multirange, -- 202
+    '{[7630,7631)}'::int4multirange, -- 214
+    '{[795,796), [3897,3898), [119141,119143), [119150,119155)}'::int4multirange, -- 216
+    '{[7674,7675), [12330,12331)}'::int4multirange, -- 218
+    '{[790,794), [796,801), [803,807), [809,820), [825,829), [839,842), [845,847), [851,855), [857,859), [1425,1426), [1430,1431), [1435,1436), [1442,1448), [1450,1451), [1477,1478), [1621,1623), [1628,1629), [1631,1632), [1763,1764), [1770,1771), [1773,1774), [1841,1842), [1844,1845), [1847,1850), [1851,1853), [1854,1855), [1858,1859), [1860,1861), [1862,1863), [1864,1865), [2034,2035), [2045,2046), [2137,2140), [2201,2204), [2255,2260), [2275,2276), [2278,2279), [2281,2282), [2285,2288), [2294,2295), [2297,2299), [2386,2387), [3864,3866), [3893,3894), [3895,3896), [4038,4039), [4237,4238), [6459,6460), [6680,6681), [6783,6784), [6837,6843), [6845,6846), [6847,6849), [6851,6853), [6858,6859), [6877,6878), [6886,6887), [7020,7021), [7381,7386), [7388,7392), [7405,7406), [7618,7619), [7626,7627), [7631,7632), [7673,7674), [7677,7678), [7679,7680), [8424,8425), [8428,8432), [43307,43310), [43700,43701), [65063,65070), [66045,66046), [66272,66273), [68109,68110), [68154,68155), [68326,68327), [69370,69372), [69373,69376), [69446,69448), [69451,69452), [69453,69457), [69507,69508), [69509,69510), [119163,119171), [119178,119180), [124142,124143), [124399,124400), [125136,125143)}'::int4multirange, -- 220
+    '{[1434,1435), [1453,1454), [6457,6458), [12333,12334)}'::int4multirange, -- 222
+    '{[12334,12336)}'::int4multirange, -- 224
+    '{[119149,119150)}'::int4multirange, -- 226
+    '{[1454,1455), [6313,6314), [7671,7673), [12331,12332)}'::int4multirange, -- 228
+    '{[768,789), [829,837), [838,839), [842,845), [848,851), [855,856), [859,860), [867,880), [1155,1160), [1426,1430), [1431,1434), [1436,1442), [1448,1450), [1451,1453), [1455,1456), [1476,1477), [1552,1560), [1619,1621), [1623,1628), [1629,1631), [1750,1757), [1759,1763), [1764,1765), [1767,1769), [1771,1773), [1840,1841), [1842,1844), [1845,1847), [1850,1851), [1853,1854), [1855,1858), [1859,1860), [1861,1862), [1863,1864), [1865,1867), [2027,2034), [2035,2036), [2070,2074), [2075,2084), [2085,2088), [2089,2094), [2199,2201), [2204,2208), [2250,2255), [2260,2274), [2276,2278), [2279,2281), [2282,2285), [2291,2294), [2295,2297), [2299,2304), [2385,2386), [2387,2389), [2558,2559), [3970,3972), [3974,3976), [4957,4960), [6109,6110), [6458,6459), [6679,6680), [6773,6781), [6832,6837), [6843,6845), [6849,6851), [6853,6858), [6859,6877), [6880,6886), [6887,6891), [7019,7020), [7021,7028), [7376,7379), [7386,7388), [7392,7393), [7412,7413), [7416,7418), [7616,7618), [7619,7626), [7627,7629), [7633,7670), [7675,7676), [7678,7679), [8400,8402), [8404,8408), [8411,8413), [8417,8418), [8423,8424), [8425,8426), [8432,8433), [11503,11506), [11744,11776), [42607,42608), [42612,42622), [42654,42656), [42736,42738), [43232,43250), [43696,43697), [43698,43700), [43703,43705), [43710,43712), [43713,43714), [65056,65063), [65070,65072), [66422,66427), [68111,68112), [68152,68153), [68325,68326), [68900,68904), [68969,68974), [69291,69293), [69448,69451), [69452,69453), [69506,69507), [69508,69509), [69888,69891), [70502,70509), [70512,70517), [70750,70751), [92976,92983), [119173,119178), [119210,119214), [119362,119365), [122880,122887), [122888,122905), [122907,122914), [122915,122917), [122918,122923), [123023,123024), [123184,123191), [123566,123567), [123628,123632), [124143,124144), [124398,124399), [124643,124644), [124646,124647), [124654,124656), [124661,124662), [125252,125258)}'::int4multirange, -- 230
+    '{[789,790), [794,795), [856,857), [7670,7671), [12332,12333), [124140,124142)}'::int4multirange, -- 232
+    '{[860,861), [863,864), [866,867), [7676,7677)}'::int4multirange, -- 233
+    '{[861,863), [864,866), [6891,6892), [7629,7630)}'::int4multirange, -- 234
+    '{[837,838)}'::int4multirange -- 240
+  ];
+  code_point integer := pg_catalog.ascii(input_character);
+begin
+  for class_index in 1..pg_catalog.cardinality(combining_class_values) loop
+    if code_point <@ combining_class_ranges[class_index] then
+      return combining_class_values[class_index];
+    end if;
+  end loop;
+
+  return 0;
+end;
+$$;
+
+revoke execute
+on function public.vocabulary_unicode_17_combining_class(text)
+from public, anon;
+
+grant execute
+on function public.vocabulary_unicode_17_combining_class(text)
+to authenticated, service_role;
+
+create function public.normalize_vocabulary_unicode_17(
+  input_value text,
+  compatibility boolean
+)
+returns text
+language plpgsql
+stable
+strict
+parallel safe
+set search_path = ''
+as $$
+declare
+  -- Characters whose non-zero canonical combining class was added after
+  -- PostgreSQL 17's Unicode 15.1 normalization tables.
+  post_15_1_combining_marks constant int4multirange := '{
+    [2199,2200), [6863,6878), [6880,6892), [70606,70609),
+    [68969,68974), [69370,69372), [90415,90416), [124398,124400),
+    [124643,124644), [124646,124647), [124654,124656), [124661,124662)
+  }'::int4multirange;
+  -- Canonical decompositions and compositions added in Unicode 16.0.
+  unicode_17_decomposition_sources constant text[] := array[
+    U&'\+0105C9', U&'\+0105E4', U&'\+011383', U&'\+011385',
+    U&'\+01138E', U&'\+011391', U&'\+0113C5', U&'\+0113C7',
+    U&'\+0113C8', U&'\+016121', U&'\+016122', U&'\+016123',
+    U&'\+016124', U&'\+016125', U&'\+016126', U&'\+016127',
+    U&'\+016128', U&'\+016D68', U&'\+016D69', U&'\+016D6A'
+  ];
+  unicode_17_decomposition_targets constant text[] := array[
+    U&'\+0105D2\0307', U&'\+0105DA\0307', U&'\+011382\+0113C9',
+    U&'\+011384\+0113BB', U&'\+01138B\+0113C2', U&'\+011390\+0113C9',
+    U&'\+0113C2\+0113C2', U&'\+0113C2\+0113B8', U&'\+0113C2\+0113C9',
+    U&'\+01611E\+01611E', U&'\+01611E\+016129', U&'\+01611E\+01611F',
+    U&'\+016129\+01611F', U&'\+01611E\+016120',
+    U&'\+01611E\+01611E\+01611F', U&'\+01611E\+016129\+01611F',
+    U&'\+01611E\+01611E\+016120', U&'\+016D67\+016D67',
+    U&'\+016D63\+016D67', U&'\+016D63\+016D67\+016D67'
+  ];
+  unicode_17_composition_sources constant text[] := array[
+    U&'\+016121\+01611F', U&'\+016121\+016120', U&'\+016122\+01611F',
+    U&'\+016D69\+016D67', U&'\+0105D2\0307', U&'\+0105DA\0307',
+    U&'\+011382\+0113C9', U&'\+011384\+0113BB', U&'\+01138B\+0113C2',
+    U&'\+0113C2\+0113C2', U&'\+0113C2\+0113C9', U&'\+0113C2\+0113B8',
+    U&'\+011390\+0113C9', U&'\+01611E\+016123', U&'\+01611E\+016124',
+    U&'\+01611E\+016125', U&'\+01611E\+01611E', U&'\+01611E\+016129',
+    U&'\+01611E\+01611F', U&'\+01611E\+016120', U&'\+016129\+01611F',
+    U&'\+016D67\+016D67', U&'\+016D63\+016D68', U&'\+016D63\+016D67'
+  ];
+  unicode_17_composition_targets constant text[] := array[
+    U&'\+016126', U&'\+016128', U&'\+016127', U&'\+016D6A',
+    U&'\+0105C9', U&'\+0105E4', U&'\+011383', U&'\+011385',
+    U&'\+01138E', U&'\+0113C5', U&'\+0113C8', U&'\+0113C7',
+    U&'\+011391', U&'\+016126', U&'\+016127', U&'\+016128',
+    U&'\+016121', U&'\+016122', U&'\+016123', U&'\+016125',
+    U&'\+016124', U&'\+016D68', U&'\+016D6A', U&'\+016D69'
+  ];
+  candidate text;
+  characters text[];
+  combining_class integer;
+  composition_index integer;
+  current_character text;
+  has_new_combining_mark boolean := false;
+  last_combining_class integer := 0;
+  normalized_value text := input_value;
+  output_characters text[] := array[]::text[];
+  previous_combining_class integer;
+  previous_value text;
+  reorder_index integer;
+  starter_index integer;
+begin
+  for mapping_index in 1..pg_catalog.cardinality(
+    unicode_17_decomposition_sources
+  ) loop
+    normalized_value := pg_catalog.replace(
+      normalized_value,
+      unicode_17_decomposition_sources[mapping_index],
+      unicode_17_decomposition_targets[mapping_index]
+    );
+  end loop;
+
+  if compatibility then
+    -- Compatibility mappings added after Unicode 15.1.
+    normalized_value := pg_catalog.translate(
+      normalized_value,
+      U&'\A7F1\+01CCD6\+01CCD7\+01CCD8\+01CCD9\+01CCDA\+01CCDB\+01CCDC\+01CCDD\+01CCDE\+01CCDF\+01CCE0\+01CCE1\+01CCE2\+01CCE3\+01CCE4\+01CCE5\+01CCE6\+01CCE7\+01CCE8\+01CCE9\+01CCEA\+01CCEB\+01CCEC\+01CCED\+01CCEE\+01CCEF\+01CCF0\+01CCF1\+01CCF2\+01CCF3\+01CCF4\+01CCF5\+01CCF6\+01CCF7\+01CCF8\+01CCF9',
+      'SABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    );
+  end if;
+
+  characters := pg_catalog.string_to_array(normalized_value, null);
+
+  for character_index in 1..coalesce(
+    pg_catalog.cardinality(characters),
+    0
+  ) loop
+    if pg_catalog.ascii(characters[character_index])
+      <@ post_15_1_combining_marks
+    then
+      has_new_combining_mark := true;
+      exit;
+    end if;
+  end loop;
+
+  if not has_new_combining_mark then
+    if compatibility then
+      normalized_value := normalize(normalized_value, NFKC);
+    else
+      normalized_value := normalize(normalized_value, NFC);
+    end if;
+
+    loop
+      previous_value := normalized_value;
+
+      for mapping_index in 1..pg_catalog.cardinality(
+        unicode_17_composition_sources
+      ) loop
+        normalized_value := pg_catalog.replace(
+          normalized_value,
+          unicode_17_composition_sources[mapping_index],
+          unicode_17_composition_targets[mapping_index]
+        );
+      end loop;
+
+      exit when normalized_value = previous_value;
+    end loop;
+
+    return normalized_value;
+  end if;
+
+  -- PostgreSQL 17 treats post-15.1 marks as starters. Decompose first, then
+  -- perform Unicode 17 canonical ordering and blocked composition ourselves.
+  if compatibility then
+    normalized_value := normalize(normalized_value, NFKD);
+  else
+    normalized_value := normalize(normalized_value, NFD);
+  end if;
+
+  characters := pg_catalog.string_to_array(normalized_value, null);
+
+  -- Stable insertion sort within every combining-character sequence.
+  for character_index in 2..coalesce(
+    pg_catalog.cardinality(characters),
+    0
+  ) loop
+    current_character := characters[character_index];
+    combining_class := public.vocabulary_unicode_17_combining_class(
+      current_character
+    );
+    reorder_index := character_index;
+
+    while combining_class > 0 and reorder_index > 1 loop
+      previous_combining_class :=
+        public.vocabulary_unicode_17_combining_class(
+          characters[reorder_index - 1]
+        );
+
+      exit when previous_combining_class <= combining_class;
+
+      characters[reorder_index] := characters[reorder_index - 1];
+      reorder_index := reorder_index - 1;
+    end loop;
+
+    characters[reorder_index] := current_character;
+  end loop;
+
+  for character_index in 1..coalesce(
+    pg_catalog.cardinality(characters),
+    0
+  ) loop
+    current_character := characters[character_index];
+    combining_class := public.vocabulary_unicode_17_combining_class(
+      current_character
+    );
+    candidate := null;
+
+    if starter_index is not null
+      and (last_combining_class = 0 or last_combining_class < combining_class)
+    then
+      composition_index := pg_catalog.array_position(
+        unicode_17_composition_sources,
+        output_characters[starter_index] || current_character
+      );
+
+      if composition_index is not null then
+        candidate := unicode_17_composition_targets[composition_index];
+      else
+        previous_value := normalize(
+          output_characters[starter_index] || current_character,
+          NFC
+        );
+
+        if pg_catalog.char_length(previous_value) = 1 then
+          candidate := previous_value;
+        end if;
+      end if;
+    end if;
+
+    if candidate is not null then
+      output_characters[starter_index] := candidate;
+      continue;
+    end if;
+
+    output_characters := pg_catalog.array_append(
+      output_characters,
+      current_character
+    );
+
+    if combining_class = 0 then
+      starter_index := pg_catalog.cardinality(output_characters);
+      last_combining_class := 0;
+    else
+      last_combining_class := combining_class;
+    end if;
+  end loop;
+
+  return pg_catalog.array_to_string(output_characters, '');
+end;
+$$;
+
+revoke execute
+on function public.normalize_vocabulary_unicode_17(text, boolean)
+from public, anon;
+
+grant execute
+on function public.normalize_vocabulary_unicode_17(text, boolean)
+to authenticated, service_role;
+
+
 create function public.normalize_vocabulary_text(
   input_value text,
   input_language text,
@@ -155,86 +472,16 @@ declare
     [131072,173792), [173824,178206), [178208,183982), [183984,191457), [191472,192094), [194560,195102),
     [196608,201547), [201552,210042), [917760,918000)
   }'::int4multirange;
-  -- Canonical decompositions and compositions added in Unicode 16.0.
-  unicode_17_decomposition_sources constant text[] := array[
-    U&'\+0105C9', U&'\+0105E4', U&'\+011383', U&'\+011385',
-    U&'\+01138E', U&'\+011391', U&'\+0113C5', U&'\+0113C7',
-    U&'\+0113C8', U&'\+016121', U&'\+016122', U&'\+016123',
-    U&'\+016124', U&'\+016125', U&'\+016126', U&'\+016127',
-    U&'\+016128', U&'\+016D68', U&'\+016D69', U&'\+016D6A'
-  ];
-  unicode_17_decomposition_targets constant text[] := array[
-    U&'\+0105D2\0307', U&'\+0105DA\0307', U&'\+011382\+0113C9',
-    U&'\+011384\+0113BB', U&'\+01138B\+0113C2', U&'\+011390\+0113C9',
-    U&'\+0113C2\+0113C2', U&'\+0113C2\+0113B8', U&'\+0113C2\+0113C9',
-    U&'\+01611E\+01611E', U&'\+01611E\+016129', U&'\+01611E\+01611F',
-    U&'\+016129\+01611F', U&'\+01611E\+016120',
-    U&'\+01611E\+01611E\+01611F', U&'\+01611E\+016129\+01611F',
-    U&'\+01611E\+01611E\+016120', U&'\+016D67\+016D67',
-    U&'\+016D63\+016D67', U&'\+016D63\+016D67\+016D67'
-  ];
-  unicode_17_composition_sources constant text[] := array[
-    U&'\+016121\+01611F', U&'\+016121\+016120', U&'\+016122\+01611F',
-    U&'\+016D69\+016D67', U&'\+0105D2\0307', U&'\+0105DA\0307',
-    U&'\+011382\+0113C9', U&'\+011384\+0113BB', U&'\+01138B\+0113C2',
-    U&'\+0113C2\+0113C2', U&'\+0113C2\+0113C9', U&'\+0113C2\+0113B8',
-    U&'\+011390\+0113C9', U&'\+01611E\+016123', U&'\+01611E\+016124',
-    U&'\+01611E\+016125', U&'\+01611E\+01611E', U&'\+01611E\+016129',
-    U&'\+01611E\+01611F', U&'\+01611E\+016120', U&'\+016129\+01611F',
-    U&'\+016D67\+016D67', U&'\+016D63\+016D68', U&'\+016D63\+016D67'
-  ];
-  unicode_17_composition_targets constant text[] := array[
-    U&'\+016126', U&'\+016128', U&'\+016127', U&'\+016D6A',
-    U&'\+0105C9', U&'\+0105E4', U&'\+011383', U&'\+011385',
-    U&'\+01138E', U&'\+0113C5', U&'\+0113C8', U&'\+0113C7',
-    U&'\+011391', U&'\+016126', U&'\+016127', U&'\+016128',
-    U&'\+016121', U&'\+016122', U&'\+016123', U&'\+016125',
-    U&'\+016124', U&'\+016D68', U&'\+016D6A', U&'\+016D69'
-  ];
   characters text[];
   collation_name name;
   end_index integer;
   normalized_word text;
-  previous_word text;
   primary_language text;
   start_index integer := 1;
 begin
-  normalized_word := pg_catalog.btrim(input_value, trim_characters);
-
-  for mapping_index in 1..pg_catalog.cardinality(
-    unicode_17_decomposition_sources
-  ) loop
-    normalized_word := pg_catalog.replace(
-      normalized_word,
-      unicode_17_decomposition_sources[mapping_index],
-      unicode_17_decomposition_targets[mapping_index]
-    );
-  end loop;
-
-  normalized_word := normalize(normalized_word, NFKC);
-
-  loop
-    previous_word := normalized_word;
-
-    for mapping_index in 1..pg_catalog.cardinality(
-      unicode_17_composition_sources
-    ) loop
-      normalized_word := pg_catalog.replace(
-        normalized_word,
-        unicode_17_composition_sources[mapping_index],
-        unicode_17_composition_targets[mapping_index]
-      );
-    end loop;
-
-    exit when normalized_word = previous_word;
-  end loop;
-
-  -- PostgreSQL 17 uses Unicode 15.1 normalization data, while Node.js 24 uses
-  -- Unicode 17.0. These are all compatibility mappings added since 15.1.
-  normalized_word := pg_catalog.translate(
-    normalized_word,
-    U&'\A7F1\+01CCD6\+01CCD7\+01CCD8\+01CCD9\+01CCDA\+01CCDB\+01CCDC\+01CCDD\+01CCDE\+01CCDF\+01CCE0\+01CCE1\+01CCE2\+01CCE3\+01CCE4\+01CCE5\+01CCE6\+01CCE7\+01CCE8\+01CCE9\+01CCEA\+01CCEB\+01CCEC\+01CCED\+01CCEE\+01CCEF\+01CCF0\+01CCF1\+01CCF2\+01CCF3\+01CCF4\+01CCF5\+01CCF6\+01CCF7\+01CCF8\+01CCF9',
-    'SABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  normalized_word := public.normalize_vocabulary_unicode_17(
+    pg_catalog.btrim(input_value, trim_characters),
+    true
   );
   if normalize_apostrophes then
     normalized_word := pg_catalog.translate(
@@ -301,25 +548,7 @@ begin
     );
   end if;
 
-  normalized_word := normalize(normalized_word, NFC);
-
-  loop
-    previous_word := normalized_word;
-
-    for mapping_index in 1..pg_catalog.cardinality(
-      unicode_17_composition_sources
-    ) loop
-      normalized_word := pg_catalog.replace(
-        normalized_word,
-        unicode_17_composition_sources[mapping_index],
-        unicode_17_composition_targets[mapping_index]
-      );
-    end loop;
-
-    exit when normalized_word = previous_word;
-  end loop;
-
-  return normalized_word;
+  return public.normalize_vocabulary_unicode_17(normalized_word, false);
 end;
 $$;
 
