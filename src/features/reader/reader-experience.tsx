@@ -545,6 +545,7 @@ export function ReaderExperience({
                                 onTranslate={() =>
                                   translateReaderWord(sentence, token)
                                 }
+                                sourceLanguage={sourceLanguage}
                                 targetLanguage={targetLanguage}
                                 tokenId={token.id}
                                 word={token.text}

@@ -21,6 +21,7 @@ import { getLanguageDirection } from "@/lib/languages";
 type SavedVocabularyWordProps = Readonly<{
   card: ReaderVocabularyCard;
   onTranslate: () => void;
+  sourceLanguage: string;
   targetLanguage: string;
   tokenId: string;
   word: string;
@@ -29,6 +30,7 @@ type SavedVocabularyWordProps = Readonly<{
 export function SavedVocabularyWord({
   card,
   onTranslate,
+  sourceLanguage,
   targetLanguage,
   tokenId,
   word,
@@ -49,6 +51,7 @@ export function SavedVocabularyWord({
           id={tokenId}
           role="button"
           aria-label={t("openSaved", { word })}
+          lang={sourceLanguage}
           data-saved-word
           data-token-id={tokenId}
           data-token-kind="word"
@@ -96,6 +99,7 @@ export function SavedVocabularyWord({
               </p>
               <Heading
                 slot="title"
+                lang={sourceLanguage}
                 dir="auto"
                 className="mt-2 text-xl font-bold tracking-tight"
               >
@@ -137,7 +141,11 @@ export function SavedVocabularyWord({
                   <p className="text-xs font-semibold text-muted">
                     {t("context")}
                   </p>
-                  <p dir="auto" className="mt-1 text-sm leading-6">
+                  <p
+                    lang={sourceLanguage}
+                    dir="auto"
+                    className="mt-1 text-sm leading-6"
+                  >
                     {card.usageContext}
                   </p>
                 </div>
