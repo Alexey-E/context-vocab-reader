@@ -41,6 +41,32 @@ describe("Reader", () => {
     expect(markup).toContain('data-reader-source-segment="true"');
   });
 
+  it("highlights every token that has a saved vocabulary card", () => {
+    const markup = renderReader({
+      content: "Context changes context, not meaning.",
+      resource: sampleResource,
+      sourceLanguage: "en",
+      targetLanguage: "es",
+      title: "Saved words",
+      visibility: "public",
+      vocabularyCards: [
+        {
+          imageUrl: null,
+          meanings: ["contexto"],
+          note: "Remember this",
+          usageContext: "Context changes meaning.",
+          word: "context",
+        },
+      ],
+    });
+
+    expect(markup.match(/data-saved-word="true"/g)).toHaveLength(2);
+    expect(markup).toContain('aria-label="Open saved card for Context"');
+    expect(markup).toContain('aria-label="Open saved card for context"');
+    expect(markup).toContain('aria-label="Translate and save changes"');
+    expect(markup).toContain('data-reader-source-segment="true"');
+  });
+
   it("infers the title direction and marks content with its source language", () => {
     const markup = renderReader({
       content: "مرحبًا!",

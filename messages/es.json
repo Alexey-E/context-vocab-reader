@@ -194,8 +194,11 @@
       "meaningsHint": "Separa varios significados con comas.",
       "note": "Nota (opcional)",
       "open": "Guardar palabra",
+      "openSaved": "Abrir la tarjeta guardada de {word}",
       "save": "Guardar tarjeta",
+      "savedHeading": "Tarjeta de vocabulario guardada de {word}",
       "saving": "Guardando…",
+      "translateSaved": "Traducir palabra",
       "updated": "Tarjeta existente actualizada",
       "word": "Palabra"
     }

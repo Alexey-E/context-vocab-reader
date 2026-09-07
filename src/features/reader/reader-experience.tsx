@@ -43,6 +43,7 @@ import {
   findReaderVocabularyCard,
   upsertReaderVocabularyCard,
 } from "@/features/vocabulary/reader-card-lookup";
+import { SavedVocabularyWord } from "@/features/vocabulary/saved-vocabulary-word";
 import { getLanguageDirection } from "@/lib/languages";
 
 type TranslationState =
@@ -529,6 +530,28 @@ export function ReaderExperience({
                     >
                       {sentence.tokens.map((token) => {
                         if (token.kind === "word") {
+                          const card = findReaderVocabularyCard(
+                            cardLookup,
+                            sourceLanguage,
+                            targetLanguage,
+                            token.normalized,
+                          );
+
+                          if (card) {
+                            return (
+                              <SavedVocabularyWord
+                                key={token.id}
+                                card={card}
+                                onTranslate={() =>
+                                  translateReaderWord(sentence, token)
+                                }
+                                targetLanguage={targetLanguage}
+                                tokenId={token.id}
+                                word={token.text}
+                              />
+                            );
+                          }
+
                           return (
                             <span
                               key={token.id}
