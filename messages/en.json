@@ -196,7 +196,7 @@
       "meaningsHint": "Separate multiple meanings with commas.",
       "note": "Note (optional)",
       "open": "Save word",
-      "openSaved": "Open saved card for {word}",
+      "openSavedAction": "Open saved card",
       "save": "Save card",
       "savedHeading": "Saved vocabulary card for {word}",
       "saving": "Saving…",

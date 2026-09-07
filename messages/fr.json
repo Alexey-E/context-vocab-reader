@@ -194,7 +194,7 @@
       "meaningsHint": "Séparez plusieurs sens par des virgules.",
       "note": "Note (facultatif)",
       "open": "Enregistrer le mot",
-      "openSaved": "Ouvrir la fiche enregistrée pour {word}",
+      "openSavedAction": "Ouvrir la fiche enregistrée",
       "save": "Enregistrer la fiche",
       "savedHeading": "Fiche de vocabulaire enregistrée pour {word}",
       "saving": "Enregistrement…",

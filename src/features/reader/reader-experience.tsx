@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useId, useMemo, useRef, useState } from "react";
 import {
   Button,
   Dialog,
@@ -194,6 +194,7 @@ export function ReaderExperience({
 }: ReaderExperienceProps) {
   const t = useTranslations("Reader");
   const locale = useLocale();
+  const savedWordActionLabelId = useId();
   const sourceDirection = getLanguageDirection(sourceLanguage);
   const targetDirection = getLanguageDirection(targetLanguage);
   const [selectedText, setSelectedText] = useState("");
@@ -370,6 +371,9 @@ export function ReaderExperience({
 
   return (
     <div className="border-t border-border">
+      <span id={savedWordActionLabelId} className="sr-only">
+        {t("vocabulary.openSavedAction")}
+      </span>
       <div className="flex flex-col gap-3 border-b border-border bg-surface-muted px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-10">
         <div>
           <p className="text-sm font-semibold text-text">{t("toolsHeading")}</p>
@@ -541,6 +545,7 @@ export function ReaderExperience({
                             return (
                               <SavedVocabularyWord
                                 key={token.id}
+                                actionLabelId={savedWordActionLabelId}
                                 card={card}
                                 onTranslate={() =>
                                   translateReaderWord(sentence, token)

@@ -61,11 +61,16 @@ describe("Reader", () => {
     });
 
     expect(markup.match(/data-saved-word="true"/g)).toHaveLength(2);
-    expect(markup).toContain('aria-label="Open saved card for Context"');
-    expect(markup).toContain('aria-label="Open saved card for context"');
+    expect(markup).toContain(">Open saved card</span>");
+    expect(markup).not.toContain('aria-label="Open saved card');
     expect(
       markup.match(
-        /<span(?=[^>]*data-saved-word="true")(?=[^>]*lang="en")[^>]*>/g,
+        /<span(?=[^>]*data-saved-word="true")(?=[^>]*aria-labelledby="[^"]+ [^"]+-label")[^>]*>/g,
+      ),
+    ).toHaveLength(2);
+    expect(
+      markup.match(
+        /<span id="[^"]+-label" lang="en">(?:Context|context)<\/span>/g,
       ),
     ).toHaveLength(2);
     expect(markup).toContain('aria-label="Translate and save changes"');

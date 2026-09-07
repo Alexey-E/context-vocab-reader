@@ -19,6 +19,7 @@ import type { ReaderVocabularyCard } from "@/features/vocabulary/contract";
 import { getLanguageDirection } from "@/lib/languages";
 
 type SavedVocabularyWordProps = Readonly<{
+  actionLabelId: string;
   card: ReaderVocabularyCard;
   onTranslate: () => void;
   sourceLanguage: string;
@@ -28,6 +29,7 @@ type SavedVocabularyWordProps = Readonly<{
 }>;
 
 export function SavedVocabularyWord({
+  actionLabelId,
   card,
   onTranslate,
   sourceLanguage,
@@ -50,8 +52,7 @@ export function SavedVocabularyWord({
         <span
           id={tokenId}
           role="button"
-          aria-label={t("openSaved", { word })}
-          lang={sourceLanguage}
+          aria-labelledby={`${actionLabelId} ${tokenId}-label`}
           data-saved-word
           data-token-id={tokenId}
           data-token-kind="word"
@@ -80,7 +81,9 @@ export function SavedVocabularyWord({
           }}
           className="cursor-pointer rounded-sm bg-selected px-0.5 text-selected-text underline decoration-primary/60 decoration-2 underline-offset-4 outline-none transition hover:decoration-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
-          {word}
+          <span id={`${tokenId}-label`} lang={sourceLanguage}>
+            {word}
+          </span>
         </span>
       </Focusable>
       <Popover

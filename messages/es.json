@@ -194,7 +194,7 @@
       "meaningsHint": "Separa varios significados con comas.",
       "note": "Nota (opcional)",
       "open": "Guardar palabra",
-      "openSaved": "Abrir la tarjeta guardada de {word}",
+      "openSavedAction": "Abrir la tarjeta guardada",
       "save": "Guardar tarjeta",
       "savedHeading": "Tarjeta de vocabulario guardada de {word}",
       "saving": "Guardando…",
