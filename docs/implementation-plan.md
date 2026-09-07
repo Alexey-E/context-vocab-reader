@@ -211,8 +211,8 @@ A card persists after refresh and remains inaccessible to other users.
 
 ## Stage 12 — Saved words in the reader
 
-- [ ] Load vocabulary cards matching the document's source and target languages.
-- [ ] Build a lookup structure keyed by language pair and normalized word.
+- [x] Load vocabulary cards matching the document's source and target languages.
+- [x] Build a lookup structure keyed by language pair and normalized word.
 - [ ] Highlight tokens with saved cards.
 - [ ] Add hover, keyboard focus, click, and mobile tap interactions.
 - [ ] Show the matching card in a popover.
