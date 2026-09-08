@@ -199,6 +199,7 @@
       "openSavedAction": "Open saved card",
       "save": "Save card",
       "savedHeadingAction": "Saved vocabulary card",
+      "savedImageAlt": "Image for the saved vocabulary card",
       "saving": "Saving…",
       "translateSaved": "Translate word",
       "updated": "Existing card updated",

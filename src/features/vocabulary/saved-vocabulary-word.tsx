@@ -120,7 +120,7 @@ export function SavedVocabularyWord({
                 <img
                   key={card.imageUrl}
                   src={card.imageUrl}
-                  alt={t("imagePreview", { word })}
+                  alt={t("savedImageAlt")}
                   loading="lazy"
                   onError={(event) => {
                     event.currentTarget.hidden = true;
