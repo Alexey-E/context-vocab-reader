@@ -89,7 +89,7 @@ export function SavedVocabularyWord({
       <Popover
         placement="top"
         offset={8}
-        className="z-50 w-80 max-w-[calc(100vw-2rem)] rounded-2xl border border-border bg-surface text-text shadow-xl outline-none"
+        className="z-50 max-h-[calc(100dvh-2rem)] w-80 max-w-[calc(100vw-2rem)] overflow-y-auto overscroll-contain rounded-2xl border border-border bg-surface text-text shadow-xl outline-none"
       >
         <Dialog
           aria-labelledby={`${tokenId}-saved-card-label ${tokenId}-saved-card-word`}
