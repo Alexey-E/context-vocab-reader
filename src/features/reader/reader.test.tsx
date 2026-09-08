@@ -61,7 +61,9 @@ describe("Reader", () => {
     });
 
     expect(markup.match(/data-saved-word="true"/g)).toHaveLength(2);
-    expect(markup).toContain(">Open saved card</span>");
+    expect(markup).toMatch(
+      /<span(?=[^>]*aria-hidden="true")(?=[^>]*class="sr-only")[^>]*>Open saved card<\/span>/,
+    );
     expect(markup).not.toContain('aria-label="Open saved card');
     expect(
       markup.match(

@@ -371,7 +371,7 @@ export function ReaderExperience({
 
   return (
     <div className="border-t border-border">
-      <span id={savedWordActionLabelId} className="sr-only">
+      <span id={savedWordActionLabelId} aria-hidden="true" className="sr-only">
         {t("vocabulary.openSavedAction")}
       </span>
       <div className="flex flex-col gap-3 border-b border-border bg-surface-muted px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-10">
