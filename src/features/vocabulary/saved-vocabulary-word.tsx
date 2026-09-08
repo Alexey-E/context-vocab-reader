@@ -92,15 +92,19 @@ export function SavedVocabularyWord({
         className="z-50 w-80 max-w-[calc(100vw-2rem)] rounded-2xl border border-border bg-surface text-text shadow-xl outline-none"
       >
         <Dialog
-          aria-label={t("savedHeading", { word })}
+          aria-labelledby={`${tokenId}-saved-card-label ${tokenId}-saved-card-word`}
           className="p-4 outline-none"
         >
           {({ close }) => (
             <>
+              <span id={`${tokenId}-saved-card-label`} className="sr-only">
+                {t("savedHeadingAction")}
+              </span>
               <p className="text-xs font-bold tracking-[0.12em] text-primary uppercase">
                 {t("eyebrow")}
               </p>
               <Heading
+                id={`${tokenId}-saved-card-word`}
                 slot="title"
                 lang={sourceLanguage}
                 dir="auto"

@@ -196,7 +196,7 @@
       "open": "Guardar palabra",
       "openSavedAction": "Abrir la tarjeta guardada",
       "save": "Guardar tarjeta",
-      "savedHeading": "Tarjeta de vocabulario guardada de {word}",
+      "savedHeadingAction": "Tarjeta de vocabulario guardada",
       "saving": "Guardando…",
       "translateSaved": "Traducir palabra",
       "updated": "Tarjeta existente actualizada",

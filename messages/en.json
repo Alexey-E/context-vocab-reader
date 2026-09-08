@@ -198,7 +198,7 @@
       "open": "Save word",
       "openSavedAction": "Open saved card",
       "save": "Save card",
-      "savedHeading": "Saved vocabulary card for {word}",
+      "savedHeadingAction": "Saved vocabulary card",
       "saving": "Saving…",
       "translateSaved": "Translate word",
       "updated": "Existing card updated",

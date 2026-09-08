@@ -196,7 +196,7 @@
       "open": "Enregistrer le mot",
       "openSavedAction": "Ouvrir la fiche enregistrée",
       "save": "Enregistrer la fiche",
-      "savedHeading": "Fiche de vocabulaire enregistrée pour {word}",
+      "savedHeadingAction": "Fiche de vocabulaire enregistrée",
       "saving": "Enregistrement…",
       "translateSaved": "Traduire le mot",
       "updated": "Fiche existante mise à jour",
