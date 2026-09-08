@@ -114,6 +114,7 @@ export function SavedVocabularyWord({
                 // stage will add a shared image fallback.
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
+                  key={card.imageUrl}
                   src={card.imageUrl}
                   alt={t("imagePreview", { word })}
                   loading="lazy"
