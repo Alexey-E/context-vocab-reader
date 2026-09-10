@@ -52,6 +52,7 @@ export function SavedVocabularyWord({
         <span
           id={tokenId}
           role="button"
+          tabIndex={0}
           aria-labelledby={`${actionLabelId} ${tokenId}-label`}
           data-saved-word
           data-token-id={tokenId}

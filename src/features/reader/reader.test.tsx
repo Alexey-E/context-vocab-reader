@@ -67,7 +67,7 @@ describe("Reader", () => {
     expect(markup).not.toContain('aria-label="Open saved card');
     expect(
       markup.match(
-        /<span(?=[^>]*data-saved-word="true")(?=[^>]*aria-labelledby="[^"]+ [^"]+-label")[^>]*>/g,
+        /<span(?=[^>]*data-saved-word="true")(?=[^>]*tabindex="0")(?=[^>]*aria-labelledby="[^"]+ [^"]+-label")[^>]*>/g,
       ),
     ).toHaveLength(2);
     expect(
