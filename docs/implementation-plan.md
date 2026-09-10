@@ -213,11 +213,11 @@ A card persists after refresh and remains inaccessible to other users.
 
 - [x] Load vocabulary cards matching the document's source and target languages.
 - [x] Build a lookup structure keyed by language pair and normalized word.
-- [ ] Highlight tokens with saved cards.
-- [ ] Add hover, keyboard focus, click, and mobile tap interactions.
-- [ ] Show the matching card in a popover.
-- [ ] Update reader state after saving without a full reload.
-- [ ] Keep saved-word controls separate from sentence disclosure controls and preserve native selection around them.
+- [x] Highlight tokens with saved cards.
+- [x] Add hover, keyboard focus, click, and mobile tap interactions.
+- [x] Show the matching card in a popover.
+- [x] Update reader state after saving without a full reload.
+- [x] Keep saved-word controls separate from sentence disclosure controls and preserve native selection around them.
 
 ### Exit criteria
 

@@ -194,8 +194,12 @@
       "meaningsHint": "Séparez plusieurs sens par des virgules.",
       "note": "Note (facultatif)",
       "open": "Enregistrer le mot",
+      "openSavedAction": "Ouvrir la fiche enregistrée",
       "save": "Enregistrer la fiche",
+      "savedHeadingAction": "Fiche de vocabulaire enregistrée",
+      "savedImageAlt": "Image de la fiche de vocabulaire enregistrée",
       "saving": "Enregistrement…",
+      "translateSaved": "Traduire le mot",
       "updated": "Fiche existante mise à jour",
       "word": "Mot"
     }
