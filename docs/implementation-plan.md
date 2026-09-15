@@ -250,12 +250,14 @@ merge until the branch has passed the same production-like boundaries as `main`.
       persisted data and is reproducible in CI.
 - [x] Run formatting, linting, type checking, unit tests, database checks,
       production build, and the relevant end-to-end suite.
-- [ ] Commit the Stage 13 changes, open a pull request, and stop before merge for
+- [x] Commit the Stage 13 changes, open a pull request, and stop before merge for
       explicit review and approval.
 
 ### Remaining gaps after stabilization
 
 - The current Stage 13 work still needs pull-request CI and explicit review.
+- Open high and critical Dependabot alerts must be resolved in dedicated dependency
+  pull requests before this functional change can be merged or released.
 - Browser coverage now exercises the authenticated sample-to-vocabulary flow, but
   the complete private-document journey and provider/image error cases remain
   Stage 15 work.
