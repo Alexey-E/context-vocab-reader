@@ -255,7 +255,8 @@ merge until the branch has passed the same production-like boundaries as `main`.
 
 ### Remaining gaps after stabilization
 
-- The current Stage 13 work still needs pull-request CI and explicit review.
+- Pull request #39 has passed automated CI and now awaits explicit review; it must
+  not be merged autonomously.
 - Open high and critical Dependabot alerts must be resolved in dedicated dependency
   pull requests before this functional change can be merged or released.
 - Browser coverage now exercises the authenticated sample-to-vocabulary flow, but
