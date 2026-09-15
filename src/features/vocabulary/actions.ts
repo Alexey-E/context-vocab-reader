@@ -1,6 +1,7 @@
 "use server";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 
 import { isDocumentId } from "@/features/documents/queries";
 import { processReaderText } from "@/features/reader/text-processing";
@@ -13,6 +14,7 @@ import {
 import { VOCABULARY_FIELD_LIMITS } from "@/features/vocabulary/constants";
 import { findReaderWord } from "@/features/vocabulary/word-source";
 import { parseAppLocale, type AppLocale } from "@/i18n/routing";
+import { getPathname } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth/require-user";
 import type { Database } from "@/lib/supabase/database.types";
 import type { AppErrorPayload } from "@/lib/errors/catalog";
@@ -48,6 +50,22 @@ export type SaveVocabularyCardState =
       status: "success";
     }>;
 
+export type UpdateVocabularyCardState =
+  | Readonly<{ revision: 0; status: "idle" }>
+  | Readonly<{
+      error: AppErrorPayload;
+      fieldErrors?: LocalizedVocabularyFieldErrors;
+      revision: number;
+      status: "error";
+      values: VocabularyFormValues;
+    }>
+  | Readonly<{ revision: number; status: "success" }>;
+
+export type DeleteVocabularyCardState =
+  | Readonly<{ status: "idle" }>
+  | Readonly<{ error: AppErrorPayload; status: "error" }>
+  | Readonly<{ status: "success" }>;
+
 type VocabularySource = Readonly<{
   content: string;
   sourceLanguage: string;
@@ -56,6 +74,12 @@ type VocabularySource = Readonly<{
 
 function isSampleSlug(value: string) {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) && value.length <= 100;
+}
+
+function isVocabularyCardId(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value,
+  );
 }
 
 async function resolveVocabularySource(
@@ -226,6 +250,106 @@ export async function saveVocabularyCard(
       revision,
       status: "error",
       values: initialValues(formData),
+    };
+  }
+}
+
+export async function updateVocabularyCard(
+  actionLocale: AppLocale,
+  cardId: string,
+  previousState: UpdateVocabularyCardState,
+  formData: FormData,
+): Promise<UpdateVocabularyCardState> {
+  const locale = parseAppLocale(actionLocale);
+  const revision = previousState.revision + 1;
+  const { supabase, userId } = await requireUser(locale);
+  const validation = validateVocabularyForm(formData);
+
+  if (!validation.valid) {
+    return {
+      error: await createErrorPayload("validation.form_invalid", locale),
+      fieldErrors: await localizeFieldErrors(validation.errors, locale),
+      revision,
+      status: "error",
+      values: validation.values,
+    };
+  }
+
+  if (!isVocabularyCardId(cardId)) {
+    return {
+      error: await createErrorPayload("vocabulary.update_failed", locale),
+      revision,
+      status: "error",
+      values: validation.values,
+    };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("vocabulary_cards")
+      .update({
+        image_url: validation.input.imageUrl,
+        note: validation.input.note,
+        translation: validation.input.meanings,
+        usage_context: validation.input.usageContext,
+      })
+      .eq("id", cardId)
+      .eq("user_id", userId)
+      .select("id")
+      .maybeSingle();
+
+    if (error || !data) throw error ?? new Error("Vocabulary card not found.");
+
+    revalidatePath(getPathname({ href: "/vocabulary", locale }));
+    return { revision, status: "success" };
+  } catch (error) {
+    logServerError("vocabulary.update_failed", error, { cardId, userId });
+    return {
+      error: await createErrorPayload("vocabulary.update_failed", locale),
+      revision,
+      status: "error",
+      values: initialValues(formData),
+    };
+  }
+}
+
+export async function deleteVocabularyCard(
+  actionLocale: AppLocale,
+  cardId: string,
+  _previousState: DeleteVocabularyCardState,
+  _formData: FormData,
+): Promise<DeleteVocabularyCardState> {
+  void _previousState;
+  void _formData;
+
+  const locale = parseAppLocale(actionLocale);
+  const { supabase, userId } = await requireUser(locale);
+
+  if (!isVocabularyCardId(cardId)) {
+    return {
+      error: await createErrorPayload("vocabulary.delete_failed", locale),
+      status: "error",
+    };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("vocabulary_cards")
+      .delete()
+      .eq("id", cardId)
+      .eq("user_id", userId)
+      .select("id")
+      .maybeSingle();
+
+    if (error || !data) throw error ?? new Error("Vocabulary card not found.");
+
+    revalidatePath(getPathname({ href: "/vocabulary", locale }));
+    return { status: "success" };
+  } catch (error) {
+    logServerError("vocabulary.delete_failed", error, { cardId, userId });
+    return {
+      error: await createErrorPayload("vocabulary.delete_failed", locale),
+      status: "error",
     };
   }
 }

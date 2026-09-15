@@ -10,7 +10,8 @@
     "portfolioMvp": "MVP del portafolio",
     "samples": "Ejemplos",
     "signIn": "Iniciar sesión",
-    "tryAgain": "Intentar de nuevo"
+    "tryAgain": "Intentar de nuevo",
+    "vocabulary": "Vocabulario"
   },
   "Navigation": { "primary": "Navegación principal" },
   "LocaleSwitcher": {
@@ -149,6 +150,54 @@
       "title": "Eliminar documento"
     }
   },
+  "Vocabulary": {
+    "description": "Busca, revisa y gestiona las palabras que guardaste mientras leías.",
+    "eyebrow": "Vocabulario personal",
+    "heading": "Mi vocabulario",
+    "results": "{count, plural, one {# tarjeta} other {# tarjetas}}",
+    "filters": {
+      "allPairs": "Todos los pares de idiomas",
+      "apply": "Aplicar",
+      "clear": "Borrar filtros",
+      "pairLabel": "Par de idiomas",
+      "searchLabel": "Buscar tarjetas",
+      "searchPlaceholder": "Palabra, significado, contexto o nota"
+    },
+    "empty": {
+      "action": "Abrir mis documentos",
+      "description": "Traduce y guarda una palabra mientras lees para crear tu primera tarjeta.",
+      "heading": "Aún no hay palabras guardadas"
+    },
+    "noResults": {
+      "description": "Prueba otra búsqueda o borra el filtro de par de idiomas.",
+      "heading": "No hay tarjetas coincidentes"
+    },
+    "card": { "updated": "Actualizada el {date}" },
+    "imageAlt": "Imagen para {word}",
+    "imageBroken": "Imagen no disponible",
+    "imageFallback": "No hay una imagen disponible para {word}",
+    "imageMissing": "Sin imagen",
+    "edit": {
+      "action": "Editar",
+      "cancel": "Cancelar",
+      "close": "Cerrar",
+      "eyebrow": "Editar tarjeta",
+      "heading": "Editar «{word}»",
+      "save": "Guardar cambios",
+      "saving": "Guardando…",
+      "success": "La tarjeta de vocabulario se actualizó."
+    },
+    "delete": {
+      "action": "Eliminar",
+      "ariaLabel": "Eliminar {word}",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar permanentemente",
+      "description": "«<cardWord>{word}</cardWord>» se eliminará permanentemente. Esta acción no se puede deshacer.",
+      "eyebrow": "Acción permanente",
+      "heading": "¿Eliminar esta tarjeta?",
+      "pending": "Eliminando…"
+    }
+  },
   "Reader": {
     "custom": {
       "cancel": "Cancelar",
@@ -255,7 +304,9 @@
       "unavailable": "La traducción no está disponible temporalmente. Inténtalo más tarde."
     },
     "vocabulary": {
-      "saveFailed": "No se pudo guardar la tarjeta de vocabulario. Inténtalo de nuevo."
+      "deleteFailed": "No se pudo eliminar la tarjeta de vocabulario. Inténtalo de nuevo.",
+      "saveFailed": "No se pudo guardar la tarjeta de vocabulario. Inténtalo de nuevo.",
+      "updateFailed": "No se pudo actualizar la tarjeta de vocabulario. Inténtalo de nuevo."
     },
     "validation": {
       "contentRequired": "Introduce el texto del documento.",
@@ -289,6 +340,7 @@
     "sample": "Lector de ejemplo",
     "samples": "Textos de ejemplo",
     "samplesDescription": "Abre un texto seleccionado y explora el lector sin iniciar sesión.",
-    "serviceUnavailable": "Servicio no disponible"
+    "serviceUnavailable": "Servicio no disponible",
+    "vocabulary": "Mi vocabulario"
   }
 }

@@ -26,6 +26,8 @@ export const APP_ERROR_DEFINITIONS = {
   "translation.timeout": { key: "translation.timeout" },
   "translation.unavailable": { key: "translation.unavailable" },
   "vocabulary.save_failed": { key: "vocabulary.saveFailed" },
+  "vocabulary.delete_failed": { key: "vocabulary.deleteFailed" },
+  "vocabulary.update_failed": { key: "vocabulary.updateFailed" },
   "validation.document.content.required": {
     key: "validation.contentRequired",
   },

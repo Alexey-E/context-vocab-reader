@@ -5,3 +5,12 @@ export type ReaderVocabularyCard = Readonly<{
   usageContext: string | null;
   word: string;
 }>;
+
+export type VocabularyCard = ReaderVocabularyCard &
+  Readonly<{
+    createdAt: string;
+    id: string;
+    sourceLanguage: string;
+    targetLanguage: string;
+    updatedAt: string;
+  }>;

@@ -225,15 +225,43 @@ Saved words are visible and accessible in the reader across mouse, keyboard, and
 
 ## Stage 13 — Vocabulary dashboard
 
-- [ ] List vocabulary cards.
-- [ ] Add search.
-- [ ] Display and filter cards by language pair.
-- [ ] Edit and delete cards.
-- [ ] Show image fallbacks.
+- [x] List vocabulary cards.
+- [x] Add search.
+- [x] Display and filter cards by language pair.
+- [x] Edit and delete cards.
+- [x] Show image fallbacks.
 
 ### Exit criteria
 
 Vocabulary cards can be managed independently of the reader.
+
+## Current stabilization mini-plan
+
+Stage 13 is implemented on `feature/vocabulary-dashboard`, but it is not ready to
+merge until the branch has passed the same production-like boundaries as `main`.
+
+- [x] Reproduce the default Next.js 16 Turbopack production build in a clean local
+      environment and compare it with the supported webpack fallback.
+- [x] Start the local Supabase stack and run database lint plus the complete SQL
+      test suite.
+- [x] Install the pinned Playwright Chromium build and run the existing browser
+      suite against a production build.
+- [x] Add an authenticated vocabulary-dashboard end-to-end scenario that exercises
+      persisted data and is reproducible in CI.
+- [x] Run formatting, linting, type checking, unit tests, database checks,
+      production build, and the relevant end-to-end suite.
+- [ ] Commit the Stage 13 changes, open a pull request, and stop before merge for
+      explicit review and approval.
+
+### Remaining gaps after stabilization
+
+- The current Stage 13 work still needs pull-request CI and explicit review.
+- Browser coverage now exercises the authenticated sample-to-vocabulary flow, but
+  the complete private-document journey and provider/image error cases remain
+  Stage 15 work.
+- The keyboard, focus, contrast, and responsive audits remain Stage 14 work.
+- Live Google Translation credentials, quotas, abuse protection, and smoke tests
+  remain Stage 14 work and are not required for this stabilization pass.
 
 ## Stage 14 — Production behavior and accessibility
 

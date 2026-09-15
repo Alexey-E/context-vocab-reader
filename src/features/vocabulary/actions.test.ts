@@ -10,6 +10,12 @@ const mocks = vi.hoisted(() => ({
   localizeFieldErrors: vi.fn(async (errors: object) => errors),
   logServerError: vi.fn(),
   requireUser: vi.fn(),
+  revalidatePath: vi.fn(),
+}));
+
+vi.mock("next/cache", () => ({ revalidatePath: mocks.revalidatePath }));
+vi.mock("@/i18n/navigation", () => ({
+  getPathname: vi.fn(({ href }: { href: string }) => href),
 }));
 
 vi.mock("@/lib/auth/require-user", () => ({
@@ -24,8 +30,11 @@ vi.mock("@/lib/log-server-error", () => ({
 }));
 
 import {
+  deleteVocabularyCard,
   saveVocabularyCard,
   type SaveVocabularyCardState,
+  updateVocabularyCard,
+  type UpdateVocabularyCardState,
 } from "@/features/vocabulary/actions";
 
 const documentId = "10000000-0000-4000-8000-000000000001";
@@ -241,5 +250,94 @@ describe("saveVocabularyCard", () => {
       },
       status: "error",
     });
+  });
+});
+
+function mutationQuery(
+  result: Readonly<{ data: object | null; error: object | null }>,
+) {
+  const query = {
+    delete: vi.fn(() => query),
+    eq: vi.fn(() => query),
+    maybeSingle: vi.fn(async () => result),
+    select: vi.fn(() => query),
+    update: vi.fn(() => query),
+  };
+  return query;
+}
+
+describe("dashboard vocabulary actions", () => {
+  const cardId = "30000000-0000-4000-8000-000000000001";
+  const updateIdle: UpdateVocabularyCardState = {
+    revision: 0,
+    status: "idle",
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("updates editable fields while scoping the mutation to the owner", async () => {
+    const query = mutationQuery({ data: { id: cardId }, error: null });
+    mocks.requireUser.mockResolvedValue({
+      supabase: { from: vi.fn(() => query) },
+      userId,
+    });
+
+    await expect(
+      updateVocabularyCard("en", cardId, updateIdle, createFormData()),
+    ).resolves.toEqual({ revision: 1, status: "success" });
+    expect(query.update).toHaveBeenCalledWith({
+      image_url: "https://example.com/context.jpg",
+      note: "Remember this",
+      translation: ["context", "setting"],
+      usage_context: "Context helps.",
+    });
+    expect(query.eq).toHaveBeenCalledWith("id", cardId);
+    expect(query.eq).toHaveBeenCalledWith("user_id", userId);
+    expect(mocks.revalidatePath).toHaveBeenCalledWith("/vocabulary");
+  });
+
+  it("does not issue an update for an invalid card id", async () => {
+    const supabase = { from: vi.fn() };
+    mocks.requireUser.mockResolvedValue({ supabase, userId });
+
+    await expect(
+      updateVocabularyCard("en", "not-a-card", updateIdle, createFormData()),
+    ).resolves.toMatchObject({
+      error: { code: "vocabulary.update_failed" },
+      status: "error",
+    });
+    expect(supabase.from).not.toHaveBeenCalled();
+  });
+
+  it("deletes only a card owned by the current user", async () => {
+    const query = mutationQuery({ data: { id: cardId }, error: null });
+    mocks.requireUser.mockResolvedValue({
+      supabase: { from: vi.fn(() => query) },
+      userId,
+    });
+
+    await expect(
+      deleteVocabularyCard("en", cardId, { status: "idle" }, new FormData()),
+    ).resolves.toEqual({ status: "success" });
+    expect(query.eq).toHaveBeenCalledWith("id", cardId);
+    expect(query.eq).toHaveBeenCalledWith("user_id", userId);
+  });
+
+  it("reports a delete failure when no owned card matches", async () => {
+    const query = mutationQuery({ data: null, error: null });
+    mocks.requireUser.mockResolvedValue({
+      supabase: { from: vi.fn(() => query) },
+      userId,
+    });
+
+    await expect(
+      deleteVocabularyCard("en", cardId, { status: "idle" }, new FormData()),
+    ).resolves.toMatchObject({
+      error: { code: "vocabulary.delete_failed" },
+      status: "error",
+    });
+    expect(mocks.logServerError).toHaveBeenCalled();
   });
 });

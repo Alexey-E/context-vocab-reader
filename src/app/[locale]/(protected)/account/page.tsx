@@ -60,6 +60,12 @@ export default async function AccountPage() {
             {common("myDocuments")}
           </Link>
           <Link
+            href="/vocabulary"
+            className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border-strong bg-surface px-5 text-sm font-semibold text-muted transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            {common("vocabulary")}
+          </Link>
+          <Link
             href="/samples"
             className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border-strong bg-surface px-5 text-sm font-semibold text-muted transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >

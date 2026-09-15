@@ -5,16 +5,21 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   getAuthContext: vi.fn(),
   logServerError: vi.fn(),
+  requireUser: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/require-user", () => ({
   getAuthContext: mocks.getAuthContext,
+  requireUser: mocks.requireUser,
 }));
 vi.mock("@/lib/log-server-error", () => ({
   logServerError: mocks.logServerError,
 }));
 
-import { listReaderVocabularyCards } from "@/features/vocabulary/queries.server";
+import {
+  listReaderVocabularyCards,
+  listVocabularyCards,
+} from "@/features/vocabulary/queries.server";
 
 function vocabularyQuery(data: object[]) {
   const query = {
@@ -65,5 +70,50 @@ describe("listReaderVocabularyCards", () => {
     ]);
     expect(query.eq).toHaveBeenCalledWith("source_language", "en");
     expect(query.eq).toHaveBeenCalledWith("target_language", "es");
+  });
+});
+
+describe("listVocabularyCards", () => {
+  it("loads only the current user's cards in most-recently-updated order", async () => {
+    const data = [
+      {
+        created_at: "2026-01-01T00:00:00Z",
+        id: "30000000-0000-4000-8000-000000000001",
+        image_url: null,
+        note: "Remember this",
+        source_language: "en",
+        target_language: "es",
+        translation: ["contexto"],
+        updated_at: "2026-01-02T00:00:00Z",
+        usage_context: "Context helps.",
+        word: "context",
+      },
+    ];
+    const query = {
+      eq: vi.fn(() => query),
+      order: vi.fn(async () => ({ data, error: null })),
+      select: vi.fn(() => query),
+    };
+    const supabase = { from: vi.fn(() => query) };
+    mocks.requireUser.mockResolvedValue({ supabase, userId: "user-1" });
+
+    await expect(listVocabularyCards()).resolves.toEqual([
+      {
+        createdAt: "2026-01-01T00:00:00Z",
+        id: "30000000-0000-4000-8000-000000000001",
+        imageUrl: null,
+        meanings: ["contexto"],
+        note: "Remember this",
+        sourceLanguage: "en",
+        targetLanguage: "es",
+        updatedAt: "2026-01-02T00:00:00Z",
+        usageContext: "Context helps.",
+        word: "context",
+      },
+    ]);
+    expect(query.eq).toHaveBeenCalledWith("user_id", "user-1");
+    expect(query.order).toHaveBeenCalledWith("updated_at", {
+      ascending: false,
+    });
   });
 });

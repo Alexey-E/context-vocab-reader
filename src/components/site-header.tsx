@@ -34,6 +34,14 @@ export async function SiteHeader() {
           >
             {authenticated ? common("documents") : common("samples")}
           </Link>
+          {authenticated ? (
+            <Link
+              href="/vocabulary"
+              className="hidden min-h-10 items-center rounded-full px-3 text-sm font-semibold text-muted transition hover:bg-surface-muted hover:text-text focus-visible:outline-2 focus-visible:outline-primary sm:inline-flex"
+            >
+              {common("vocabulary")}
+            </Link>
+          ) : null}
           <LanguageSwitcher />
           <ThemeSwitcher />
           <AuthNavigationLink className="inline-flex min-h-10 items-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-contrast transition hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" />

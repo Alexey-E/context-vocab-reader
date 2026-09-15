@@ -13,11 +13,13 @@ jobs:
   checks:
     name: Quality checks
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     env:
       NEXT_PUBLIC_APP_URL: http://127.0.0.1:3000
       NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_playwright
+      SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID: playwright.local
+      SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET: playwright-local-secret
 
     steps:
       - name: Checkout
@@ -32,6 +34,19 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Start Supabase
+        run: |
+          pnpm supabase start
+          publishable_key="$(pnpm supabase status -o env | sed -n 's/^PUBLISHABLE_KEY="\(.*\)"$/\1/p')"
+          test -n "$publishable_key"
+          echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$publishable_key" >> "$GITHUB_ENV"
+
+      - name: Lint database
+        run: pnpm lint:db
+
+      - name: Test database
+        run: pnpm test:db
 
       - name: Check formatting
         run: pnpm format:check
