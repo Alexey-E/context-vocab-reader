@@ -10,7 +10,8 @@
     "portfolioMvp": "نموذج أولي للمعرض",
     "samples": "النماذج",
     "signIn": "تسجيل الدخول",
-    "tryAgain": "المحاولة مرة أخرى"
+    "tryAgain": "المحاولة مرة أخرى",
+    "vocabulary": "المفردات"
   },
   "Navigation": { "primary": "التنقّل الرئيسي" },
   "LocaleSwitcher": {
@@ -149,6 +150,54 @@
       "title": "حذف المستند"
     }
   },
+  "Vocabulary": {
+    "description": "ابحث عن الكلمات التي حفظتها أثناء القراءة وراجعها وأدرها.",
+    "eyebrow": "المفردات الشخصية",
+    "heading": "مفرداتي",
+    "results": "{count, plural, zero {لا توجد بطاقات} one {بطاقة واحدة} two {بطاقتان} few {# بطاقات} many {# بطاقة} other {# بطاقة}}",
+    "filters": {
+      "allPairs": "كل أزواج اللغات",
+      "apply": "تطبيق",
+      "clear": "مسح عوامل التصفية",
+      "pairLabel": "زوج اللغات",
+      "searchLabel": "البحث في البطاقات",
+      "searchPlaceholder": "كلمة أو معنى أو سياق أو ملاحظة"
+    },
+    "empty": {
+      "action": "فتح مستنداتي",
+      "description": "ترجم كلمة واحفظها أثناء القراءة لإنشاء بطاقتك الأولى.",
+      "heading": "لا توجد كلمات محفوظة بعد"
+    },
+    "noResults": {
+      "description": "جرّب بحثًا آخر أو امسح عامل تصفية زوج اللغات.",
+      "heading": "لا توجد بطاقات مطابقة"
+    },
+    "card": { "updated": "آخر تحديث {date}" },
+    "imageAlt": "صورة للكلمة {word}",
+    "imageBroken": "الصورة غير متاحة",
+    "imageFallback": "لا توجد صورة متاحة للكلمة {word}",
+    "imageMissing": "لا توجد صورة",
+    "edit": {
+      "action": "تعديل",
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "eyebrow": "تعديل البطاقة",
+      "heading": "تعديل «{word}»",
+      "save": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ…",
+      "success": "تم تحديث بطاقة المفردات."
+    },
+    "delete": {
+      "action": "حذف",
+      "ariaLabel": "حذف {word}",
+      "cancel": "إلغاء",
+      "confirm": "الحذف نهائيًا",
+      "description": "ستُحذف «<cardWord>{word}</cardWord>» نهائيًا، ولا يمكن التراجع عن ذلك.",
+      "eyebrow": "إجراء نهائي",
+      "heading": "هل تريد حذف هذه البطاقة؟",
+      "pending": "جارٍ الحذف…"
+    }
+  },
   "Reader": {
     "custom": {
       "cancel": "إلغاء",
@@ -255,7 +304,9 @@
       "unavailable": "الترجمة غير متاحة مؤقتًا. يرجى المحاولة لاحقًا."
     },
     "vocabulary": {
-      "saveFailed": "تعذّر حفظ بطاقة المفردات. حاول مرة أخرى."
+      "deleteFailed": "تعذّر حذف بطاقة المفردات. حاول مرة أخرى.",
+      "saveFailed": "تعذّر حفظ بطاقة المفردات. حاول مرة أخرى.",
+      "updateFailed": "تعذّر تحديث بطاقة المفردات. حاول مرة أخرى."
     },
     "validation": {
       "contentRequired": "أدخل نص المستند.",
@@ -289,6 +340,7 @@
     "sample": "قارئ النموذج",
     "samples": "نصوص نموذجية",
     "samplesDescription": "افتح نصًا مختارًا واستكشف القارئ من دون تسجيل الدخول.",
-    "serviceUnavailable": "الخدمة غير متاحة"
+    "serviceUnavailable": "الخدمة غير متاحة",
+    "vocabulary": "مفرداتي"
   }
 }

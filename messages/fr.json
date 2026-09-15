@@ -10,7 +10,8 @@
     "portfolioMvp": "MVP du portfolio",
     "samples": "Exemples",
     "signIn": "Se connecter",
-    "tryAgain": "Réessayer"
+    "tryAgain": "Réessayer",
+    "vocabulary": "Vocabulaire"
   },
   "Navigation": { "primary": "Navigation principale" },
   "LocaleSwitcher": {
@@ -149,6 +150,54 @@
       "title": "Supprimer le document"
     }
   },
+  "Vocabulary": {
+    "description": "Recherchez, consultez et gérez les mots enregistrés pendant votre lecture.",
+    "eyebrow": "Vocabulaire personnel",
+    "heading": "Mon vocabulaire",
+    "results": "{count, plural, one {# fiche} other {# fiches}}",
+    "filters": {
+      "allPairs": "Toutes les paires de langues",
+      "apply": "Appliquer",
+      "clear": "Effacer les filtres",
+      "pairLabel": "Paire de langues",
+      "searchLabel": "Rechercher des fiches",
+      "searchPlaceholder": "Mot, sens, contexte ou note"
+    },
+    "empty": {
+      "action": "Ouvrir mes documents",
+      "description": "Traduisez et enregistrez un mot pendant votre lecture pour créer votre première fiche.",
+      "heading": "Aucun mot enregistré"
+    },
+    "noResults": {
+      "description": "Essayez une autre recherche ou effacez le filtre de paire de langues.",
+      "heading": "Aucune fiche correspondante"
+    },
+    "card": { "updated": "Mise à jour le {date}" },
+    "imageAlt": "Image pour {word}",
+    "imageBroken": "Image indisponible",
+    "imageFallback": "Aucune image disponible pour {word}",
+    "imageMissing": "Aucune image",
+    "edit": {
+      "action": "Modifier",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "eyebrow": "Modifier la fiche",
+      "heading": "Modifier « {word} »",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "success": "La fiche de vocabulaire a été mise à jour."
+    },
+    "delete": {
+      "action": "Supprimer",
+      "ariaLabel": "Supprimer {word}",
+      "cancel": "Annuler",
+      "confirm": "Supprimer définitivement",
+      "description": "« <cardWord>{word}</cardWord> » sera définitivement supprimé. Cette action est irréversible.",
+      "eyebrow": "Action définitive",
+      "heading": "Supprimer cette fiche ?",
+      "pending": "Suppression…"
+    }
+  },
   "Reader": {
     "custom": {
       "cancel": "Annuler",
@@ -255,7 +304,9 @@
       "unavailable": "La traduction est temporairement indisponible. Veuillez réessayer plus tard."
     },
     "vocabulary": {
-      "saveFailed": "La fiche de vocabulaire n’a pas pu être enregistrée. Réessayez."
+      "deleteFailed": "La fiche de vocabulaire n’a pas pu être supprimée. Réessayez.",
+      "saveFailed": "La fiche de vocabulaire n’a pas pu être enregistrée. Réessayez.",
+      "updateFailed": "La fiche de vocabulaire n’a pas pu être mise à jour. Réessayez."
     },
     "validation": {
       "contentRequired": "Saisissez le texte du document.",
@@ -289,6 +340,7 @@
     "sample": "Lecteur d’exemple",
     "samples": "Textes d’exemple",
     "samplesDescription": "Ouvrez un texte sélectionné et découvrez le lecteur sans vous connecter.",
-    "serviceUnavailable": "Service indisponible"
+    "serviceUnavailable": "Service indisponible",
+    "vocabulary": "Mon vocabulaire"
   }
 }

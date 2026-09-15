@@ -10,7 +10,8 @@
     "portfolioMvp": "Portfolio MVP",
     "samples": "Samples",
     "signIn": "Sign in",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "vocabulary": "Vocabulary"
   },
   "Navigation": {
     "primary": "Primary navigation"
@@ -151,6 +152,54 @@
       "title": "Delete document"
     }
   },
+  "Vocabulary": {
+    "description": "Search, review, and manage the words you saved while reading.",
+    "eyebrow": "Personal vocabulary",
+    "heading": "My vocabulary",
+    "results": "{count, plural, one {# card} other {# cards}}",
+    "filters": {
+      "allPairs": "All language pairs",
+      "apply": "Apply",
+      "clear": "Clear filters",
+      "pairLabel": "Language pair",
+      "searchLabel": "Search cards",
+      "searchPlaceholder": "Word, meaning, context, or note"
+    },
+    "empty": {
+      "action": "Open my documents",
+      "description": "Translate and save a word while reading to create your first card.",
+      "heading": "No saved words yet"
+    },
+    "noResults": {
+      "description": "Try another search or clear the language-pair filter.",
+      "heading": "No matching cards"
+    },
+    "card": { "updated": "Updated {date}" },
+    "imageAlt": "Image for {word}",
+    "imageBroken": "Image unavailable",
+    "imageFallback": "No available image for {word}",
+    "imageMissing": "No image",
+    "edit": {
+      "action": "Edit",
+      "cancel": "Cancel",
+      "close": "Close",
+      "eyebrow": "Edit card",
+      "heading": "Edit “{word}”",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "success": "The vocabulary card was updated."
+    },
+    "delete": {
+      "action": "Delete",
+      "ariaLabel": "Delete {word}",
+      "cancel": "Cancel",
+      "confirm": "Delete permanently",
+      "description": "“<cardWord>{word}</cardWord>” will be permanently removed. This cannot be undone.",
+      "eyebrow": "Permanent action",
+      "heading": "Delete this card?",
+      "pending": "Deleting…"
+    }
+  },
   "Reader": {
     "custom": {
       "cancel": "Cancel",
@@ -257,7 +306,9 @@
       "unavailable": "Translation is temporarily unavailable. Please try again later."
     },
     "vocabulary": {
-      "saveFailed": "The vocabulary card could not be saved. Please try again."
+      "deleteFailed": "The vocabulary card could not be deleted. Please try again.",
+      "saveFailed": "The vocabulary card could not be saved. Please try again.",
+      "updateFailed": "The vocabulary card could not be updated. Please try again."
     },
     "validation": {
       "contentRequired": "Enter the document text.",
@@ -291,6 +342,7 @@
     "sample": "Sample reader",
     "samples": "Sample texts",
     "samplesDescription": "Open a curated text and explore the reader without signing in.",
-    "serviceUnavailable": "Service unavailable"
+    "serviceUnavailable": "Service unavailable",
+    "vocabulary": "My vocabulary"
   }
 }

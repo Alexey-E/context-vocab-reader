@@ -16,10 +16,9 @@ import {
   saveVocabularyCard,
   type SaveVocabularyCardState,
 } from "@/features/vocabulary/actions";
-import { VOCABULARY_FIELD_LIMITS } from "@/features/vocabulary/constants";
 import type { ReaderVocabularyCard } from "@/features/vocabulary/contract";
 import { getVocabularyFormValues } from "@/features/vocabulary/form-values";
-import { getLanguageDirection } from "@/lib/languages";
+import { VocabularyCardFields } from "@/features/vocabulary/vocabulary-card-fields";
 
 export type SelectedReaderWord = Readonly<{
   normalizedWord: string;
@@ -162,8 +161,6 @@ function VocabularyForm({
           targetLanguage,
         );
   const errors = state.status === "error" ? state.fieldErrors : undefined;
-  const [imageUrl, setImageUrl] = useState(values.imageUrl);
-  const [imageBroken, setImageBroken] = useState(false);
 
   return (
     <form action={formAction}>
@@ -190,141 +187,13 @@ function VocabularyForm({
         </p>
       ) : null}
 
-      <div className="mt-6 grid gap-5 sm:grid-cols-2">
-        <div>
-          <p className="text-sm font-semibold text-muted">{t("word")}</p>
-          <p
-            lang={sourceLanguage}
-            dir={getLanguageDirection(sourceLanguage)}
-            className="mt-2 rounded-xl border border-border bg-surface-muted px-4 py-3 font-semibold"
-          >
-            {word.sourceText}
-          </p>
-        </div>
-        <div>
-          <label
-            htmlFor="meanings"
-            className="text-sm font-semibold text-muted"
-          >
-            {t("meanings")}
-          </label>
-          <input
-            id="meanings"
-            name="meanings"
-            required
-            defaultValue={values.meanings}
-            dir={getLanguageDirection(targetLanguage)}
-            lang={targetLanguage}
-            aria-invalid={Boolean(errors?.meanings)}
-            aria-describedby={errors?.meanings ? "meanings-error" : undefined}
-            className="mt-2 h-12 w-full rounded-xl border border-border-strong bg-surface px-4 text-[15px] text-text outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-          />
-          <p className="mt-1.5 text-xs text-subtle">{t("meaningsHint")}</p>
-          {errors?.meanings ? (
-            <p id="meanings-error" className="mt-1.5 text-sm text-danger">
-              {errors.meanings.message}
-            </p>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="mt-5">
-        <label
-          htmlFor="usageContext"
-          className="text-sm font-semibold text-muted"
-        >
-          {t("context")}
-        </label>
-        <textarea
-          id="usageContext"
-          name="usageContext"
-          defaultValue={values.usageContext}
-          maxLength={VOCABULARY_FIELD_LIMITS.usageContext.maxLength}
-          rows={3}
-          lang={sourceLanguage}
-          dir={getLanguageDirection(sourceLanguage)}
-          aria-invalid={Boolean(errors?.usageContext)}
-          aria-describedby={
-            errors?.usageContext ? "usage-context-error" : undefined
-          }
-          className="mt-2 w-full resize-y rounded-xl border border-border-strong bg-surface px-4 py-3 text-[15px] leading-6 text-text outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-        />
-        {errors?.usageContext ? (
-          <p id="usage-context-error" className="mt-1.5 text-sm text-danger">
-            {errors.usageContext.message}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="mt-5">
-        <label htmlFor="note" className="text-sm font-semibold text-muted">
-          {t("note")}
-        </label>
-        <textarea
-          id="note"
-          name="note"
-          defaultValue={values.note}
-          maxLength={VOCABULARY_FIELD_LIMITS.note.maxLength}
-          rows={2}
-          aria-invalid={Boolean(errors?.note)}
-          aria-describedby={errors?.note ? "note-error" : undefined}
-          className="mt-2 w-full resize-y rounded-xl border border-border-strong bg-surface px-4 py-3 text-[15px] leading-6 text-text outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-        />
-        {errors?.note ? (
-          <p id="note-error" className="mt-1.5 text-sm text-danger">
-            {errors.note.message}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="mt-5">
-        <label htmlFor="imageUrl" className="text-sm font-semibold text-muted">
-          {t("imageUrl")}
-        </label>
-        <input
-          id="imageUrl"
-          name="imageUrl"
-          type="url"
-          inputMode="url"
-          defaultValue={values.imageUrl}
-          maxLength={VOCABULARY_FIELD_LIMITS.imageUrl.maxLength}
-          placeholder="https://example.com/image.jpg"
-          aria-invalid={Boolean(errors?.imageUrl)}
-          aria-describedby={errors?.imageUrl ? "image-url-error" : undefined}
-          onChange={(event) => {
-            setImageUrl(event.currentTarget.value.trim());
-            setImageBroken(false);
-          }}
-          className="mt-2 h-12 w-full rounded-xl border border-border-strong bg-surface px-4 text-[15px] text-text outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-        />
-        {errors?.imageUrl ? (
-          <p id="image-url-error" className="mt-1.5 text-sm text-danger">
-            {errors.imageUrl.message}
-          </p>
-        ) : null}
-
-        {imageUrl ? (
-          <div className="mt-3 overflow-hidden rounded-xl border border-border bg-surface-muted">
-            {imageBroken ? (
-              <p
-                role="status"
-                className="px-4 py-6 text-center text-sm text-muted"
-              >
-                {t("imageBroken")}
-              </p>
-            ) : (
-              // Arbitrary user-provided remote hosts cannot use next/image.
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={imageUrl}
-                alt={t("imagePreview", { word: word.sourceText })}
-                onError={() => setImageBroken(true)}
-                className="max-h-52 w-full object-cover"
-              />
-            )}
-          </div>
-        ) : null}
-      </div>
+      <VocabularyCardFields
+        errors={errors}
+        sourceLanguage={sourceLanguage}
+        targetLanguage={targetLanguage}
+        values={values}
+        word={word.sourceText}
+      />
 
       <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <Button
